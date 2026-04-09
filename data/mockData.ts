@@ -1,87 +1,70 @@
-export type MenuLink = {
-  label: string;
-  href: string;
-  description: string;
+export type ServiceItem = {
+  name: string;
+  price: string;
 };
 
-export type ReservationItem = {
-  title: string;
-  duration: string;
-  price: string;
-  description: string;
-  href: string;
+export type ReviewItem = {
+  author: string;
+  content: string;
 };
 
 export type TrainerProfile = {
   username: string;
   name: string;
-  initials: string;
+  brandName: string;
   role: string;
   intro: string;
   location: string;
   availability: string;
-  responseTime: string;
-  highlightTags: string[];
-  menuLinks: MenuLink[];
-  reservations: ReservationItem[];
-  footerNote: string;
+  ctaLabel: string;
+  instagramUrl: string;
+  imageSrc: string;
+  services: ServiceItem[];
   instagramHandle: string;
+  reviews: ReviewItem[];
 };
 
 export const trainerProfiles: Record<string, TrainerProfile> = {
-  "coach-jiyun": {
-    username: "coach-jiyun",
-    name: "김지윤 코치",
-    initials: "JY",
-    role: "여성 맞춤 PT / 바디리컴포지션",
+  sample: {
+    username: "sample",
+    name: "Trainer 뀨",
+    brandName: "Sample gym",
+    role: "체형교정 · 다이어트 · 1:1 PT",
     intro:
-      "운동을 오래 못 이어간 사람도 시작할 수 있게, 현재 체력과 라이프스타일에 맞춘 루틴으로 코칭합니다.",
-    location: "서울 성수",
-    availability: "평일 06:00 - 22:00",
-    responseTime: "문의 평균 응답 10분",
-    highlightTags: ["초보 환영", "체형 교정", "다이어트 집중"],
-    menuLinks: [
+      "기초 체력부터 바디라인까지, 꾸준히 이어갈 수 있는 맞춤형 퍼스널 트레이닝을 제공합니다.",
+    location: "서울",
+    availability: "평일 06~22시",
+    ctaLabel: "카톡으로 상담 예약하기",
+    instagramUrl: "https://instagram.com/kku._.ui",
+    imageSrc: "/pt_trainer.png",
+    services: [
       {
-        label: "인스타그램",
-        href: "https://instagram.com",
-        description: "운동 루틴, 전후 변화, 수업 분위기 보기",
+        name: "PT 1회",
+        price: "50,000원",
       },
       {
-        label: "카카오톡 상담",
-        href: "https://open.kakao.com",
-        description: "수업 가능 시간과 목표에 맞춘 1:1 상담",
-      },
-      {
-        label: "오시는 길",
-        href: "https://map.naver.com",
-        description: "성수역 도보 5분, 주차 가능 여부 안내",
+        name: "PT 10회",
+        price: "450,000원",
       },
     ],
-    reservations: [
+    reviews: [
       {
-        title: "체험 PT",
-        duration: "50분",
-        price: "39,000원",
-        description: "체형 체크와 목표 상담, 1회 체험 수업이 포함됩니다.",
-        href: "https://forms.gle",
+        author: "30대 여성 회원",
+        content:
+          "운동이 처음이었는데 자세를 정말 꼼꼼하게 봐주셔서 부담 없이 시작할 수 있었어요.",
       },
       {
-        title: "1:1 집중 PT",
-        duration: "주 2회 / 4주",
-        price: "별도 문의",
-        description: "식단 피드백과 홈트 루틴까지 함께 관리합니다.",
-        href: "https://calendar.google.com",
+        author: "직장인 회원",
+        content:
+          "퇴근 후에도 일정 조율이 편했고, 짧은 기간에도 몸이 가벼워진 게 느껴졌습니다.",
       },
       {
-        title: "온라인 코칭",
-        duration: "4주 프로그램",
-        price: "별도 문의",
-        description: "헬스장 방문이 어려운 분들을 위한 비대면 코칭입니다.",
-        href: "mailto:coach@savemept.com",
+        author: "20대 회원",
+        content:
+          "식단이랑 루틴을 같이 잡아줘서 혼자 할 때보다 훨씬 꾸준히 하게 됐어요.",
       },
     ],
-    footerNote: "모든 예약은 상담 후 최종 확정되며, 일정 변경은 최소 하루 전에 요청해 주세요.",
-    instagramHandle: "@saveme.pt",
+    instagramHandle: "@kku._.ui",
   },
 };
 
@@ -89,4 +72,4 @@ export function getTrainerProfile(username: string) {
   return trainerProfiles[username];
 }
 
-export const defaultUsername = "coach-jiyun";
+export const defaultUsername = "sample";

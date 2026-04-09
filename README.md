@@ -13,17 +13,17 @@
 ## Structure
 
 app/
-  [username]/page.tsx
-  globals.css
-  layout.tsx
-  page.tsx
+[username]/page.tsx
+globals.css
+layout.tsx
+page.tsx
 components/
-  Footer.tsx
-  Menu.tsx
-  Profile.tsx
-  Reservation.tsx
+Footer.tsx
+Menu.tsx
+Profile.tsx
+Reservation.tsx
 data/
-  mockData.ts
+mockData.ts
 
 ## Run
 

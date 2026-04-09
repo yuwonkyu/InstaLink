@@ -1,69 +1,125 @@
+import Image from "next/image";
+import type { ReviewItem, ServiceItem } from "@/data/mockData";
+
 type ProfileProps = {
-  initials: string;
+  brandName: string;
   name: string;
   role: string;
   intro: string;
   location: string;
   availability: string;
-  responseTime: string;
-  highlightTags: string[];
+  ctaLabel: string;
+  instagramUrl: string;
+  instagramHandle: string;
+  imageSrc: string;
+  services: ServiceItem[];
+  reviews: ReviewItem[];
 };
 
 export default function Profile({
-  initials,
+  brandName,
   name,
   role,
   intro,
   location,
   availability,
-  responseTime,
-  highlightTags,
+  ctaLabel,
+  instagramUrl,
+  instagramHandle,
+  imageSrc,
+  services,
+  reviews,
 }: ProfileProps) {
   return (
-    <section className="rounded-[2rem] border border-[var(--line)] bg-[var(--card)] p-5 shadow-[0_20px_60px_rgba(72,44,18,0.12)] backdrop-blur">
+    <section className="rounded-xl bg-white/70 p-8 shadow-[0_4px_18px_rgba(17,24,39,0.06)] backdrop-blur">
       <div className="flex items-start gap-4">
-        <div className="font-display flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#ffb36a,#ff7c38)] text-xl font-bold text-white shadow-[0_12px_30px_rgba(220,91,19,0.28)]">
-          {initials}
+        <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-3xl bg-(--secondary) shadow-[0_4px_14px_rgba(17,24,39,0.08)]">
+          <Image
+            src={imageSrc}
+            alt={name}
+            fill
+            sizes="96px"
+            className="object-cover"
+            priority
+          />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="mb-2 inline-flex rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-semibold tracking-[0.18em] text-[var(--accent-strong)] uppercase">
-            SaveMe PT
+          <p className="mb-2 inline-flex rounded-md bg-(--secondary) px-2 py-1 text-xs font-semibold tracking-[0.08em] text-(--third) uppercase">
+            {brandName}
           </p>
-          <h1 className="font-display text-[1.75rem] font-bold leading-none text-[var(--foreground)]">
+          <h1 className="font-display text-2xl font-bold leading-none text-foreground">
             {name}
           </h1>
-          <p className="mt-2 text-sm font-medium text-[var(--muted)]">{role}</p>
+          <p className="mt-2 text-sm font-medium text-(--muted)">{role}</p>
         </div>
       </div>
 
-      <p className="mt-5 text-sm leading-6 text-[var(--muted)]">{intro}</p>
+      <p className="mt-5 text-sm leading-6 text-(--muted)">{intro}</p>
 
-      <div className="mt-5 grid grid-cols-2 gap-3 text-sm">
-        <div className="rounded-2xl border border-[var(--line)] bg-white/70 p-3">
-          <p className="text-xs text-[var(--muted)]">위치</p>
-          <p className="mt-1 font-semibold text-[var(--foreground)]">{location}</p>
-        </div>
-        <div className="rounded-2xl border border-[var(--line)] bg-white/70 p-3">
-          <p className="text-xs text-[var(--muted)]">운영 시간</p>
-          <p className="mt-1 font-semibold text-[var(--foreground)]">{availability}</p>
-        </div>
+      <div className="mt-6">
+        <a
+          href="https://open.kakao.com/o/sample"
+          target="_blank"
+          rel="noreferrer"
+          className="flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-black px-4 text-base font-bold text-white! shadow-[0_6px_16px_rgba(17,24,39,0.18)] active:translate-y-px"
+        >
+          <span className="text-sm text-white/85!">Kakao</span>
+          {ctaLabel}
+        </a>
       </div>
 
-      <div className="mt-3 rounded-2xl border border-[var(--line)] bg-white/70 p-3 text-sm">
-        <p className="text-xs text-[var(--muted)]">응답 속도</p>
-        <p className="mt-1 font-semibold text-[var(--foreground)]">{responseTime}</p>
-      </div>
+      <div className="my-7 h-px bg-black/8" />
 
-      <div className="mt-5 flex flex-wrap gap-2">
-        {highlightTags.map((tag) => (
-          <span
-            key={tag}
-            className="rounded-full border border-[var(--line)] bg-white px-3 py-1.5 text-xs font-medium text-[var(--foreground)]"
-          >
-            {tag}
-          </span>
-        ))}
-      </div>
+      <section>
+        <h2 className="text-base font-bold text-foreground">서비스</h2>
+        <ul className="mt-4 space-y-3">
+          {services.map((service) => (
+            <li
+              key={service.name}
+              className="flex items-center justify-between gap-3 text-base"
+            >
+              <span className="font-medium text-foreground">
+                {service.name}
+              </span>
+              <span className="font-semibold text-foreground">
+                {service.price}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <div className="my-7 h-px bg-black/8" />
+
+      <section>
+        <h2 className="text-base font-bold text-foreground">후기</h2>
+        <ul className="mt-4 space-y-3">
+          {reviews.map((review) => (
+            <li key={review.author} className="rounded-2xl bg-white/80 p-4">
+              <p className="text-sm leading-6 text-(--muted)">
+                “{review.content}”
+              </p>
+              <p className="mt-2 text-xs font-semibold text-foreground">
+                {review.author}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <div className="my-7 h-px bg-black/8" />
+
+      <p className="text-sm font-medium text-(--muted)">
+        위치 {location} · {availability}
+      </p>
+      <a
+        href={instagramUrl}
+        target="_blank"
+        rel="noreferrer"
+        className="mt-3 inline-flex text-sm font-medium text-(--muted) underline underline-offset-4"
+      >
+        Instagram {instagramHandle}
+      </a>
     </section>
   );
 }
