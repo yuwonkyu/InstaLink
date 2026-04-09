@@ -31,9 +31,9 @@ export default function Profile({
   reviews,
 }: ProfileProps) {
   return (
-    <section className="rounded-xl bg-white/70 p-8 shadow-[0_4px_18px_rgba(17,24,39,0.06)] backdrop-blur">
+    <section className="rounded-xl p-8 backdrop-blur">
       <div className="flex items-start gap-4">
-        <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-3xl bg-(--secondary) shadow-[0_4px_14px_rgba(17,24,39,0.08)]">
+        <div className="relative h-24 w-24 shrink-0 overflow-hidden ">
           <Image
             src={imageSrc}
             alt={name}
@@ -44,7 +44,7 @@ export default function Profile({
           />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="mb-2 inline-flex rounded-md bg-(--secondary) px-2 py-1 text-xs font-semibold tracking-[0.08em] text-(--third) uppercase">
+          <p className="mb-2 inline-flex px-2 py-1 text-xs font-semibold tracking-[0.08em] text-(--third) uppercase">
             {brandName}
           </p>
           <h1 className="font-display text-2xl font-bold leading-none text-foreground">
@@ -54,21 +54,36 @@ export default function Profile({
         </div>
       </div>
 
-      <p className="mt-5 text-sm leading-6 text-(--muted)">{intro}</p>
+      <p className="mt-5 text-sm leading-6 text-(--muted) whitespace-pre-line">
+        {intro}
+      </p>
 
-      <div className="mt-6">
+      <div className="mt-5">
         <a
           href="https://open.kakao.com/o/sample"
           target="_blank"
           rel="noreferrer"
-          className="flex min-h-14 w-full items-center justify-center gap-2 rounded-2xl bg-black px-4 text-base font-bold text-white! shadow-[0_6px_16px_rgba(17,24,39,0.18)] active:translate-y-px"
+          className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#FEE500] px-2 text-sm font-semibold whitespace-nowrap text-black! shadow-[0_4px_10px_rgba(17,24,39,0.12)] active:translate-y-px"
         >
-          <span className="text-sm text-white/85!">Kakao</span>
-          {ctaLabel}
+          <Image
+            src="/kakaosimbol.svg"
+            alt=""
+            width={18}
+            height={18}
+            className="h-4.5 w-4.5 shrink-0"
+          />
+          <Image
+            src="/kakaoText.svg"
+            alt="Kakao"
+            width={74}
+            height={18}
+            className="h-4.5 w-auto shrink-0"
+          />
+          <span className="text-black!">{ctaLabel}</span>
         </a>
       </div>
 
-      <div className="my-7 h-px bg-black/8" />
+      <div className="my-7 h-px bg-black/20" />
 
       <section>
         <h2 className="text-base font-bold text-foreground">서비스</h2>
@@ -89,7 +104,7 @@ export default function Profile({
         </ul>
       </section>
 
-      <div className="my-7 h-px bg-black/8" />
+      <div className="my-7 h-px bg-black/20" />
 
       <section>
         <h2 className="text-base font-bold text-foreground">후기</h2>
@@ -107,11 +122,13 @@ export default function Profile({
         </ul>
       </section>
 
-      <div className="my-7 h-px bg-black/8" />
+      <div className="my-7 h-px bg-black/20" />
 
-      <p className="text-sm font-medium text-(--muted)">
-        위치 {location} · {availability}
+      <p className="text-sm font-medium text-(--muted) mt-0.5">
+        운영시간 : {availability}
       </p>
+      <p className="text-sm font-medium text-(--muted)">위치 : {location}</p>
+
       <a
         href={instagramUrl}
         target="_blank"
