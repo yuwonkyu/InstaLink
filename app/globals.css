@@ -87,7 +87,7 @@ a {
   inset: 0;
   border: 1px dashed rgba(0, 0, 0, 0.5);
   opacity: 0;
-  animation: editable-frame-pulse 1s ease-in-out 30s infinite;
+  animation: editable-frame-pulse 1s ease-in-out 15s infinite;
 }
 
 @keyframes editable-frame-pulse {
