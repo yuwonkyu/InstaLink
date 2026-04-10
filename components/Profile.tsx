@@ -31,30 +31,30 @@ export default function Profile({
   reviews,
 }: ProfileProps) {
   return (
-    <section className="rounded-xl p-8 backdrop-blur">
+    <section className=" rounded-xl p-8 backdrop-blur">
       <div className="flex items-start gap-4">
-        <div className="relative h-24 w-24 shrink-0 overflow-hidden ">
+        <div className="relative h-24 w-24 shrink-0 overflow-hidden editable-frame">
           <Image
             src={imageSrc}
             alt={name}
             fill
             sizes="96px"
-            className="object-cover"
+            className="object-cover "
             priority
           />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="mb-2 inline-flex px-2 py-1 text-xs font-semibold tracking-[0.08em] text-(--third) uppercase">
+          <p className="editable-frame mb-2 inline-flex px-2 py-1 text-xs font-semibold tracking-[0.08em] text-(--third) uppercase">
             {brandName}
           </p>
-          <h1 className="font-display text-2xl font-bold leading-none text-foreground">
+          <h1 className="editable-frame font-display text-2xl font-bold leading-none text-foreground">
             {name}
           </h1>
-          <p className="mt-2 text-sm font-medium text-(--muted)">{role}</p>
+          <p className="editable-frame mt-2 text-sm font-medium text-(--muted)">{role}</p>
         </div>
       </div>
 
-      <p className="mt-5 text-sm leading-6 text-(--muted) whitespace-pre-line">
+      <p className="editable-frame  mt-5 text-sm leading-6 text-(--muted) whitespace-pre-line">
         {intro}
       </p>
 
@@ -63,29 +63,32 @@ export default function Profile({
           href="https://open.kakao.com/o/sample"
           target="_blank"
           rel="noreferrer"
-          className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#FEE500] px-2 text-sm font-semibold whitespace-nowrap text-black! shadow-[0_4px_10px_rgba(17,24,39,0.12)] active:translate-y-px"
+          className="reserve-button flex min-h-12 w-full items-center justify-center overflow-hidden rounded-xl bg-[#FEE500] px-2 text-sm font-semibold text-black! shadow-[0_4px_10px_rgba(17,24,39,0.12)] active:translate-y-px"
         >
-          <Image
-            src="/kakaosimbol.svg"
-            alt=""
-            width={18}
-            height={18}
-            className="h-4.5 w-4.5 shrink-0"
-          />
-          <Image
-            src="/kakaoText.svg"
-            alt="Kakao"
-            width={74}
-            height={18}
-            className="h-4.5 w-auto shrink-0"
-          />
-          <span className="text-black!">{ctaLabel}</span>
+          <span className="reserve-button__content">
+            <Image
+              src="/kakaosimbol.svg"
+              alt=""
+              width={18}
+              height={18}
+              className="h-4.5 w-4.5 shrink-0"
+            />
+            <Image
+              src="/kakaoText.svg"
+              alt="Kakao"
+              width={74}
+              height={18}
+              className="h-4.5 w-auto shrink-0"
+              style={{ width: "auto" }}
+            />
+            <span className="text-black! whitespace-nowrap">{ctaLabel}</span>
+          </span>
         </a>
       </div>
 
       <div className="my-7 h-px bg-black/20" />
 
-      <section>
+      <section className="editable-frame">
         <h2 className="text-base font-bold text-foreground">서비스</h2>
         <ul className="mt-4 space-y-3">
           {services.map((service) => (
@@ -106,7 +109,7 @@ export default function Profile({
 
       <div className="my-7 h-px bg-black/20" />
 
-      <section>
+      <section className="editable-frame">
         <h2 className="text-base font-bold text-foreground">후기</h2>
         <ul className="mt-4 space-y-3">
           {reviews.map((review) => (
@@ -124,16 +127,16 @@ export default function Profile({
 
       <div className="my-7 h-px bg-black/20" />
 
-      <p className="text-sm font-medium text-(--muted) mt-0.5">
+      <p className="editable-frame text-sm font-medium text-(--muted) mt-0.5">
         운영시간 : {availability}
       </p>
-      <p className="text-sm font-medium text-(--muted)">위치 : {location}</p>
+      <p className="editable-frame text-sm font-medium text-(--muted)">위치 : {location}</p>
 
       <a
         href={instagramUrl}
         target="_blank"
         rel="noreferrer"
-        className="mt-3 inline-flex text-sm font-medium text-(--muted) underline underline-offset-4"
+        className="editable-frame mt-3 inline-flex text-sm font-medium text-(--muted) underline underline-offset-4"
       >
         Instagram {instagramHandle}
       </a>
