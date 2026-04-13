@@ -43,14 +43,14 @@ export default function Profile({
             priority
           />
         </div>
-        <div className="min-w-0 flex-1">
-          <p className="editable-frame mb-2 inline-flex px-2 py-1 text-xs font-semibold tracking-[0.08em] text-(--third) uppercase">
+        <div className="profile-header-copy min-w-0 flex-1">
+          <p className="editable-frame profile-brand mb-2 inline-flex px-2 py-1 font-semibold tracking-[0.08em] text-(--third) uppercase">
             {brandName}
           </p>
-          <h1 className="editable-frame font-display text-2xl font-bold leading-none text-foreground">
+          <h1 className="editable-frame profile-name font-display font-bold leading-none text-foreground">
             {name}
           </h1>
-          <p className="editable-frame mt-2 text-sm font-medium text-(--muted)">{role}</p>
+          <p className="editable-frame profile-role mt-2 font-medium text-(--muted)">{role}</p>
         </div>
       </div>
 
@@ -114,10 +114,10 @@ export default function Profile({
         <ul className="mt-4 space-y-3">
           {reviews.map((review) => (
             <li key={review.author} className="rounded-2xl bg-white/80 p-4">
-              <p className="text-sm leading-6 text-(--muted)">
+              <p className="text-left text-sm leading-6 text-(--muted)">
                 “{review.content}”
               </p>
-              <p className="mt-2 text-xs font-semibold text-foreground">
+              <p className="mt-2 text-right text-xs font-semibold text-foreground">
                 {review.author}
               </p>
             </li>

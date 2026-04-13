@@ -28,6 +28,7 @@
 
 html {
   background: var(--base);
+  font-size: clamp(13px, 3.8vw, 16px);
 }
 
 body {
@@ -72,6 +73,44 @@ a {
 @container (max-width: 320px) {
   .reserve-button__content {
     transform: scale(0.84);
+  }
+}
+
+.profile-brand,
+.profile-name,
+.profile-role {
+  white-space: nowrap;
+}
+
+.profile-brand {
+  font-size: clamp(0.6rem, 2.2vw, 0.75rem);
+}
+
+.profile-name {
+  font-size: clamp(1.35rem, 5.8vw, 1.75rem);
+}
+
+.profile-role {
+  font-size: clamp(0.55rem, 2.1vw, 0.875rem);
+}
+
+@media (max-width: 380px) {
+  .profile-header-copy {
+    margin-top: 0.05rem;
+  }
+
+  .profile-name {
+    font-size: clamp(1.15rem, 5.2vw, 1.35rem);
+  }
+
+  .profile-role {
+    font-size: clamp(0.5rem, 1.95vw, 0.75rem);
+  }
+}
+
+@media (max-width: 340px) {
+  html {
+    font-size: clamp(12px, 3.9vw, 14px);
   }
 }
 
