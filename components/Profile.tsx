@@ -1,49 +1,41 @@
 import Image from "next/image";
-import type { ReviewItem, ServiceItem } from "@/data/mockData";
+import type { ProfileOptions, ServiceItem, ReviewItem } from "@/data/mockData";
 
 type ProfileProps = {
-  brandName: string;
   name: string;
+  brandName: string;
   role: string;
   intro: string;
   location: string;
   availability: string;
   ctaLabel: string;
-  ctaBackgroundColor: string;
-  showReviews: boolean;
-  showLocation: boolean;
-  showEditableFrame: boolean;
-  serviceFooterLabel: string | false;
   instagramUrl: string;
   instagramHandle: string;
   imageSrc: string;
   services: ServiceItem[];
   reviews: ReviewItem[];
+  options: ProfileOptions;
   kakaoUrl?: string;
 };
 
-export default function Profile({
-  brandName,
+const Profile = ({
   name,
+  brandName,
   role,
   intro,
   location,
   availability,
   ctaLabel,
-  ctaBackgroundColor,
-  showReviews,
-  showLocation,
-  showEditableFrame,
-  serviceFooterLabel,
   instagramUrl,
   instagramHandle,
   imageSrc,
   services,
   reviews,
+  options,
   kakaoUrl = "https://open.kakao.com/o/sample",
-}: ProfileProps) {
+}: ProfileProps) => {
   // editable-frame 클래스 적용 헬퍼
-  const ef = (base: string) => `${showEditableFrame ? "editable-frame " : ""}${base}`;
+  const ef = (base: string) => `${options.showEditableFrame ? "editable-frame " : ""}${base}`;
 
   return (
     <section className="rounded-xl p-8 backdrop-blur">
@@ -73,7 +65,7 @@ export default function Profile({
           target="_blank"
           rel="noreferrer"
           className="reserve-button flex min-h-12 w-full items-center justify-center overflow-hidden rounded-xl px-2 text-sm font-semibold text-black! shadow-[0_4px_10px_rgba(17,24,39,0.12)] active:translate-y-px"
-          style={{ backgroundColor: ctaBackgroundColor }}
+          style={{ backgroundColor: options.highlightColor }}
         >
           <span className="reserve-button__content">
             <Image src="/kakaosimbol.svg" alt="" width={18} height={18} className="h-4.5 w-4.5 shrink-0" />
@@ -98,12 +90,12 @@ export default function Profile({
             </li>
           ))}
         </ul>
-        {serviceFooterLabel && (
-          <p className="mt-3 text-right text-xs text-(--muted)">{serviceFooterLabel}</p>
+        {options.serviceFooterLabel && (
+          <p className="mt-3 text-right text-xs text-(--muted)">{options.serviceFooterLabel}</p>
         )}
       </section>
 
-      {showReviews && (
+      {options.showReviews && (
         <>
           <div className="my-7 h-px bg-black/20" />
           <section className={ef("")}>
@@ -120,7 +112,7 @@ export default function Profile({
         </>
       )}
 
-      {showLocation && (
+      {options.showLocation && (
         <>
           <div className="my-7 h-px bg-black/20" />
           <p className={ef("text-sm font-medium text-(--muted) mt-0.5")}>운영시간 : {availability}</p>
@@ -141,4 +133,6 @@ export default function Profile({
       </div>
     </section>
   );
-}
+};
+
+export default Profile;

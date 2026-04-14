@@ -1,3 +1,4 @@
+import type { ProfileOptions } from "@/data/mockData";
 
 export type User = {
   username: string;
@@ -13,14 +14,22 @@ export type User = {
   services: { name: string; price: string; vat?: boolean }[];
   reviews: { author: string; content: string }[];
   instagramHandle: string;
-  options?: {
-    showReviews?: boolean;
-    showLocation?: boolean;
-    theme?: "light" | "dark";
-    highlightColor?: string;
-    showEditableFrame?: boolean;
-    serviceFooterLabel?: string | false;
-  };
+  options?: ProfileOptions;
+};
+
+// ProfileOptions 기본값
+export const defaultOptions: ProfileOptions = {
+  showReviews: true,
+  showLocation: true,
+  theme: "light",
+  highlightColor: "#FEE500",
+  showEditableFrame: true,
+  serviceFooterLabel: false,
+};
+
+// user.options와 defaultOptions를 병합
+export function getProfileOptions(user: User): ProfileOptions {
+  return { ...defaultOptions, ...user.options };
 }
 
 export const users: User[] = [
@@ -50,13 +59,13 @@ export const users: User[] = [
       theme: "light",
       highlightColor: "#FEE500",
       showEditableFrame: true, // sample만 true, 다른 페이지는 사용 안함
-      serviceFooterLabel: false,
+      serviceFooterLabel: "VAT포함",
     },
   },
   {
     username: "sample2",
-    name: "뀨뀨 필라테스 쌤",
-    brandName: "Kku Pilates Center",
+    name: "큐 쌤",
+    brandName: "Q Pilates Center",
     role: "1:1필라테스수업 · 다이어트 · 자세교정",
     intro: "전문 필라테스 수업을 통한 자세 교정 및 신체능력 강화\n 성인 맞춤 교육",
     location: "서울 목2동 00필라테스센터",
@@ -65,7 +74,7 @@ export const users: User[] = [
     instagramUrl: "https://instagram.com/kku._.ui",
     imageSrc: "https://res.cloudinary.com/diicetn0t/image/upload/v1776169513/Pilates_woman_ayigqf.png",
     services: [
-      { name: "1달(10회)", price: "50,000원", vat: true },
+      { name: "한달 - 10회", price: "50,000원", vat: true },
       { name: "일일체험", price: "10,000원", vat: true }
     ],
     reviews: [
