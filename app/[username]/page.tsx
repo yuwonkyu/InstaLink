@@ -1,16 +1,57 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { users, getProfileOptions } from "@/data/users";
+import { getProfileOptions, getUserByUsername } from "@/data/users";
 import Profile from "@/components/Profile";
 
 type PageProps = {
-  params: {
+  params: Promise<{
     username: string;
-  };
+  }>;
 };
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { username } = await params;
+  const user = getUserByUsername(username);
+
+  if (!user) {
+    return {
+      title: "프로필을 찾을 수 없음",
+      description: "요청하신 트레이너 프로필이 존재하지 않습니다.",
+    };
+  }
+
+  const title = `${user.name} | ${user.brandName}`;
+  const description = `${user.role} · ${user.ctaLabel}`;
+  const pageUrl = `/${user.username}`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: pageUrl,
+      images: [
+        {
+          url: user.imageSrc || "/sampleop.png",
+          width: 1200,
+          height: 630,
+          alt: `${user.name} 프로필 이미지`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [user.imageSrc || "/sampleop.png"],
+    },
+  };
+}
 
 export default async function UsernamePage({ params }: PageProps) {
   const { username } = await params;
-  const user = users.find(u => u.username === username);
+  const user = getUserByUsername(username);
 
   if (!user) {
     notFound();
@@ -33,6 +74,7 @@ export default async function UsernamePage({ params }: PageProps) {
             ctaLabel={user.ctaLabel}
             instagramUrl={user.instagramUrl}
             instagramHandle={user.instagramHandle}
+            kakaoUrl={user.kakaoUrl}
             imageSrc={user.imageSrc}
             services={user.services}
             reviews={user.reviews}

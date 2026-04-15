@@ -84,7 +84,7 @@ const Profile = ({
         <a
           href={kakaoUrl}
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           className="reserve-button flex min-h-12 w-full items-center justify-center overflow-hidden rounded-xl px-2 text-sm font-semibold text-black! shadow-[0_4px_10px_rgba(17,24,39,0.12)] active:translate-y-px"
           style={{ backgroundColor: options.highlightColor }}
         >

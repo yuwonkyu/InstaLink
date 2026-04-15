@@ -1,4 +1,4 @@
-import type { ProfileOptions } from "@/data/mockData";
+import type { ProfileOptions, ServiceItem, ReviewItem } from "@/data/mockData";
 
 export type User = {
   username: string;
@@ -10,9 +10,10 @@ export type User = {
   availability: string;
   ctaLabel: string;
   instagramUrl: string;
+  kakaoUrl?: string;
   imageSrc: string;
-  services: { name: string; price: string; vat?: boolean }[];
-  reviews: { author: string; content: string }[];
+  services: ServiceItem[];
+  reviews: ReviewItem[];
   instagramHandle: string;
   options?: ProfileOptions;
 };
@@ -32,6 +33,10 @@ export function getProfileOptions(user: User): ProfileOptions {
   return { ...defaultOptions, ...user.options };
 }
 
+export function getUserByUsername(username: string): User | undefined {
+  return users.find((user) => user.username === username);
+}
+
 export const users: User[] = [
   {
     username: "sample",
@@ -43,6 +48,7 @@ export const users: User[] = [
     availability: "평일 06:00 ~ 22:00",
     ctaLabel: "무료 상담 받기 (카카오톡)",
     instagramUrl: "https://instagram.com/kku._.ui",
+    kakaoUrl: "https://open.kakao.com/o/sample",
     imageSrc: "https://res.cloudinary.com/diicetn0t/image/upload/v1776168782/pt_trainer_bchy7b.png",
     services: [
       { name: "PT 1회", price: "50,000원" },
@@ -72,6 +78,7 @@ export const users: User[] = [
     availability: "15:00~22:00",
     ctaLabel: "무료 상담 가능(카카오톡 오픈채팅)",
     instagramUrl: "https://instagram.com/kku._.ui",
+    kakaoUrl: "https://open.kakao.com/o/sample2",
     imageSrc: "https://res.cloudinary.com/diicetn0t/image/upload/v1776169513/Pilates_woman_ayigqf.png",
     services: [
       { name: "한달 - 10회", price: "50,000원", vat: true },
