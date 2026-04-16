@@ -3,9 +3,12 @@
 1인 사업자·프리랜서를 위한 링크 페이지 서비스입니다.  
 PT 트레이너, 필라테스 강사, 미용실, 프리랜서 등 누구든 링크 하나로 자신을 소개하고 고객 상담까지 연결할 수 있습니다.
 
+현재 기본 진입 URL(/)은 원뀨 프로필을 직접 렌더링합니다.
+
 ## 주요 기능
 
-- 개인 프로필 페이지 (`/username`)
+- 기본 홈 페이지(/): 원뀨 프로필 직접 렌더링
+- 사용자 프로필 페이지(`/username`)
 - 서비스·가격 안내
 - 카카오톡 상담 연결 CTA
 - 인스타그램 링크 연결
@@ -50,7 +53,14 @@ options: {
 
 - 공통 스타일: app/globals.css
 - 테마 스타일 모음: app/themes.css
-- 테마 클래스 분기: app/[username]/page.tsx
+- 테마 클래스 분기:
+  - app/page.tsx (홈)
+  - app/[username]/page.tsx (동적 사용자 페이지)
+
+### 홈 전용 링크 강조 스타일
+
+- 홈 페이지에서만 특정 링크를 강조할 수 있습니다.
+- 현재 다크테마 샘플 링크(`https://kku-ui.vercel.app/sample2`)는 공통 컴포넌트를 수정하지 않고 app/globals.css의 `.kku-home` 범위 선택자로 검정 배경/흰 글자로 표시됩니다.
 
 ### 새 테마 추가 방법
 
@@ -62,9 +72,9 @@ options: {
 ### 판매용 템플릿 운영 팁
 
 - 직군별 기본 추천
-	- PT: energysteel
-	- 필라테스: softsage
-	- 프리미엄 브랜딩: warmlinen
+  - PT: energysteel
+  - 필라테스: softsage
+  - 프리미엄 브랜딩: warmlinen
 - 서비스/후기/CTA/인스타/위치는 데이터가 없으면 자동으로 숨김 처리됩니다.
 - 필요 시 options.showServices, options.showReviews, options.showCTA, options.showInstagram, options.showLocation 으로 강제 노출/숨김을 제어할 수 있습니다.
 
