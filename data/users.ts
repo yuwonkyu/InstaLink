@@ -108,7 +108,7 @@ export const users: User[] = [
     role: "Film · Brand · AD · Event · AI",
     intro: "Work that makes clients say, \u201cOh my goodness!\u201d",
     location: "제주특별자치도 제주시 구좌읍 월정1길 70-1",
-    availability: "미정",
+    availability: "",
     ctaLabel: "",
     instagramUrl: "https://www.instagram.com/whdkd2/",
     instagramUrls: [
@@ -127,7 +127,7 @@ export const users: User[] = [
     ],
     instagramHandle: "@whdkd2",
     options: {
-      theme: "light",
+      theme: "dark",
       showReviews: true,
       showLocation: true,
       showEditableFrame: false,
