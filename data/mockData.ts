@@ -2,6 +2,7 @@
 export type ServiceItem = {
   name: string; // 서비스명
   price: string; // 가격 (예: "50,000원")
+  note?: string; // 가격 하단 보조 설명
   vat?: boolean; // 부가세 포함 여부
 };
 
@@ -14,7 +15,7 @@ export type ReviewItem = {
 /**
  * ProfileOptions - UI 커스터마이징 옵션
  * 모든 필드는 선택적이며, 설정하지 않으면 기본값이 적용됩니다.
- * 
+ *
  * 기본값:
  * - showReviews: true (후기 섹션 표시)
  * - showLocation: true (위치/운영시간 표시)
@@ -55,5 +56,3 @@ export type TrainerProfile = {
   reviews: ReviewItem[]; // 후기 목록
   options?: ProfileOptions; // UI 커스터마이징 옵션
 };
-
-

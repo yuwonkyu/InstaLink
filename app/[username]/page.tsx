@@ -9,7 +9,9 @@ type PageProps = {
   }>;
 };
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { username } = await params;
   const user = getUserByUsername(username);
 
@@ -21,7 +23,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const title = `${user.name} | ${user.brandName}`;
-  const description = user.ctaLabel ? `${user.role} · ${user.ctaLabel}` : user.role;
+  const description = user.ctaLabel
+    ? `${user.role} · ${user.ctaLabel}`
+    : user.role;
   const pageUrl = `/${user.username}`;
   const shareImage = user.ogImageSrc || user.imageSrc || "/sampleop.png";
 
@@ -68,12 +72,14 @@ export default async function UsernamePage({ params }: PageProps) {
           ? "theme-softsage"
           : options.theme === "warmlinen"
             ? "theme-warmlinen"
-              : options.theme === "energysteel"
-                ? "theme-energysteel"
-        : "bg-(--secondary)";
+            : options.theme === "energysteel"
+              ? "theme-energysteel"
+              : "bg-(--secondary)";
 
   return (
-    <main className={`flex min-h-screen w-full flex-col items-center px-4 py-6 sm:px-6 ${themeClass}`}>
+    <main
+      className={`flex min-h-screen w-full flex-col items-center px-4 py-6 sm:px-6 ${themeClass}`}
+    >
       <div className="w-full max-w-md">
         <div className="rounded-2xl bg-(--card) p-2 shadow-[0_4px_20px_rgba(17,24,39,0.06)] backdrop-blur-sm">
           <Profile
@@ -86,6 +92,7 @@ export default async function UsernamePage({ params }: PageProps) {
             ctaLabel={user.ctaLabel}
             instagramUrl={user.instagramUrl}
             instagramUrls={user.instagramUrls}
+            links={user.links}
             instagramHandle={user.instagramHandle}
             kakaoUrl={user.kakaoUrl}
             imageSrc={user.imageSrc}
