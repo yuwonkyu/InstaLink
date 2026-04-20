@@ -8,7 +8,7 @@ const supabaseKey =
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 // 로그인이 필요한 경로 접두사
-const PROTECTED_PATHS = ["/dashboard", "/admin"];
+const PROTECTED_PATHS = ["/dashboard", "/admin", "/billing"];
 // 로그인 상태에서 접근 불필요한 경로 (이미 로그인 중이면 대시보드로)
 const AUTH_PATHS = ["/auth/login", "/auth/signup"];
 

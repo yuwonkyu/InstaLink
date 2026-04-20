@@ -1,0 +1,94 @@
+import { redirect } from "next/navigation";
+import { getSupabaseServerClient } from "@/lib/supabase";
+import type { Plan } from "@/lib/types";
+
+type Props = {
+  searchParams: Promise<{ authKey?: string; customerKey?: string; plan?: string }>;
+};
+
+const PLAN_AMOUNTS: Record<string, number> = { basic: 29000, pro: 49000 };
+
+function tossAuth() {
+  const key = process.env.TOSSPAYMENTS_SECRET_KEY ?? "";
+  return `Basic ${Buffer.from(`${key}:`).toString("base64")}`;
+}
+
+export default async function BillingSuccessPage({ searchParams }: Props) {
+  const { authKey, customerKey, plan } = await searchParams;
+
+  if (!authKey || !customerKey || !plan || !PLAN_AMOUNTS[plan]) {
+    redirect("/billing?error=잘못된 접근입니다.");
+  }
+
+  const supabase = await getSupabaseServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/auth/login");
+
+  // 1. authKey → billingKey 교환
+  const issueRes = await fetch("https://api.tosspayments.com/v1/billing/authorizations/issue", {
+    method: "POST",
+    headers: { Authorization: tossAuth(), "Content-Type": "application/json" },
+    body: JSON.stringify({ authKey, customerKey }),
+  });
+
+  if (!issueRes.ok) {
+    const err = await issueRes.json().catch(() => ({}));
+    redirect(`/billing/fail?message=${encodeURIComponent(err.message ?? "카드 등록 실패")}`);
+  }
+
+  const { billingKey } = await issueRes.json();
+
+  // 2. 즉시 첫 결제
+  const amount = PLAN_AMOUNTS[plan]!;
+  const orderId = `order-${user.id.slice(0, 8)}-${Date.now()}`;
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("id, name")
+    .eq("owner_id", user.id)
+    .maybeSingle();
+
+  if (!profile) redirect("/dashboard");
+
+  const chargeRes = await fetch(`https://api.tosspayments.com/v1/billing/${billingKey}`, {
+    method: "POST",
+    headers: { Authorization: tossAuth(), "Content-Type": "application/json" },
+    body: JSON.stringify({
+      customerKey,
+      amount,
+      orderId,
+      orderName: `InstaLink ${plan === "basic" ? "Basic" : "Pro"} 구독`,
+      customerEmail: user.email,
+      customerName: profile.name || user.email,
+    }),
+  });
+
+  if (!chargeRes.ok) {
+    const err = await chargeRes.json().catch(() => ({}));
+    redirect(`/billing/fail?message=${encodeURIComponent(err.message ?? "결제 실패")}`);
+  }
+
+  // 3. DB 업데이트
+  const now = new Date();
+  const nextMonth = new Date(now);
+  nextMonth.setMonth(nextMonth.getMonth() + 1);
+
+  await Promise.all([
+    supabase.from("profiles").update({
+      billing_key: billingKey,
+      plan: plan as Plan,
+      plan_expires_at: nextMonth.toISOString(),
+    }).eq("owner_id", user.id),
+
+    supabase.from("subscriptions").insert({
+      profile_id: profile.id,
+      plan,
+      amount,
+      status: "active",
+      toss_order_id: orderId,
+      started_at: now.toISOString(),
+      next_billing_at: nextMonth.toISOString(),
+    }),
+  ]);
+
+  redirect("/dashboard?upgraded=1");
+}

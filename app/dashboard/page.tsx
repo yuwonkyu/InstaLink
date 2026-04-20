@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getSupabaseServerClient } from "@/lib/supabase";
 import type { Profile } from "@/lib/types";
+import { PLAN_META } from "@/lib/types";
 
 async function getMyProfile(ownerId: string): Promise<Profile | null> {
   const supabase = await getSupabaseServerClient();
@@ -83,10 +84,12 @@ export default async function DashboardPage() {
             >
               내 페이지 보기 →
             </a>
-            {/* 편집 버튼 — 3주차에 활성화 */}
-            <span className="rounded-xl border border-gray-200 px-4 py-2 text-sm font-medium text-(--muted) cursor-not-allowed">
-              편집하기 (준비 중)
-            </span>
+            <Link
+              href="/dashboard/edit"
+              className="rounded-xl border border-gray-200 px-4 py-2 text-sm font-medium text-foreground hover:bg-(--secondary) transition-colors"
+            >
+              편집하기
+            </Link>
           </div>
         </div>
       )}
@@ -104,28 +107,40 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      {/* 다음 단계 안내 카드 */}
-      <div className="rounded-2xl bg-(--card) p-5 shadow-[0_4px_20px_rgba(17,24,39,0.06)]">
-        <h2 className="mb-3 text-sm font-semibold text-foreground">준비 중인 기능</h2>
-        <ul className="flex flex-col gap-2">
-          {[
-            { label: "프로필 편집", week: "3주차" },
-            { label: "서비스·후기 관리", week: "3주차" },
-            { label: "구독 결제 (토스페이먼츠)", week: "4주차" },
-            { label: "방문자 통계", week: "Phase 2" },
-          ].map((item) => (
-            <li
-              key={item.label}
-              className="flex items-center justify-between text-sm text-(--muted)"
+      {/* 플랜 카드 */}
+      {profile && (
+        <div className="rounded-2xl bg-(--card) p-5 shadow-[0_4px_20px_rgba(17,24,39,0.06)]">
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="text-sm font-semibold text-foreground">구독 플랜</h2>
+            <Link href="/billing" className="text-xs font-medium text-foreground hover:underline">
+              플랜 변경 →
+            </Link>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="rounded-full bg-foreground px-3 py-1 text-xs font-semibold text-white capitalize">
+              {profile.plan ?? "free"}
+            </span>
+            <span className="text-sm text-(--muted)">
+              {PLAN_META[profile.plan ?? "free"]?.price === 0
+                ? "무료"
+                : `${PLAN_META[profile.plan ?? "free"]?.price.toLocaleString()}원/월`}
+            </span>
+          </div>
+          {profile.plan_expires_at && (
+            <p className="mt-1.5 text-xs text-(--muted)">
+              다음 결제일: {new Date(profile.plan_expires_at).toLocaleDateString("ko-KR")}
+            </p>
+          )}
+          {(!profile.plan || profile.plan === "free") && (
+            <Link
+              href="/billing"
+              className="mt-3 inline-block rounded-xl bg-foreground px-4 py-2 text-sm font-semibold text-white hover:opacity-80 transition-opacity"
             >
-              <span>{item.label}</span>
-              <span className="rounded-full bg-(--secondary) px-2 py-0.5 text-xs">
-                {item.week}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </div>
+              업그레이드하기
+            </Link>
+          )}
+        </div>
+      )}
     </div>
   );
 }

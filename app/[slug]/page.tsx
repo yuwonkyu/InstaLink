@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import ProfilePage from "@/components/ProfilePage";
 import { getSupabaseServerClient } from "@/lib/supabase";
 import type { Profile } from "@/lib/types";
+import { getUserByUsername } from "@/data/users";
 
 type PageProps = {
   params: Promise<{
@@ -11,23 +12,52 @@ type PageProps = {
 };
 
 async function getProfileBySlug(slug: string): Promise<Profile | null> {
-  const supabase = await getSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("slug", slug)
-    .maybeSingle();
+  try {
+    const supabase = await getSupabaseServerClient();
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("slug", slug)
+      .maybeSingle();
 
-  if (error) {
-    console.error("profiles 조회 실패:", error.message);
+    if (!error && data) {
+      return data as Profile;
+    }
+  } catch {
+    // DB 미구성 초기 단계에서는 아래 로컬 폴백을 사용합니다.
+  }
+
+  const localUser = getUserByUsername(slug);
+  if (!localUser) {
     return null;
   }
 
-  if (!data) {
-    return null;
-  }
-
-  return data as Profile;
+  return {
+    id: `local-${localUser.username}`,
+    slug: localUser.username,
+    owner_id: "local-owner",
+    name: localUser.name,
+    shop_name: localUser.brandName,
+    tagline: localUser.role,
+    description: localUser.intro,
+    kakao_url: localUser.kakaoUrl ?? "",
+    instagram_id: localUser.instagramHandle,
+    location: localUser.location,
+    hours: localUser.availability,
+    image_url: localUser.imageSrc,
+    services: localUser.services.map((service) => ({
+      name: service.name,
+      price: service.price,
+      note: service.note,
+    })),
+    reviews: localUser.reviews.map((review) => ({
+      text: review.content,
+      author: review.author,
+    })),
+    is_active: true,
+    created_at: new Date().toISOString(),
+    theme: localUser.options?.theme,
+  } as Profile;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -87,8 +117,10 @@ export default async function SlugPage({ params }: PageProps) {
     );
   }
 
+  const themeClass = profile.theme && profile.theme !== "light" ? `theme-${profile.theme}` : "";
+
   return (
-    <main className="flex min-h-screen w-full flex-col items-center bg-(--secondary) px-4 py-6 sm:px-6">
+    <main className={`flex min-h-screen w-full flex-col items-center bg-(--secondary) px-4 py-6 sm:px-6 ${themeClass}`}>
       <div className="w-full max-w-md">
         <div className="rounded-2xl bg-(--card) p-2 shadow-[0_4px_20px_rgba(17,24,39,0.06)] backdrop-blur-sm">
           <ProfilePage profile={profile} />

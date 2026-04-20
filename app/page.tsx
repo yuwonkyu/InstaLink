@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getSupabaseServerClient } from "@/lib/supabase";
+import { users } from "@/data/users";
 
 type PublicProfile = {
   slug: string;
@@ -18,14 +19,19 @@ async function getActiveProfiles(): Promise<PublicProfile[]> {
       .order("created_at", { ascending: false })
       .limit(12);
 
-    if (error || !data) {
-      return [];
+    if (!error && data) {
+      return data as PublicProfile[];
     }
-
-    return data as PublicProfile[];
   } catch {
-    return [];
+    // DB 미구성 초기 단계에서는 아래 로컬 폴백을 사용합니다.
   }
+
+  return users.map((user) => ({
+    slug: user.username,
+    shop_name: user.brandName,
+    tagline: user.role,
+    is_active: true,
+  }));
 }
 
 export default async function Page() {
