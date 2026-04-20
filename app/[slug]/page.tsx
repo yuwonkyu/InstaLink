@@ -123,10 +123,25 @@ export default async function SlugPage({ params }: PageProps) {
 
   const themeClass = profile.theme && profile.theme !== "light" ? `theme-${profile.theme}` : "";
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name: profile.shop_name || profile.name,
+    description: profile.tagline,
+    url: `${SITE}/${slug}`,
+    ...(profile.image_url ? { image: profile.image_url } : {}),
+    ...(profile.location ? { address: { "@type": "PostalAddress", addressLocality: profile.location } } : {}),
+    ...(profile.kakao_url ? { contactPoint: { "@type": "ContactPoint", contactType: "customer service", url: profile.kakao_url } } : {}),
+  };
+
   return (
     <main
       className={`flex min-h-screen w-full flex-col items-center bg-(--secondary) px-4 py-6 sm:px-6 ${themeClass}`}
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="w-full max-w-md">
         <div className="rounded-2xl bg-(--card) p-2 shadow-[0_4px_20px_rgba(17,24,39,0.06)] backdrop-blur-sm">
           <ProfilePage profile={profile} />

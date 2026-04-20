@@ -1,15 +1,16 @@
 import { NextResponse } from "next/server";
 import { getSupabaseServerClient } from "@/lib/supabase";
+import { sendEmail, cancellationEmail } from "@/lib/resend";
 
 export async function POST() {
   const supabase = await getSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  // 1. 본인 profile id 조회
+  // 1. 본인 profile 조회
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id")
+    .select("id, name, plan")
     .eq("owner_id", user.id)
     .maybeSingle();
 
@@ -28,6 +29,11 @@ export async function POST() {
     .from("profiles")
     .update({ plan: "free", billing_key: null, plan_expires_at: null })
     .eq("owner_id", user.id);
+
+  if (user.email && profile.name && profile.plan) {
+    const tmpl = cancellationEmail(profile.name, profile.plan);
+    sendEmail({ to: user.email, ...tmpl }).catch(() => {});
+  }
 
   return NextResponse.json({ ok: true });
 }

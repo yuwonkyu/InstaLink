@@ -18,6 +18,7 @@ export type Theme =
   | "energysteel";
 
 export type Plan = "free" | "basic" | "pro";
+export type BillingPeriod = "monthly" | "annual";
 
 export type Profile = {
   id: string;
@@ -28,6 +29,8 @@ export type Profile = {
   tagline: string;
   description?: string;
   kakao_url: string;
+  kakao_booking_url?: string | null;
+  naver_booking_url?: string | null;
   instagram_id: string;
   location: string;
   hours: string;
@@ -40,12 +43,15 @@ export type Profile = {
   reviews: Review[];
   is_active: boolean;
   created_at: string;
+  referral_code?: string | null;
+  referred_by?: string | null;
 };
 
 export type Subscription = {
   id: string;
   profile_id: string;
   plan: Plan;
+  billing_period: BillingPeriod;
   amount: number;
   status: "active" | "cancelled" | "failed";
   toss_order_id?: string | null;
@@ -55,20 +61,26 @@ export type Subscription = {
 };
 
 // ── 플랜 메타데이터 ──────────────────────────────
-export const PLAN_META: Record<Plan, { label: string; price: number; features: string[] }> = {
+export const PLAN_META: Record<
+  Plan,
+  { label: string; price: number; annualPrice: number; features: string[] }
+> = {
   free: {
     label: "Free",
     price: 0,
+    annualPrice: 0,
     features: ["기본 프로필 페이지", "라이트 테마 1종", "서비스 3개까지", "후기 3개까지"],
   },
   basic: {
     label: "Basic",
     price: 29000,
+    annualPrice: 290000,  // 월 29,000 × 10개월 (2개월 무료)
     features: ["모든 테마 6종", "서비스 무제한", "후기 무제한", "카카오 문의 버튼"],
   },
   pro: {
     label: "Pro",
     price: 49000,
+    annualPrice: 490000,  // 월 49,000 × 10개월 (2개월 무료)
     features: ["Basic 모든 기능", "방문자 통계 (예정)", "멀티 링크 (예정)", "우선 지원"],
   },
 };

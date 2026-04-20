@@ -65,6 +65,21 @@ export function paymentFailEmail(name: string, plan: string, siteUrl: string) {
   };
 }
 
+export function cancellationEmail(name: string, plan: string) {
+  return {
+    subject: "[InstaLink] 구독이 취소되었습니다",
+    html: `
+<div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;color:#111827">
+  <h1 style="font-size:20px;font-weight:700;margin:0 0 8px">구독 취소 안내</h1>
+  <p style="font-size:15px;color:#6b7280;margin:0 0 16px">
+    ${name}님, <strong>${plan}</strong> 플랜 구독이 취소되었습니다.<br>
+    현재 결제 기간이 끝나면 <strong>Free</strong> 플랜으로 전환됩니다.
+  </p>
+  <p style="font-size:13px;color:#9ca3af">다시 이용하고 싶으시면 언제든 업그레이드하세요.</p>
+</div>`,
+  };
+}
+
 export function paymentSuccessEmail(name: string, plan: string, amount: number) {
   return {
     subject: "[InstaLink] 결제가 완료되었습니다",

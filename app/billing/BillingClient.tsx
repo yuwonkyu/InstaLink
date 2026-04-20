@@ -2,9 +2,8 @@
 
 import { useState } from "react";
 import Script from "next/script";
-import { PLAN_META, type Plan } from "@/lib/types";
+import { PLAN_META, type Plan, type BillingPeriod } from "@/lib/types";
 
-// 토스페이먼츠 CDN 타입 선언
 declare global {
   interface Window {
     TossPayments: (clientKey: string) => {
@@ -40,6 +39,7 @@ export default function BillingClient({
 }: Props) {
   const [loading, setLoading] = useState<Plan | null>(null);
   const [sdkReady, setSdkReady] = useState(false);
+  const [period, setPeriod] = useState<BillingPeriod>("monthly");
 
   async function handleSelectPlan(plan: Plan) {
     if (plan === "free") {
@@ -61,7 +61,7 @@ export default function BillingClient({
       const billing = tossPayments.billing({ customerKey: userId });
       await billing.requestBillingAuth({
         method: "카드",
-        successUrl: `${siteUrl}/billing/success?plan=${plan}`,
+        successUrl: `${siteUrl}/billing/success?plan=${plan}&period=${period}`,
         failUrl: `${siteUrl}/billing/fail`,
         customerEmail: userEmail,
         customerName: userName || userEmail.split("@")[0],
@@ -74,12 +74,42 @@ export default function BillingClient({
 
   return (
     <>
-      {/* 토스페이먼츠 CDN SDK */}
       <Script
         src="https://js.tosspayments.com/v2/standard"
         onReady={() => setSdkReady(true)}
         strategy="afterInteractive"
       />
+
+      {/* 월/연 토글 */}
+      <div className="mb-6 flex justify-center">
+        <div className="inline-flex items-center rounded-xl border border-black/10 bg-white p-1 text-sm font-semibold">
+          <button
+            type="button"
+            onClick={() => setPeriod("monthly")}
+            className={`rounded-lg px-4 py-1.5 transition-all ${
+              period === "monthly"
+                ? "bg-foreground text-white shadow-sm"
+                : "text-(--muted) hover:text-foreground"
+            }`}
+          >
+            월 결제
+          </button>
+          <button
+            type="button"
+            onClick={() => setPeriod("annual")}
+            className={`relative rounded-lg px-4 py-1.5 transition-all ${
+              period === "annual"
+                ? "bg-foreground text-white shadow-sm"
+                : "text-(--muted) hover:text-foreground"
+            }`}
+          >
+            연 결제
+            <span className="absolute -right-2 -top-2.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold text-white">
+              2달 무료
+            </span>
+          </button>
+        </div>
+      </div>
 
       <div className="flex flex-col gap-5">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -87,6 +117,7 @@ export default function BillingClient({
             const meta = PLAN_META[plan];
             const isCurrent = currentPlan === plan;
             const isLoading = loading === plan;
+            const displayPrice = period === "annual" ? meta.annualPrice : meta.price;
 
             return (
               <div
@@ -112,9 +143,20 @@ export default function BillingClient({
 
                 <p className="text-sm font-bold text-foreground">{meta.label}</p>
                 <p className="mt-1 text-2xl font-bold text-foreground">
-                  {meta.price === 0 ? "무료" : `${meta.price.toLocaleString()}원`}
-                  {meta.price > 0 && <span className="text-sm font-normal text-(--muted)">/월</span>}
+                  {displayPrice === 0
+                    ? "무료"
+                    : `${displayPrice.toLocaleString()}원`}
+                  {displayPrice > 0 && (
+                    <span className="text-sm font-normal text-(--muted)">
+                      /{period === "annual" ? "년" : "월"}
+                    </span>
+                  )}
                 </p>
+                {period === "annual" && plan !== "free" && (
+                  <p className="mt-0.5 text-xs text-amber-600 font-medium">
+                    월 {Math.round(displayPrice / 12).toLocaleString()}원 · 2개월 무료
+                  </p>
+                )}
 
                 <ul className="mt-4 flex flex-1 flex-col gap-1.5">
                   {meta.features.map((f) => (

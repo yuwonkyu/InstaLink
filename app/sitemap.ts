@@ -1,13 +1,24 @@
 import type { MetadataRoute } from "next";
 import { createClient } from "@supabase/supabase-js";
 
+const CATEGORY_SLUGS = [
+  "pt",
+  "pilates",
+  "yoga",
+  "salon",
+  "nail",
+  "cafe",
+  "freelancer",
+];
+
 type SitemapProfile = {
   slug: string;
   created_at: string;
 };
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://instalink.vercel.app";
+  const SITE =
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://instalink.vercel.app";
 
   const staticRoutes: MetadataRoute.Sitemap = [
     {
@@ -28,6 +39,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.3,
     },
+    ...CATEGORY_SLUGS.map((cat) => ({
+      url: `${SITE}/for/${cat}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
   ];
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;

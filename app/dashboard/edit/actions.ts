@@ -11,6 +11,8 @@ export type SaveProfilePayload = {
   tagline: string;
   description: string;
   kakao_url: string;
+  kakao_booking_url?: string;
+  naver_booking_url?: string;
   instagram_id: string;
   location: string;
   hours: string;
@@ -39,6 +41,8 @@ export async function saveProfile(payload: SaveProfilePayload) {
       tagline: payload.tagline.trim(),
       description: payload.description.trim(),
       kakao_url: payload.kakao_url.trim(),
+      kakao_booking_url: payload.kakao_booking_url?.trim() || null,
+      naver_booking_url: payload.naver_booking_url?.trim() || null,
       instagram_id: payload.instagram_id.trim(),
       location: payload.location.trim(),
       hours: payload.hours.trim(),

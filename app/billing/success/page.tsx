@@ -1,13 +1,16 @@
 import { redirect } from "next/navigation";
 import { getSupabaseServerClient } from "@/lib/supabase";
-import type { Plan } from "@/lib/types";
+import type { Plan, BillingPeriod } from "@/lib/types";
 import { sendEmail, paymentSuccessEmail } from "@/lib/resend";
 
 type Props = {
-  searchParams: Promise<{ authKey?: string; customerKey?: string; plan?: string }>;
+  searchParams: Promise<{ authKey?: string; customerKey?: string; plan?: string; period?: string }>;
 };
 
-const PLAN_AMOUNTS: Record<string, number> = { basic: 29000, pro: 49000 };
+const PLAN_AMOUNTS: Record<string, { monthly: number; annual: number }> = {
+  basic: { monthly: 29000, annual: 290000 },
+  pro:   { monthly: 49000, annual: 490000 },
+};
 
 function tossAuth() {
   const key = process.env.TOSSPAYMENTS_SECRET_KEY ?? "";
@@ -15,7 +18,8 @@ function tossAuth() {
 }
 
 export default async function BillingSuccessPage({ searchParams }: Props) {
-  const { authKey, customerKey, plan } = await searchParams;
+  const { authKey, customerKey, plan, period } = await searchParams;
+  const billingPeriod: BillingPeriod = period === "annual" ? "annual" : "monthly";
 
   if (!authKey || !customerKey || !plan || !PLAN_AMOUNTS[plan]) {
     redirect("/billing?error=잘못된 접근입니다.");
@@ -40,7 +44,7 @@ export default async function BillingSuccessPage({ searchParams }: Props) {
   const { billingKey } = await issueRes.json();
 
   // 2. 즉시 첫 결제
-  const amount = PLAN_AMOUNTS[plan]!;
+  const amount = PLAN_AMOUNTS[plan]![billingPeriod];
   const orderId = `order-${user.id.slice(0, 8)}-${Date.now()}`;
   const { data: profile } = await supabase
     .from("profiles")
@@ -70,24 +74,29 @@ export default async function BillingSuccessPage({ searchParams }: Props) {
 
   // 3. DB 업데이트
   const now = new Date();
-  const nextMonth = new Date(now);
-  nextMonth.setMonth(nextMonth.getMonth() + 1);
+  const expiresAt = new Date(now);
+  if (billingPeriod === "annual") {
+    expiresAt.setFullYear(expiresAt.getFullYear() + 1);
+  } else {
+    expiresAt.setMonth(expiresAt.getMonth() + 1);
+  }
 
   await Promise.all([
     supabase.from("profiles").update({
       billing_key: billingKey,
       plan: plan as Plan,
-      plan_expires_at: nextMonth.toISOString(),
+      plan_expires_at: expiresAt.toISOString(),
     }).eq("owner_id", user.id),
 
     supabase.from("subscriptions").insert({
       profile_id: profile.id,
       plan,
+      billing_period: billingPeriod,
       amount,
       status: "active",
       toss_order_id: orderId,
       started_at: now.toISOString(),
-      next_billing_at: nextMonth.toISOString(),
+      next_billing_at: expiresAt.toISOString(),
     }),
   ]);
 

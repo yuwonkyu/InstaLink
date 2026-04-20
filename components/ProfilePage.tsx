@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import type { Profile } from "@/lib/types";
 
@@ -8,6 +10,14 @@ type ProfilePageProps = {
 function toInstagramUrl(instagramId: string) {
   const cleaned = instagramId.replace(/^@/, "").trim();
   return `https://instagram.com/${cleaned}`;
+}
+
+function trackClick(profileId: string, linkType: "kakao" | "instagram") {
+  fetch("/api/track/click", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ profileId, linkType }),
+  }).catch(() => {});
 }
 
 export default function ProfilePage({ profile }: ProfilePageProps) {
@@ -48,12 +58,41 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
         </p>
       )}
 
-      {profile.kakao_url && (
-        <div className="mt-5">
+      {(profile.kakao_url || profile.kakao_booking_url || profile.naver_booking_url) && (
+        <div className="mt-5 flex flex-col gap-2">
+          {profile.kakao_booking_url && (
+            <a
+              href={profile.kakao_booking_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackClick(profile.id, "kakao")}
+              className="flex min-h-12 w-full items-center justify-center gap-2 overflow-hidden rounded-xl px-2 text-sm font-semibold text-black! shadow-[0_4px_10px_rgba(17,24,39,0.12)] active:translate-y-px"
+              style={{ backgroundColor: "#FEE500" }}
+            >
+              <Image src="/kakaosimbol.svg" alt="" width={18} height={18} className="h-4.5 w-4.5 shrink-0" />
+              <span className="text-black! whitespace-nowrap">카카오로 예약하기</span>
+            </a>
+          )}
+          {profile.naver_booking_url && (
+            <a
+              href={profile.naver_booking_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex min-h-12 w-full items-center justify-center gap-2 overflow-hidden rounded-xl px-2 text-sm font-semibold text-white! shadow-[0_4px_10px_rgba(17,24,39,0.12)] active:translate-y-px"
+              style={{ backgroundColor: "#03C75A" }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M16.273 12.845L7.376 0H0v24h7.727V11.155L16.624 24H24V0h-7.727z" fill="#fff" />
+              </svg>
+              <span className="whitespace-nowrap">네이버로 예약하기</span>
+            </a>
+          )}
+          {profile.kakao_url && (
           <a
             href={profile.kakao_url}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackClick(profile.id, "kakao")}
             className="reserve-button flex min-h-12 w-full items-center justify-center overflow-hidden rounded-xl px-2 text-sm font-semibold text-black! shadow-[0_4px_10px_rgba(17,24,39,0.12)] active:translate-y-px"
             style={{ backgroundColor: "#FEE500" }}
           >
@@ -78,6 +117,7 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
               </span>
             </span>
           </a>
+          )}
         </div>
       )}
 
@@ -166,6 +206,7 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
                   href={instagramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackClick(profile.id, "instagram")}
                   className="hover:underline"
                 >
                   {instagramHandle}

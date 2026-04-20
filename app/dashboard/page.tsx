@@ -4,6 +4,28 @@ import { getSupabaseServerClient } from "@/lib/supabase";
 import type { Profile } from "@/lib/types";
 import { PLAN_META } from "@/lib/types";
 import CopyLinkButton from "./CopyLinkButton";
+import ReferralCard from "./ReferralCard";
+
+type ClickStats = { kakao: number; instagram: number };
+
+async function getClickStats(profileId: string): Promise<ClickStats> {
+  const supabase = await getSupabaseServerClient();
+  const { data, error } = await supabase
+    .from("link_clicks")
+    .select("link_type")
+    .eq("profile_id", profileId);
+
+  if (error || !data) return { kakao: 0, instagram: 0 };
+
+  return data.reduce(
+    (acc, row) => {
+      if (row.link_type === "kakao") acc.kakao += 1;
+      if (row.link_type === "instagram") acc.instagram += 1;
+      return acc;
+    },
+    { kakao: 0, instagram: 0 },
+  );
+}
 
 async function getMyProfile(ownerId: string): Promise<Profile | null> {
   const supabase = await getSupabaseServerClient();
@@ -32,6 +54,18 @@ export default async function DashboardPage() {
   if (!user) redirect("/auth/login");
 
   const profile = await getMyProfile(user.id);
+  const clickStats = profile ? await getClickStats(profile.id) : null;
+
+  // 레퍼럴 통계
+  let referralCount = 0;
+  if (profile) {
+    const supabaseInner = await getSupabaseServerClient();
+    const { count } = await supabaseInner
+      .from("referral_events")
+      .select("id", { count: "exact", head: true })
+      .eq("referrer_id", profile.id);
+    referralCount = count ?? 0;
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -108,6 +142,23 @@ export default async function DashboardPage() {
         </div>
       )}
 
+      {/* 클릭 통계 카드 */}
+      {profile && clickStats && (
+        <div className="rounded-2xl bg-(--card) p-5 shadow-[0_4px_20px_rgba(17,24,39,0.06)]">
+          <h2 className="mb-3 text-sm font-semibold text-foreground">링크 클릭 통계</h2>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-xl bg-(--secondary) p-3 text-center">
+              <p className="text-2xl font-bold text-foreground">{clickStats.kakao.toLocaleString()}</p>
+              <p className="mt-0.5 text-xs text-(--muted)">카카오 문의</p>
+            </div>
+            <div className="rounded-xl bg-(--secondary) p-3 text-center">
+              <p className="text-2xl font-bold text-foreground">{clickStats.instagram.toLocaleString()}</p>
+              <p className="mt-0.5 text-xs text-(--muted)">인스타그램</p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 플랜 카드 */}
       {profile && (
         <div className="rounded-2xl bg-(--card) p-5 shadow-[0_4px_20px_rgba(17,24,39,0.06)]">
@@ -141,6 +192,16 @@ export default async function DashboardPage() {
             </Link>
           )}
         </div>
+      )}
+
+      {/* 레퍼럴 카드 */}
+      {profile?.referral_code && (
+        <ReferralCard
+          referralCode={profile.referral_code}
+          alreadyUsedCode={!!profile.referred_by}
+          referralCount={referralCount}
+          siteUrl={SITE_URL}
+        />
       )}
     </div>
   );

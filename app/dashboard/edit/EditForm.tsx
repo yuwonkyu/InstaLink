@@ -72,8 +72,10 @@ export default function EditForm({ profile, plan }: Props) {
   const [shopName, setShopName]     = useState(profile.shop_name ?? "");
   const [tagline, setTagline]       = useState(profile.tagline ?? "");
   const [description, setDesc]      = useState(profile.description ?? "");
-  const [kakaoUrl, setKakaoUrl]     = useState(profile.kakao_url ?? "");
-  const [instagramId, setInstaId]   = useState(profile.instagram_id ?? "");
+  const [kakaoUrl, setKakaoUrl]         = useState(profile.kakao_url ?? "");
+  const [kakaoBookingUrl, setKakaoBk]   = useState(profile.kakao_booking_url ?? "");
+  const [naverBookingUrl, setNaverBk]   = useState(profile.naver_booking_url ?? "");
+  const [instagramId, setInstaId]       = useState(profile.instagram_id ?? "");
   const [location, setLocation]     = useState(profile.location ?? "");
   const [hours, setHours]           = useState(profile.hours ?? "");
   const [imageUrl, setImageUrl]     = useState(profile.image_url ?? "");
@@ -151,7 +153,10 @@ export default function EditForm({ profile, plan }: Props) {
     setSaveError(null);
     const payload: SaveProfilePayload = {
       name, shop_name: shopName, tagline, description,
-      kakao_url: kakaoUrl, instagram_id: instagramId,
+      kakao_url: kakaoUrl,
+      kakao_booking_url: kakaoBookingUrl,
+      naver_booking_url: naverBookingUrl,
+      instagram_id: instagramId,
       location, hours, image_url: imageUrl,
       theme, services, reviews,
     };
@@ -222,6 +227,8 @@ export default function EditForm({ profile, plan }: Props) {
           <Field label="운영시간" value={hours} onChange={setHours} placeholder="평일 06:00 ~ 22:00" />
           <Field label="인스타그램 ID" value={instagramId} onChange={setInstaId} placeholder="kku._.ui" />
           <Field label="카카오 오픈채팅 URL" value={kakaoUrl} onChange={setKakaoUrl} placeholder="https://open.kakao.com/o/..." />
+          <Field label="카카오 예약 URL (선택)" value={kakaoBookingUrl} onChange={setKakaoBk} placeholder="https://pf.kakao.com/..." />
+          <Field label="네이버 예약 URL (선택)" value={naverBookingUrl} onChange={setNaverBk} placeholder="https://booking.naver.com/..." />
         </div>
       </Section>
 
