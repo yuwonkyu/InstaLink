@@ -46,110 +46,147 @@ export function getUserByUsername(username: string): User | undefined {
 
 export const users: User[] = [
   {
+    // ── 라이트 테마 예시: PT 트레이너 ──────────────────────────
     username: "sample",
-    name: "뀨 PT",
-    brandName: "Sample gym",
-    role: "체형교정 · 다이어트 · 1:1 PT",
-    intro: "✔ 체형교정 + 다이어트 전문 \n✔ 초보자도 부담 없이 시작 가능",
-    location: "서울 성수동 샘플빌딩 Sample gym",
-    availability: "평일 06:00 ~ 22:00",
+    name: "유정호 트레이너",
+    brandName: "BODY LAB PT",
+    role: "체형교정 · 다이어트 · 재활운동",
+    intro:
+      "✔ 재활 운동 기반 체형교정 전문\n✔ 식단 가이드 포함 1:1 관리\n✔ 누적 회원 300명+ 관리 경험",
+    location: "서울 강남구 역삼동 BODY LAB PT",
+    availability: "평일 06:00 ~ 22:00 / 주말 09:00 ~ 18:00",
     ctaLabel: "무료 상담 받기 (카카오톡)",
     instagramUrl: "https://instagram.com/kku._.ui",
     kakaoUrl: "https://open.kakao.com/o/sample",
     imageSrc:
       "https://res.cloudinary.com/diicetn0t/image/upload/v1776168782/pt_trainer_bchy7b.png",
     services: [
-      { name: "PT 1회", price: "50,000원" },
-      { name: "PT 10회", price: "450,000원" },
+      { name: "체험 PT (1회)", price: "50,000원" },
+      { name: "PT 10회권", price: "450,000원", note: "45,000원/회" },
+      { name: "PT 20회권", price: "800,000원", note: "40,000원/회" },
+      { name: "그룹 PT (2인)", price: "30,000원/인", note: "최소 5회 등록" },
     ],
     reviews: [
       {
         author: "30대 여성 회원",
         content:
-          "운동이 처음이었는데 자세를 정말 꼼꼼하게 봐주셔서 부담 없이 시작할 수 있었어요.",
+          "다른 센터에서 1년 해도 안 되던 게 3개월 만에 달라졌어요. 식단까지 꼼꼼하게 잡아주셔서 -8kg 성공했습니다.",
       },
       {
-        author: "직장인 회원",
+        author: "40대 직장인 남성",
         content:
-          "퇴근 후에도 일정 조율이 편했고, 짧은 기간에도 몸이 가벼워진 게 느껴졌습니다.",
+          "허리디스크로 운동을 포기하고 있었는데, 체형부터 잡아주시고 나서 일상이 완전히 달라졌어요. 정말 감사합니다.",
+      },
+      {
+        author: "20대 여성 회원",
+        content:
+          "가격 대비 관리가 너무 꼼꼼해서 친구들한테 다 소문냈어요. 결과 보장받고 싶은 분께 강력 추천합니다.",
       },
     ],
-    instagramHandle: "@kku._.ui",
+    instagramHandle: "@bodylab.pt",
     options: {
       showReviews: true,
       showLocation: true,
       theme: "light",
       highlightColor: "#FEE500",
-      showEditableFrame: true, // sample만 true, 다른 페이지는 사용 안함
-      serviceFooterLabel: "VAT포함",
+      showEditableFrame: true,
+      serviceFooterLabel: false,
     },
   },
   {
+    // ── 다크 테마 예시: 필라테스 강사 ──────────────────────────
     username: "sample2",
-    name: "큐 쌤",
-    brandName: "Q Pilates Center",
-    role: "1:1필라테스수업 · 다이어트 · 자세교정",
+    name: "박서연 강사",
+    brandName: "MOVE PILATES",
+    role: "1:1 레슨 · 소도구 · 재활 필라테스",
     intro:
-      "전문 필라테스 수업을 통한 자세 교정 및 신체능력 강화\n 성인 맞춤 교육",
-    location: "서울 목2동 00필라테스센터",
-    availability: "15:00~22:00",
-    ctaLabel: "무료 상담 가능(카카오톡 오픈채팅)",
+      "스트레스와 통증으로 굳어버린 몸,\n움직임에서 다시 살아납니다.\n\n✔ 재활 필라테스 & 자세교정 전문\n✔ 여성 전용 프라이빗 공간",
+    location: "서울 마포구 연남동 MOVE PILATES",
+    availability: "화~토 10:00 ~ 20:00 (일·월 휴무)",
+    ctaLabel: "무료 상담 가능 (카카오 오픈채팅)",
     instagramUrl: "https://instagram.com/kku._.ui",
     kakaoUrl: "https://open.kakao.com/o/sample2",
     imageSrc:
       "https://res.cloudinary.com/diicetn0t/image/upload/v1776169513/Pilates_woman_ayigqf.png",
     services: [
-      { name: "한달 - 10회", price: "50,000원", vat: true },
-      { name: "일일체험", price: "10,000원", vat: true },
+      { name: "체험 레슨 (1회)", price: "30,000원" },
+      { name: "월정기 8회", price: "220,000원", note: "27,500원/회" },
+      { name: "월정기 12회", price: "300,000원", note: "25,000원/회" },
+      { name: "듀엣 레슨 (2인)", price: "20,000원/인", note: "월정기 8회 기준" },
     ],
     reviews: [
       {
-        author: "직장인 회원",
+        author: "30대 여성 직장인",
         content:
-          "퇴근 후에도 일정 조율이 편했고, 짧은 기간에도 몸이 가벼워진 게 느껴졌습니다.",
+          "6개월째 다니고 있어요. 처음엔 허리 통증 때문에 시작했는데 지금은 자세도 잡히고 코어가 생겼어요.",
+      },
+      {
+        author: "산후 회원 (30대)",
+        content:
+          "출산 후 체형 회복을 위해 왔는데, 몸 상태에 맞게 프로그램을 짜주셔서 부담 없이 시작할 수 있었어요.",
+      },
+      {
+        author: "20대 여성 회원",
+        content:
+          "1:1 레슨이라 집중 케어가 달라요. 자세 하나하나 봐주셔서 그룹 수업보다 효과가 두 배예요.",
       },
     ],
-    instagramHandle: "@kku._.ui",
+    instagramHandle: "@move.pilates",
     options: {
       showReviews: true,
-      showEditableFrame: false, // sample2 등은 항상 false
-      serviceFooterLabel: "VAT포함",
+      showLocation: true,
+      showEditableFrame: false,
+      serviceFooterLabel: false,
       theme: "dark",
       highlightColor: "#FEE500",
     },
   },
   {
+    // ── 웜리넨 테마 예시: 헤어 디자이너 ──────────────────────────
     username: "sample3",
-    name: "큐 쌤",
-    brandName: "Q Pilates Center",
-    role: "1:1필라테스수업 · 다이어트 · 자세교정",
+    name: "최지안 디자이너",
+    brandName: "JIAN HAIR",
+    role: "컬러 · 펌 · 케어트리트먼트 전문",
     intro:
-      "전문 필라테스 수업을 통한 자세 교정 및 신체능력 강화\n 성인 맞춤 교육",
-    location: "서울 목2동 00필라테스센터",
-    availability: "15:00~22:00",
-    ctaLabel: "무료 상담 가능(카카오톡 오픈채팅)",
+      "자연스러운 컬러와 손상 없는 시술을 추구합니다.\n\n✔ 경력 8년 프리랜서 헤어디자이너\n✔ 오가닉 저자극 약제 사용\n✔ 시술 전 두피·모발 진단 무료 제공",
+    location: "서울 마포구 합정동 (예약 후 위치 안내)",
+    availability: "화~토 10:00 ~ 19:00 (일·월 휴무)",
+    ctaLabel: "예약 문의 (카카오톡)",
     instagramUrl: "https://instagram.com/kku._.ui",
-    kakaoUrl: "https://open.kakao.com/o/sample2",
+    kakaoUrl: "https://open.kakao.com/o/sample3",
     imageSrc:
       "https://res.cloudinary.com/diicetn0t/image/upload/v1776169513/Pilates_woman_ayigqf.png",
     services: [
-      { name: "한달 - 10회", price: "50,000원", vat: true },
-      { name: "일일체험", price: "10,000원", vat: true },
+      { name: "컬러 (기본)", price: "80,000원~", note: "길이·손상도에 따라 조정" },
+      { name: "탈색 + 컬러", price: "150,000원~" },
+      { name: "매직 · 세팅펌", price: "120,000원~" },
+      { name: "케어트리트먼트", price: "50,000원", note: "시술 시 30,000원" },
     ],
     reviews: [
       {
-        author: "직장인 회원",
+        author: "30대 여성",
         content:
-          "퇴근 후에도 일정 조율이 편했고, 짧은 기간에도 몸이 가벼워진 게 느껴졌습니다.",
+          "염색 알레르기가 있어서 늘 걱정했는데, 저자극 약제로 패치 테스트까지 꼼꼼하게 해주셨어요. 이제 여기밖에 못 가요.",
+      },
+      {
+        author: "20대 여성",
+        content:
+          "인스타 사진 보고 갔는데 실물이 더 예뻐요. 원하는 색감 설명하기 어려웠는데 딱 맞게 잡아주셨어요.",
+      },
+      {
+        author: "40대 여성",
+        content:
+          "탈색 후 머리가 너무 상해서 포기하고 있었는데, 케어 시술 받고 나서 완전히 다른 머리가 됐어요.",
       },
     ],
-    instagramHandle: "@kku._.ui",
+    instagramHandle: "@jian.hair",
     options: {
       showReviews: true,
-      showEditableFrame: false, // sample2 등은 항상 false
-      serviceFooterLabel: "VAT포함",
-      theme: "softsage",
-      highlightColor: "#FEE500",
+      showLocation: true,
+      showEditableFrame: false,
+      serviceFooterLabel: false,
+      theme: "warmlinen",
+      highlightColor: "#b58458",
     },
   },
   {

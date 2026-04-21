@@ -88,11 +88,20 @@ export default function EditForm({ profile, plan }: Props) {
   const [newSvcName, setNewSvcName] = useState("");
   const [newSvcPrice, setNewSvcPrice] = useState("");
   const [newSvcNote, setNewSvcNote] = useState("");
+  // 서비스 인라인 수정
+  const [editingSvcIdx, setEditingSvcIdx] = useState<number | null>(null);
+  const [editSvcName, setEditSvcName]     = useState("");
+  const [editSvcPrice, setEditSvcPrice]   = useState("");
+  const [editSvcNote, setEditSvcNote]     = useState("");
 
   // 후기
   const [reviews, setReviews]       = useState<Review[]>(profile.reviews ?? []);
   const [newRevText, setNewRevText] = useState("");
   const [newRevAuthor, setNewRevAuthor] = useState("");
+  // 후기 인라인 수정
+  const [editingRevIdx, setEditingRevIdx] = useState<number | null>(null);
+  const [editRevText, setEditRevText]     = useState("");
+  const [editRevAuthor, setEditRevAuthor] = useState("");
 
   const [isPending, startTransition] = useTransition();
   const [aiLoading, setAiLoading]   = useState<string | null>(null);
@@ -137,6 +146,26 @@ export default function EditForm({ profile, plan }: Props) {
     setServices((prev) => prev.filter((_, i) => i !== idx));
   }
 
+  function startEditService(idx: number) {
+    const svc = services[idx];
+    setEditingSvcIdx(idx);
+    setEditSvcName(svc.name);
+    setEditSvcPrice(svc.price);
+    setEditSvcNote(svc.note ?? "");
+  }
+
+  function saveEditService() {
+    if (editingSvcIdx === null || !editSvcName.trim() || !editSvcPrice.trim()) return;
+    setServices((prev) =>
+      prev.map((svc, i) =>
+        i === editingSvcIdx
+          ? { name: editSvcName.trim(), price: editSvcPrice.trim(), note: editSvcNote.trim() || undefined }
+          : svc
+      )
+    );
+    setEditingSvcIdx(null);
+  }
+
   // ── 후기 추가 ──
   function addReview() {
     if (!newRevText.trim() || !newRevAuthor.trim()) return;
@@ -146,6 +175,25 @@ export default function EditForm({ profile, plan }: Props) {
 
   function removeReview(idx: number) {
     setReviews((prev) => prev.filter((_, i) => i !== idx));
+  }
+
+  function startEditReview(idx: number) {
+    const rev = reviews[idx];
+    setEditingRevIdx(idx);
+    setEditRevText(rev.text);
+    setEditRevAuthor(rev.author);
+  }
+
+  function saveEditReview() {
+    if (editingRevIdx === null || !editRevText.trim() || !editRevAuthor.trim()) return;
+    setReviews((prev) =>
+      prev.map((rev, i) =>
+        i === editingRevIdx
+          ? { text: editRevText.trim(), author: editRevAuthor.trim() }
+          : rev
+      )
+    );
+    setEditingRevIdx(null);
   }
 
   // ── 저장 ──
@@ -237,7 +285,7 @@ export default function EditForm({ profile, plan }: Props) {
         <div className="flex flex-col gap-3">
           {imageUrl && (
             <div className="relative h-24 w-24 overflow-hidden rounded-2xl border border-gray-200">
-              <Image src={imageUrl} alt="프로필" fill className="object-cover" sizes="96px" />
+              <Image src={imageUrl} alt="프로필" fill className="object-cover" sizes="96px" quality={90} />
             </div>
           )}
           <CldUploadWidget
@@ -315,22 +363,75 @@ export default function EditForm({ profile, plan }: Props) {
             {services.map((svc, idx) => (
               <li
                 key={idx}
-                className="flex items-center justify-between rounded-xl bg-(--secondary) px-3.5 py-2.5"
+                className="rounded-xl bg-(--secondary) px-3.5 py-2.5"
               >
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium text-foreground">{svc.name}</span>
-                  {svc.note && <span className="text-xs text-(--muted)">{svc.note}</span>}
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-sm font-semibold text-foreground">{svc.price}</span>
-                  <button
-                    type="button"
-                    onClick={() => removeService(idx)}
-                    className="text-xs text-red-400 hover:text-red-600"
-                  >
-                    삭제
-                  </button>
-                </div>
+                {editingSvcIdx === idx ? (
+                  /* ── 수정 모드 ── */
+                  <div className="flex flex-col gap-2">
+                    <div className="flex gap-2">
+                      <input
+                        value={editSvcName}
+                        onChange={(e) => setEditSvcName(e.target.value)}
+                        placeholder="서비스명"
+                        className="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm outline-none focus:border-gray-400"
+                      />
+                      <input
+                        value={editSvcPrice}
+                        onChange={(e) => setEditSvcPrice(e.target.value)}
+                        placeholder="가격"
+                        className="w-28 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm outline-none focus:border-gray-400"
+                      />
+                    </div>
+                    <input
+                      value={editSvcNote}
+                      onChange={(e) => setEditSvcNote(e.target.value)}
+                      placeholder="메모 (선택)"
+                      className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm outline-none focus:border-gray-400"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={saveEditService}
+                        disabled={!editSvcName.trim() || !editSvcPrice.trim()}
+                        className="rounded-lg bg-foreground px-3 py-1 text-xs font-medium text-white disabled:opacity-40"
+                      >
+                        저장
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEditingSvcIdx(null)}
+                        className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-medium text-(--muted)"
+                      >
+                        취소
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  /* ── 보기 모드 ── */
+                  <div className="flex items-center justify-between">
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium text-foreground">{svc.name}</span>
+                      {svc.note && <span className="text-xs text-(--muted)">{svc.note}</span>}
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm font-semibold text-foreground">{svc.price}</span>
+                      <button
+                        type="button"
+                        onClick={() => startEditService(idx)}
+                        className="text-xs text-blue-400 hover:text-blue-600"
+                      >
+                        수정
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeService(idx)}
+                        className="text-xs text-red-400 hover:text-red-600"
+                      >
+                        삭제
+                      </button>
+                    </div>
+                  </div>
+                )}
               </li>
             ))}
           </ul>
@@ -381,19 +482,67 @@ export default function EditForm({ profile, plan }: Props) {
             {reviews.map((rev, idx) => (
               <li
                 key={idx}
-                className="flex items-start justify-between gap-3 rounded-xl bg-(--secondary) px-3.5 py-2.5"
+                className="rounded-xl bg-(--secondary) px-3.5 py-2.5"
               >
-                <div className="flex flex-col gap-0.5">
-                  <span className="text-sm text-foreground">"{rev.text}"</span>
-                  <span className="text-xs font-semibold text-(--muted)">— {rev.author}</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => removeReview(idx)}
-                  className="shrink-0 text-xs text-red-400 hover:text-red-600"
-                >
-                  삭제
-                </button>
+                {editingRevIdx === idx ? (
+                  /* ── 수정 모드 ── */
+                  <div className="flex flex-col gap-2">
+                    <textarea
+                      rows={2}
+                      value={editRevText}
+                      onChange={(e) => setEditRevText(e.target.value)}
+                      placeholder="후기 내용"
+                      className="resize-none rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-gray-400"
+                    />
+                    <input
+                      value={editRevAuthor}
+                      onChange={(e) => setEditRevAuthor(e.target.value)}
+                      placeholder="작성자 (예: 30대 여성 회원)"
+                      className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm outline-none focus:border-gray-400"
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={saveEditReview}
+                        disabled={!editRevText.trim() || !editRevAuthor.trim()}
+                        className="rounded-lg bg-foreground px-3 py-1 text-xs font-medium text-white disabled:opacity-40"
+                      >
+                        저장
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEditingRevIdx(null)}
+                        className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-medium text-(--muted)"
+                      >
+                        취소
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  /* ── 보기 모드 ── */
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex flex-col gap-0.5">
+                      <span className="text-sm text-foreground">"{rev.text}"</span>
+                      <span className="text-xs font-semibold text-(--muted)">— {rev.author}</span>
+                    </div>
+                    <div className="flex shrink-0 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => startEditReview(idx)}
+                        className="text-xs text-blue-400 hover:text-blue-600"
+                      >
+                        수정
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeReview(idx)}
+                        className="text-xs text-red-400 hover:text-red-600"
+                      >
+                        삭제
+                      </button>
+                    </div>
+                  </div>
+                )}
               </li>
             ))}
           </ul>

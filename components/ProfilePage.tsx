@@ -70,7 +70,8 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
             src={profile.image_url || "/user_img.svg"}
             alt={profile.name}
             fill
-            sizes="80px"
+            sizes="(max-width: 640px) 72px, 80px"
+            quality={90}
             className="object-cover"
             priority
           />

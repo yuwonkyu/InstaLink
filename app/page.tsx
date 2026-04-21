@@ -1,5 +1,38 @@
 import Link from "next/link";
 
+const themeExamples = [
+  {
+    slug: "/sample",
+    theme: "라이트",
+    industry: "PT 트레이너",
+    bg: "#ffffff",
+    accent: "#111827",
+    fg: "#111827",
+    muted: "#6b7280",
+    card: "#f5f5f5",
+  },
+  {
+    slug: "/sample2",
+    theme: "다크",
+    industry: "필라테스 강사",
+    bg: "#121212",
+    accent: "#FEE500",
+    fg: "#f3f4f6",
+    muted: "#cbd5e1",
+    card: "#1e1e1e",
+  },
+  {
+    slug: "/sample3",
+    theme: "웜리넨",
+    industry: "헤어 디자이너",
+    bg: "#f8f2e9",
+    accent: "#b58458",
+    fg: "#3a2c22",
+    muted: "#725b49",
+    card: "#fff9f0",
+  },
+];
+
 const targets = [
   { emoji: "🏋️", label: "PT 트레이너" },
   { emoji: "🧘", label: "필라테스 강사" },
@@ -135,6 +168,62 @@ export default function Page() {
             </Link>
           </div>
           <p className="mt-4 text-xs text-(--muted)">신용카드 불필요 · 5분 설정 · 즉시 공유</p>
+        </div>
+      </section>
+
+      {/* 테마별 예시 미리보기 */}
+      <section className="mx-auto w-full max-w-6xl px-4 pb-12 sm:px-6">
+        <p className="text-center text-sm font-semibold text-(--muted)">테마별 예시 페이지</p>
+        <p className="mt-1 text-center text-xs text-(--muted)">내 업종·분위기에 맞는 테마를 골라보세요</p>
+        <div className="mt-4 grid gap-4 sm:grid-cols-3">
+          {themeExamples.map((ex) => (
+            <a
+              key={ex.slug}
+              href={ex.slug}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex flex-col overflow-hidden rounded-2xl border border-black/5 shadow-[0_2px_12px_rgba(17,24,39,0.07)] transition hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(17,24,39,0.12)]"
+              style={{ background: ex.bg }}
+            >
+              {/* 미니 카드 프리뷰 */}
+              <div className="p-4">
+                {/* 헤더 영역 */}
+                <div className="flex items-center gap-2.5">
+                  <div className="h-9 w-9 shrink-0 rounded-full" style={{ background: ex.muted, opacity: 0.35 }} />
+                  <div className="flex flex-col gap-1">
+                    <div className="h-2 w-20 rounded-full" style={{ background: ex.fg, opacity: 0.7 }} />
+                    <div className="h-1.5 w-14 rounded-full" style={{ background: ex.accent, opacity: 0.6 }} />
+                  </div>
+                </div>
+                {/* 버튼 모양 */}
+                <div className="mt-3 h-6 w-full rounded-lg" style={{ background: ex.accent, opacity: 0.85 }} />
+                {/* 서비스 카드 2개 */}
+                <div className="mt-2.5 flex flex-col gap-1.5">
+                  <div className="flex justify-between rounded-lg px-2 py-1.5" style={{ background: ex.card }}>
+                    <div className="h-1.5 w-16 rounded-full self-center" style={{ background: ex.fg, opacity: 0.5 }} />
+                    <div className="h-1.5 w-10 rounded-full self-center" style={{ background: ex.fg, opacity: 0.7 }} />
+                  </div>
+                  <div className="flex justify-between rounded-lg px-2 py-1.5" style={{ background: ex.card }}>
+                    <div className="h-1.5 w-14 rounded-full self-center" style={{ background: ex.fg, opacity: 0.5 }} />
+                    <div className="h-1.5 w-12 rounded-full self-center" style={{ background: ex.fg, opacity: 0.7 }} />
+                  </div>
+                </div>
+              </div>
+              {/* 라벨 */}
+              <div
+                className="flex items-center justify-between border-t px-4 py-2.5"
+                style={{ borderColor: `${ex.fg}15`, background: `${ex.card}` }}
+              >
+                <div>
+                  <p className="text-xs font-bold" style={{ color: ex.fg }}>{ex.theme}</p>
+                  <p className="text-[11px]" style={{ color: ex.muted }}>{ex.industry}</p>
+                </div>
+                <span className="text-xs font-semibold opacity-60 group-hover:opacity-100 transition" style={{ color: ex.accent }}>
+                  보기 →
+                </span>
+              </div>
+            </a>
+          ))}
         </div>
       </section>
 
