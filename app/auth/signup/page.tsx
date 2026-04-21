@@ -5,10 +5,10 @@ import AuthCard from "@/components/auth/AuthCard";
 const inputCls =
   "w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none focus:border-gray-400 transition-colors";
 
-type Props = { searchParams: Promise<{ error?: string; success?: string }> };
+type Props = { searchParams: Promise<{ error?: string; success?: string; ref?: string }> };
 
 export default async function SignUpPage({ searchParams }: Props) {
-  const { error, success } = await searchParams;
+  const { error, success, ref } = await searchParams;
 
   return (
     <AuthCard
@@ -25,7 +25,20 @@ export default async function SignUpPage({ searchParams }: Props) {
         </>
       }
     >
+      {/* 추천 코드 배너 */}
+      {ref && (
+        <div className="mb-4 flex items-center gap-2 rounded-xl bg-green-50 px-4 py-3">
+          <span className="text-green-600">🎁</span>
+          <p className="text-sm text-green-700">
+            추천 코드 <strong className="font-bold tracking-widest">{ref.toUpperCase()}</strong>가 가입 후 자동으로 적용됩니다.
+          </p>
+        </div>
+      )}
+
       <form action={signUp} className="flex flex-col gap-4">
+        {/* ref 코드를 폼에 실어서 Server Action으로 전달 */}
+        {ref && <input type="hidden" name="ref" value={ref} />}
+
         <div className="flex flex-col gap-1">
           <label htmlFor="name" className="text-sm font-medium text-foreground">이름 / 브랜드명</label>
           <input id="name" name="name" type="text" placeholder="김지수 트레이너" required className={inputCls} />
