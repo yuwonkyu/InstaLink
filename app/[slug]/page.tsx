@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import ProfilePage from "@/components/ProfilePage";
 import { getSupabaseServerClient } from "@/lib/supabase";
@@ -12,6 +13,13 @@ type PageProps = {
   }>;
 };
 
+async function getSiteUrl(): Promise<string> {
+  const headersList = await headers();
+  const host = headersList.get("host") ?? "kku-ui.vercel.app";
+  const proto = host.startsWith("localhost") ? "http" : "https";
+  return `${proto}://${host}`;
+}
+
 async function getProfileBySlug(slug: string): Promise<Profile | null> {
   try {
     const supabase = await getSupabaseServerClient();
@@ -21,13 +29,18 @@ async function getProfileBySlug(slug: string): Promise<Profile | null> {
       .eq("slug", slug)
       .maybeSingle();
 
-    if (!error && data) {
+    if (error) {
+      console.error(`[slug] Supabase 조회 오류 (${slug}):`, error.message);
+    }
+
+    if (data) {
       return data as Profile;
     }
-  } catch {
-    // DB 미구성 초기 단계에서는 아래 로컬 폴백을 사용합니다.
+  } catch (e) {
+    console.error(`[slug] Supabase 클라이언트 오류 (${slug}):`, e);
   }
 
+  // 로컬 샘플 데이터 폴백 (sample, sample2 등)
   const localUser = getUserByUsername(slug);
   if (!localUser) {
     return null;
@@ -64,7 +77,7 @@ async function getProfileBySlug(slug: string): Promise<Profile | null> {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const profile = await getProfileBySlug(slug);
-  const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://instalink.vercel.app";
+  const SITE = await getSiteUrl();
 
   const title = profile ? `${profile.name} — ${profile.shop_name}` : slug;
   const description = profile?.tagline ?? "인스타 프로필 링크 페이지";
@@ -96,7 +109,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function SlugPage({ params }: PageProps) {
   const { slug } = await params;
   const profile = await getProfileBySlug(slug);
-  const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://instalink.vercel.app";
+  const SITE = await getSiteUrl();
 
   // 조회수 증가 (비동기, 페이지 렌더링 블로킹 없음)
   if (profile?.is_active) {

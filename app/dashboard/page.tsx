@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { getSupabaseServerClient } from "@/lib/supabase";
 import type { Profile } from "@/lib/types";
 import { PLAN_META } from "@/lib/types";
@@ -42,10 +43,12 @@ async function getMyProfile(ownerId: string): Promise<Profile | null> {
   return data as Profile | null;
 }
 
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://instalink.vercel.app";
-
 export default async function DashboardPage() {
+  // 실제 배포 도메인을 자동 감지 (로컬/배포 모두 정확한 URL 사용)
+  const headersList = await headers();
+  const host = headersList.get("host") ?? "kku-ui.vercel.app";
+  const proto = host.startsWith("localhost") ? "http" : "https";
+  const SITE_URL = `${proto}://${host}`;
   const supabase = await getSupabaseServerClient();
   const {
     data: { user },

@@ -1,13 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function CopyLinkButton({ slug }: { slug: string }) {
-  const url = `https://instalink.vercel.app/${slug}`;
+  const [origin, setOrigin] = useState("");
   const [copied, setCopied] = useState(false);
 
+  useEffect(() => {
+    setOrigin(window.location.origin);
+  }, []);
+
+  const url = origin ? `${origin}/${slug}` : `/${slug}`;
+
   async function copy() {
-    await navigator.clipboard.writeText(url);
+    const fullUrl = `${window.location.origin}/${slug}`;
+    await navigator.clipboard.writeText(fullUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
