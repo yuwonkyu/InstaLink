@@ -46,44 +46,44 @@ export function getUserByUsername(username: string): User | undefined {
 
 export const users: User[] = [
   {
-    // ── 라이트 테마 예시: PT 트레이너 ──────────────────────────
+    // ── 라이트 테마 예시: 여성 PT 트레이너 ──────────────────────────
     username: "sample",
-    name: "유정호 트레이너",
-    brandName: "BODY LAB PT",
-    role: "체형교정 · 다이어트 · 재활운동",
+    name: "김지수 트레이너",
+    brandName: "FIT WITH JI",
+    role: "다이어트 · 체형교정 · 여성 전문 PT",
     intro:
-      "✔ 재활 운동 기반 체형교정 전문\n✔ 식단 가이드 포함 1:1 관리\n✔ 누적 회원 300명+ 관리 경험",
-    location: "서울 강남구 역삼동 BODY LAB PT",
-    availability: "평일 06:00 ~ 22:00 / 주말 09:00 ~ 18:00",
+      "✔ 여성 특화 1:1 퍼스널 트레이닝\n✔ 식단 + 운동 통합 관리\n✔ 수강생 누적 200명+ · 재등록률 90%",
+    location: "서울 서초구 방배동 FIT WITH JI",
+    availability: "평일 07:00 ~ 21:00 / 토 09:00 ~ 17:00",
     ctaLabel: "무료 상담 받기 (카카오톡)",
     instagramUrl: "https://instagram.com/kku._.ui",
     kakaoUrl: "https://open.kakao.com/o/sample",
     imageSrc:
-      "https://res.cloudinary.com/diicetn0t/image/upload/v1776168782/pt_trainer_bchy7b.png",
+      "https://res.cloudinary.com/diicetn0t/image/upload/v1776169513/Pilates_woman_ayigqf.png",
     services: [
       { name: "체험 PT (1회)", price: "50,000원" },
       { name: "PT 10회권", price: "450,000원", note: "45,000원/회" },
       { name: "PT 20회권", price: "800,000원", note: "40,000원/회" },
-      { name: "그룹 PT (2인)", price: "30,000원/인", note: "최소 5회 등록" },
+      { name: "식단 관리 (1개월)", price: "150,000원", note: "PT 등록 시 50% 할인" },
     ],
     reviews: [
       {
-        author: "30대 여성 회원",
+        author: "30대 여성 직장인",
         content:
           "다른 센터에서 1년 해도 안 되던 게 3개월 만에 달라졌어요. 식단까지 꼼꼼하게 잡아주셔서 -8kg 성공했습니다.",
       },
       {
-        author: "40대 직장인 남성",
+        author: "20대 여성 회원",
         content:
-          "허리디스크로 운동을 포기하고 있었는데, 체형부터 잡아주시고 나서 일상이 완전히 달라졌어요. 정말 감사합니다.",
+          "여성 전문이라 편하게 물어볼 수 있어요. 눈바디 변화가 확실하게 느껴지고 재등록은 당연한 수순이었어요.",
       },
       {
-        author: "20대 여성 회원",
+        author: "40대 여성 회원",
         content:
           "가격 대비 관리가 너무 꼼꼼해서 친구들한테 다 소문냈어요. 결과 보장받고 싶은 분께 강력 추천합니다.",
       },
     ],
-    instagramHandle: "@bodylab.pt",
+    instagramHandle: "@fitwithji",
     options: {
       showReviews: true,
       showLocation: true,
