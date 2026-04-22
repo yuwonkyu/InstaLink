@@ -5,6 +5,7 @@ import { getSupabaseServerClient } from "@/lib/supabase";
 import { PLAN_META, type Plan } from "@/lib/types";
 import { getSiteUrl } from "@/lib/site-url";
 import PlanSelect from "./PlanSelect";
+import SuspendButton from "./SuspendButton";
 
 const ADMIN_EMAIL = "duck01777@gmail.com";
 const SITE_URL = getSiteUrl();
@@ -58,6 +59,27 @@ export default async function AdminPage({
     {},
   );
 
+  // 탈퇴 통계
+  const { data: deletedStats } = await adminClient
+    .from("deleted_accounts")
+    .select("plan, days_active, had_paid, had_reviews, deleted_at")
+    .order("deleted_at", { ascending: false });
+
+  const totalDeleted = deletedStats?.length ?? 0;
+  const deletedThisMonth = (deletedStats ?? []).filter((d) => {
+    const dt = new Date(d.deleted_at);
+    const now = new Date();
+    return dt.getFullYear() === now.getFullYear() && dt.getMonth() === now.getMonth();
+  }).length;
+  const paidChurnCount = (deletedStats ?? []).filter((d) => d.had_paid).length;
+  const avgDaysActive =
+    totalDeleted > 0
+      ? Math.round(
+          (deletedStats ?? []).reduce((sum, d) => sum + (d.days_active ?? 0), 0) /
+            totalDeleted,
+        )
+      : 0;
+
   return (
     <div className="min-h-screen bg-(--secondary)">
       {/* 헤더 */}
@@ -104,6 +126,34 @@ export default async function AdminPage({
           ))}
         </div>
 
+        {/* 탈퇴 통계 */}
+        <div className="rounded-2xl bg-white p-5 shadow-[0_2px_12px_rgba(17,24,39,0.06)]">
+          <h2 className="mb-3 text-sm font-semibold text-foreground">회원 탈퇴 통계</h2>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {[
+              { label: "누적 탈퇴", value: totalDeleted, unit: "명" },
+              { label: "이번 달 탈퇴", value: deletedThisMonth, unit: "명" },
+              { label: "유료 경험 후 탈퇴", value: paidChurnCount, unit: "명" },
+              { label: "평균 이용 기간", value: avgDaysActive, unit: "일" },
+            ].map((card) => (
+              <div key={card.label} className="rounded-xl bg-(--secondary) p-3">
+                <p className="text-xs text-(--muted)">{card.label}</p>
+                <p className="mt-1 text-lg font-bold text-foreground">
+                  {card.value}
+                  <span className="text-xs font-normal text-(--muted) ml-0.5">
+                    {card.unit}
+                  </span>
+                </p>
+              </div>
+            ))}
+          </div>
+          {totalDeleted > 0 && (
+            <p className="mt-3 text-xs text-(--muted)">
+              * 개인정보(이름·이메일·슬러그) 미포함 — 탈퇴 추이 분석용 익명 데이터
+            </p>
+          )}
+        </div>
+
         {/* 필터 */}
         <form className="flex flex-wrap gap-2">
           <input
@@ -141,6 +191,7 @@ export default async function AdminPage({
                 <th className="px-4 py-3 font-medium">상태</th>
                 <th className="px-4 py-3 font-medium">조회수</th>
                 <th className="px-4 py-3 font-medium">가입일</th>
+                <th className="px-4 py-3 font-medium">중지</th>
                 <th className="px-4 py-3 font-medium">바로가기</th>
               </tr>
             </thead>
@@ -185,6 +236,12 @@ export default async function AdminPage({
                     {new Date(p.created_at).toLocaleDateString("ko-KR")}
                   </td>
                   <td className="px-4 py-3">
+                    <SuspendButton
+                      profileId={p.id}
+                      initialActive={p.is_active ?? true}
+                    />
+                  </td>
+                  <td className="px-4 py-3">
                     <a
                       href={`${SITE_URL}/${p.slug}`}
                       target="_blank"
@@ -199,7 +256,7 @@ export default async function AdminPage({
               {!profiles?.length && (
                 <tr>
                   <td
-                    colSpan={7}
+                    colSpan={9}
                     className="px-4 py-8 text-center text-sm text-(--muted)"
                   >
                     고객이 없습니다.

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getSiteUrl } from "@/lib/site-url";
+import NavigationProgress from "@/components/NavigationProgress";
 import "./globals.css";
 
 const SITE = getSiteUrl();
@@ -48,6 +49,7 @@ export default function RootLayout({
   return (
     <html lang="ko" className="h-full antialiased">
       <body className="flex min-h-full flex-col">
+        <NavigationProgress />
         {children}
         <SpeedInsights />
       </body>
