@@ -19,6 +19,26 @@ export async function DELETE() {
 
   const admin = adminClient();
 
+  // 0. 탈퇴 통계 기록 (개인정보 제외, 삭제 전에 먼저 저장)
+  const { data: profile } = await admin
+    .from("profiles")
+    .select("plan, created_at, reviews, view_count")
+    .eq("owner_id", user.id)
+    .maybeSingle();
+
+  if (profile) {
+    const daysActive = Math.floor(
+      (Date.now() - new Date(profile.created_at).getTime()) / 86_400_000,
+    );
+    await admin.from("deleted_accounts").insert({
+      plan: profile.plan ?? "free",
+      days_active: daysActive,
+      had_paid: profile.plan !== "free" && !!profile.plan,
+      had_reviews: Array.isArray(profile.reviews) && profile.reviews.length > 0,
+      view_count: profile.view_count ?? 0,
+    });
+  }
+
   // 1. profiles 테이블 데이터 삭제 (cascade로 연관 데이터도 삭제됨)
   const { error: profileError } = await admin
     .from("profiles")
