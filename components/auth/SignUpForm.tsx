@@ -13,7 +13,8 @@ export default function SignUpForm({ refCode }: Props) {
   const [email, setEmail]             = useState("");
   const [emailStatus, setEmailStatus] = useState<EmailStatus>("idle");
   const [emailMsg, setEmailMsg]       = useState("");
-  const [agreed, setAgreed]           = useState(false);
+  const [agreedTerms,   setAgreedTerms]   = useState(false);
+  const [agreedPrivacy, setAgreedPrivacy] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // 이메일 변경 시 실시간 검사
@@ -62,7 +63,10 @@ export default function SignUpForm({ refCode }: Props) {
   }, [email]);
 
   // 제출 버튼 비활성화 조건: 이메일 미확인 또는 동의 미체크
-  const submitDisabled = (email.length > 0 && emailStatus !== "available") || !agreed;
+  const submitDisabled =
+    (email.length > 0 && emailStatus !== "available") ||
+    !agreedTerms ||
+    !agreedPrivacy;
 
   // 상태별 스타일
   const statusColor: Record<EmailStatus, string> = {
@@ -146,24 +150,35 @@ export default function SignUpForm({ refCode }: Props) {
         />
       </div>
 
-      {/* 개인정보 동의 */}
+      {/* 약관 동의 */}
       <div className="flex flex-col gap-2 rounded-xl border border-gray-200 bg-(--secondary) px-4 py-3">
         <label className="flex cursor-pointer items-start gap-3">
           <input
             type="checkbox"
-            checked={agreed}
-            onChange={(e) => setAgreed(e.target.checked)}
+            checked={agreedTerms}
+            onChange={(e) => setAgreedTerms(e.target.checked)}
             className="mt-0.5 h-4 w-4 shrink-0 accent-foreground"
-            required
+          />
+          <span className="text-xs text-foreground leading-relaxed">
+            <span className="font-medium">[필수]</span>{" "}
+            <a href="/terms" target="_blank" rel="noopener noreferrer"
+              className="font-medium underline underline-offset-2 hover:text-(--muted)">
+              이용약관
+            </a>
+            에 동의합니다.
+          </span>
+        </label>
+        <label className="flex cursor-pointer items-start gap-3">
+          <input
+            type="checkbox"
+            checked={agreedPrivacy}
+            onChange={(e) => setAgreedPrivacy(e.target.checked)}
+            className="mt-0.5 h-4 w-4 shrink-0 accent-foreground"
           />
           <span className="text-xs text-foreground leading-relaxed">
             <span className="font-medium">[필수]</span> 만 14세 이상이며,{" "}
-            <a
-              href="/privacy"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-medium underline underline-offset-2 hover:text-(--muted)"
-            >
+            <a href="/privacy" target="_blank" rel="noopener noreferrer"
+              className="font-medium underline underline-offset-2 hover:text-(--muted)">
               개인정보처리방침
             </a>
             에 동의합니다.

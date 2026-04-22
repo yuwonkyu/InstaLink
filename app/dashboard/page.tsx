@@ -7,6 +7,7 @@ import { PLAN_META } from "@/lib/types";
 import CopyLinkButton from "./CopyLinkButton";
 import SlugEditor from "@/components/dashboard/SlugEditor";
 import ReferralCard from "./ReferralCard";
+import DeleteAccountButton from "./DeleteAccountButton";
 
 type ClickStats = { kakao: number; instagram: number };
 
@@ -230,6 +231,12 @@ export default async function DashboardPage() {
           siteUrl={SITE_URL}
         />
       )}
+
+      {/* 계정 탈퇴 */}
+      <div className="rounded-2xl bg-(--card) p-5 shadow-[0_4px_20px_rgba(17,24,39,0.06)]">
+        <h2 className="mb-3 text-sm font-semibold text-foreground">계정 관리</h2>
+        <DeleteAccountButton />
+      </div>
     </div>
   );
 }
