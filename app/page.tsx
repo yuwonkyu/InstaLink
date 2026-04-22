@@ -1,6 +1,11 @@
 import Link from "next/link";
+import LandingHeader from "@/components/landing/LandingHeader";
+import LandingFooter from "@/components/landing/LandingFooter";
+import { PLAN_META, type Plan } from "@/lib/types";
+import { PLAN_FEATURE_ROWS } from "@/lib/plan-features";
 
-const themeExamples = [
+// ── 정적 데이터 ────────────────────────────────────────────
+const THEME_EXAMPLES = [
   {
     slug: "/sample",
     theme: "라이트",
@@ -33,7 +38,7 @@ const themeExamples = [
   },
 ];
 
-const targets = [
+const TARGETS = [
   { emoji: "🏋️", label: "PT 트레이너" },
   { emoji: "🧘", label: "필라테스 강사" },
   { emoji: "✂️", label: "헤어 디자이너" },
@@ -42,7 +47,7 @@ const targets = [
   { emoji: "🐾", label: "펫샵 원장님" },
 ];
 
-const features = [
+const FEATURES = [
   {
     emoji: "📋",
     title: "서비스 목록 + 가격 한눈에",
@@ -65,21 +70,7 @@ const features = [
   },
 ];
 
-const planFeatures = [
-  { label: "나만의 링크 페이지", free: true, basic: true, pro: true },
-  { label: "서비스 목록 (최대 3개)", free: true, basic: false, pro: false },
-  { label: "서비스 목록 무제한", free: false, basic: true, pro: true },
-  { label: "후기 등록 (최대 3개)", free: true, basic: false, pro: false },
-  { label: "후기 등록 무제한", free: false, basic: true, pro: true },
-  { label: "카카오 문의 버튼", free: true, basic: true, pro: true },
-  { label: "방문자 통계", free: false, basic: true, pro: true },
-  { label: "링크 클릭 추적", free: false, basic: true, pro: true },
-  { label: "테마 선택", free: false, basic: true, pro: true },
-  { label: "AI 문구 추천", free: false, basic: false, pro: true },
-  { label: "우선 고객 지원", free: false, basic: false, pro: true },
-];
-
-const testimonials = [
+const TESTIMONIALS = [
   {
     text: "링크트리는 그냥 링크 모음인데, InstaLink는 진짜 내 가게 소개 페이지예요. 고객들이 \"홈페이지 있어요?\" 하면 이거 보내줘요.",
     author: "박○○ PT 트레이너",
@@ -97,43 +88,36 @@ const testimonials = [
   },
 ];
 
-function Check() {
+const PLANS: Plan[] = ["free", "basic", "pro"];
+
+// ── 서브 컴포넌트 ────────────────────────────────────────────
+function CheckIcon() {
   return (
     <svg className="mx-auto h-5 w-5 text-foreground" viewBox="0 0 20 20" fill="currentColor">
-      <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+      <path
+        fillRule="evenodd"
+        d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
+        clipRule="evenodd"
+      />
     </svg>
   );
 }
 
-function Dash() {
+function DashIcon() {
   return <span className="mx-auto block h-0.5 w-4 rounded bg-black/15" />;
 }
 
+function CellValue({ v }: { v: string | boolean }) {
+  if (v === true)  return <CheckIcon />;
+  if (v === false) return <DashIcon />;
+  return <span className="text-xs font-medium">{v}</span>;
+}
+
+// ── 페이지 ────────────────────────────────────────────────────
 export default function Page() {
   return (
     <main className="min-h-screen bg-(--secondary) text-foreground">
-      {/* 헤더 */}
-      <header className="sticky top-0 z-20 border-b border-black/5 bg-white/90 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-          <Link href="/" className="text-base font-bold tracking-tight">
-            InstaLink
-          </Link>
-          <nav className="flex items-center gap-2 text-sm font-medium">
-            <Link
-              href="/auth/login"
-              className="rounded-lg px-3 py-1.5 text-(--muted) transition hover:text-foreground"
-            >
-              로그인
-            </Link>
-            <Link
-              href="/auth/signup"
-              className="rounded-lg bg-foreground px-3 py-1.5 text-sm font-semibold text-white transition hover:opacity-85"
-            >
-              무료 시작
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <LandingHeader wide />
 
       {/* 히어로 */}
       <section className="mx-auto w-full max-w-6xl px-4 pb-10 pt-14 sm:px-6">
@@ -150,7 +134,9 @@ export default function Page() {
             링크트리는 그냥 링크 목록이에요.
             <br />
             InstaLink는{" "}
-            <strong className="font-semibold text-foreground">서비스 소개 + 가격 + 후기 + 카카오 상담</strong>
+            <strong className="font-semibold text-foreground">
+              서비스 소개 + 가격 + 후기 + 카카오 상담
+            </strong>
             까지 한 페이지에 담아 고객을 직접 문의로 이끕니다.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
@@ -176,7 +162,7 @@ export default function Page() {
         <p className="text-center text-sm font-semibold text-(--muted)">테마별 예시 페이지</p>
         <p className="mt-1 text-center text-xs text-(--muted)">내 업종·분위기에 맞는 테마를 골라보세요</p>
         <div className="mt-4 grid gap-4 sm:grid-cols-3">
-          {themeExamples.map((ex) => (
+          {THEME_EXAMPLES.map((ex) => (
             <a
               key={ex.slug}
               href={ex.slug}
@@ -185,9 +171,7 @@ export default function Page() {
               className="group flex flex-col overflow-hidden rounded-2xl border border-black/5 shadow-[0_2px_12px_rgba(17,24,39,0.07)] transition hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(17,24,39,0.12)]"
               style={{ background: ex.bg }}
             >
-              {/* 미니 카드 프리뷰 */}
               <div className="p-4">
-                {/* 헤더 영역 */}
                 <div className="flex items-center gap-2.5">
                   <div className="h-9 w-9 shrink-0 rounded-full" style={{ background: ex.muted, opacity: 0.35 }} />
                   <div className="flex flex-col gap-1">
@@ -195,30 +179,28 @@ export default function Page() {
                     <div className="h-1.5 w-14 rounded-full" style={{ background: ex.accent, opacity: 0.6 }} />
                   </div>
                 </div>
-                {/* 버튼 모양 */}
                 <div className="mt-3 h-6 w-full rounded-lg" style={{ background: ex.accent, opacity: 0.85 }} />
-                {/* 서비스 카드 2개 */}
                 <div className="mt-2.5 flex flex-col gap-1.5">
-                  <div className="flex justify-between rounded-lg px-2 py-1.5" style={{ background: ex.card }}>
-                    <div className="h-1.5 w-16 rounded-full self-center" style={{ background: ex.fg, opacity: 0.5 }} />
-                    <div className="h-1.5 w-10 rounded-full self-center" style={{ background: ex.fg, opacity: 0.7 }} />
-                  </div>
-                  <div className="flex justify-between rounded-lg px-2 py-1.5" style={{ background: ex.card }}>
-                    <div className="h-1.5 w-14 rounded-full self-center" style={{ background: ex.fg, opacity: 0.5 }} />
-                    <div className="h-1.5 w-12 rounded-full self-center" style={{ background: ex.fg, opacity: 0.7 }} />
-                  </div>
+                  {[{ w: "w-16" }, { w: "w-14" }].map((row, i) => (
+                    <div key={i} className="flex justify-between rounded-lg px-2 py-1.5" style={{ background: ex.card }}>
+                      <div className={`h-1.5 ${row.w} rounded-full self-center`} style={{ background: ex.fg, opacity: 0.5 }} />
+                      <div className="h-1.5 w-10 rounded-full self-center" style={{ background: ex.fg, opacity: 0.7 }} />
+                    </div>
+                  ))}
                 </div>
               </div>
-              {/* 라벨 */}
               <div
                 className="flex items-center justify-between border-t px-4 py-2.5"
-                style={{ borderColor: `${ex.fg}15`, background: `${ex.card}` }}
+                style={{ borderColor: `${ex.fg}15`, background: ex.card }}
               >
                 <div>
                   <p className="text-xs font-bold" style={{ color: ex.fg }}>{ex.theme}</p>
                   <p className="text-[11px]" style={{ color: ex.muted }}>{ex.industry}</p>
                 </div>
-                <span className="text-xs font-semibold opacity-60 group-hover:opacity-100 transition" style={{ color: ex.accent }}>
+                <span
+                  className="text-xs font-semibold opacity-60 transition group-hover:opacity-100"
+                  style={{ color: ex.accent }}
+                >
                   보기 →
                 </span>
               </div>
@@ -231,7 +213,7 @@ export default function Page() {
       <section className="mx-auto w-full max-w-6xl px-4 pb-12 sm:px-6">
         <p className="text-center text-sm font-semibold text-(--muted)">이런 분들이 쓰고 있어요</p>
         <div className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-6">
-          {targets.map((t) => (
+          {TARGETS.map((t) => (
             <div
               key={t.label}
               className="flex flex-col items-center gap-2 rounded-2xl bg-(--card) p-4 shadow-[0_2px_12px_rgba(17,24,39,0.05)]"
@@ -249,7 +231,9 @@ export default function Page() {
           <h2 className="text-xl font-bold sm:text-2xl">바이오 링크, 이렇게 달라요</h2>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             <div className="rounded-2xl border border-black/5 bg-black/[0.02] p-5">
-              <p className="mb-3 text-xs font-bold uppercase tracking-widest text-(--muted)">Before — 링크트리</p>
+              <p className="mb-3 text-xs font-bold uppercase tracking-widest text-(--muted)">
+                Before — 링크트리
+              </p>
               <ul className="space-y-2 text-sm text-(--muted)">
                 <li>🔗 인스타 링크</li>
                 <li>🔗 예약 링크</li>
@@ -259,7 +243,9 @@ export default function Page() {
               </ul>
             </div>
             <div className="rounded-2xl border border-foreground/10 bg-foreground/[0.03] p-5">
-              <p className="mb-3 text-xs font-bold uppercase tracking-widest text-foreground">After — InstaLink</p>
+              <p className="mb-3 text-xs font-bold uppercase tracking-widest text-foreground">
+                After — InstaLink
+              </p>
               <ul className="space-y-2 text-sm">
                 <li>✅ 서비스 + 가격 한눈에</li>
                 <li>✅ 실제 후기 바로 확인</li>
@@ -276,7 +262,7 @@ export default function Page() {
       <section className="mx-auto w-full max-w-6xl px-4 pb-14 sm:px-6">
         <h2 className="text-xl font-bold sm:text-2xl">꼭 필요한 것만 담았어요</h2>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          {features.map((f) => (
+          {FEATURES.map((f) => (
             <article
               key={f.title}
               className="rounded-2xl bg-(--card) p-6 shadow-[0_4px_20px_rgba(17,24,39,0.06)]"
@@ -289,49 +275,50 @@ export default function Page() {
         </div>
       </section>
 
-      {/* 플랜 비교 */}
+      {/* 요금제 */}
       <section className="mx-auto w-full max-w-6xl px-4 pb-14 sm:px-6">
         <h2 className="text-xl font-bold sm:text-2xl">요금제</h2>
         <p className="mt-1 text-sm text-(--muted)">처음엔 무료로, 성장하면 그때 올리세요.</p>
 
-        {/* 플랜 헤더 카드 */}
+        {/* 플랜 카드 */}
         <div className="mt-6 grid gap-3 sm:grid-cols-3">
-          <div className="rounded-2xl border border-black/5 bg-(--card) p-5 shadow-[0_4px_20px_rgba(17,24,39,0.06)]">
-            <p className="text-sm font-semibold text-(--muted)">Free</p>
-            <p className="mt-1 text-2xl font-extrabold">0원</p>
-            <p className="mt-0.5 text-xs text-(--muted)">영원히 무료</p>
-            <Link
-              href="/auth/signup"
-              className="mt-4 block rounded-xl border border-black/10 py-2 text-center text-sm font-semibold transition hover:bg-black/5"
-            >
-              시작하기
-            </Link>
-          </div>
-          <div className="rounded-2xl border-2 border-foreground bg-foreground p-5 text-white shadow-[0_8px_30px_rgba(17,24,39,0.18)]">
-            <p className="flex items-center gap-1.5 text-sm font-semibold opacity-70">
-              Basic
-              <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs">인기</span>
-            </p>
-            <p className="mt-1 text-2xl font-extrabold">29,000원</p>
-            <p className="mt-0.5 text-xs opacity-60">월 / 언제든 해지 가능</p>
-            <Link
-              href="/auth/signup"
-              className="mt-4 block rounded-xl bg-white py-2 text-center text-sm font-semibold text-foreground transition hover:opacity-90"
-            >
-              시작하기
-            </Link>
-          </div>
-          <div className="rounded-2xl border border-black/5 bg-(--card) p-5 shadow-[0_4px_20px_rgba(17,24,39,0.06)]">
-            <p className="text-sm font-semibold text-(--muted)">Pro</p>
-            <p className="mt-1 text-2xl font-extrabold">49,000원</p>
-            <p className="mt-0.5 text-xs text-(--muted)">월 / 언제든 해지 가능</p>
-            <Link
-              href="/auth/signup"
-              className="mt-4 block rounded-xl border border-black/10 py-2 text-center text-sm font-semibold transition hover:bg-black/5"
-            >
-              시작하기
-            </Link>
-          </div>
+          {PLANS.map((plan) => {
+            const meta = PLAN_META[plan];
+            const isHighlight = plan === "basic";
+            return (
+              <div
+                key={plan}
+                className={`rounded-2xl p-5 shadow-[0_4px_20px_rgba(17,24,39,0.06)] ${
+                  isHighlight
+                    ? "border-2 border-foreground bg-foreground text-white shadow-[0_8px_30px_rgba(17,24,39,0.18)]"
+                    : "border border-black/5 bg-(--card)"
+                }`}
+              >
+                <p className={`flex items-center gap-1.5 text-sm font-semibold ${isHighlight ? "opacity-70" : "text-(--muted)"}`}>
+                  {meta.label}
+                  {isHighlight && (
+                    <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs">인기</span>
+                  )}
+                </p>
+                <p className="mt-1 text-2xl font-extrabold">
+                  {meta.price === 0 ? "무료" : `${meta.price.toLocaleString()}원`}
+                </p>
+                <p className={`mt-0.5 text-xs ${isHighlight ? "opacity-60" : "text-(--muted)"}`}>
+                  {meta.price === 0 ? "영원히 무료" : "월 / 언제든 해지 가능"}
+                </p>
+                <Link
+                  href="/auth/signup"
+                  className={`mt-4 block rounded-xl py-2 text-center text-sm font-semibold transition ${
+                    isHighlight
+                      ? "bg-white text-foreground hover:opacity-90"
+                      : "border border-black/10 hover:bg-black/5"
+                  }`}
+                >
+                  시작하기
+                </Link>
+              </div>
+            );
+          })}
         </div>
 
         {/* 기능 비교 테이블 */}
@@ -340,18 +327,20 @@ export default function Page() {
             <thead>
               <tr className="border-b border-black/5">
                 <th className="px-4 py-3 text-left font-semibold text-(--muted)">기능</th>
-                <th className="px-4 py-3 text-center font-semibold text-(--muted)">Free</th>
-                <th className="px-4 py-3 text-center font-semibold">Basic</th>
-                <th className="px-4 py-3 text-center font-semibold text-(--muted)">Pro</th>
+                {PLANS.map((plan) => (
+                  <th key={plan} className={`px-4 py-3 text-center font-semibold ${plan === "basic" ? "text-foreground" : "text-(--muted)"}`}>
+                    {PLAN_META[plan].label}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
-              {planFeatures.map((f) => (
-                <tr key={f.label} className="border-t border-black/5">
-                  <td className="px-4 py-2.5 text-left text-(--muted)">{f.label}</td>
-                  <td className="px-4 py-2.5 text-center">{f.free ? <Check /> : <Dash />}</td>
-                  <td className="px-4 py-2.5 text-center">{f.basic ? <Check /> : <Dash />}</td>
-                  <td className="px-4 py-2.5 text-center">{f.pro ? <Check /> : <Dash />}</td>
+              {PLAN_FEATURE_ROWS.map((row) => (
+                <tr key={row.label} className="border-t border-black/5">
+                  <td className="px-4 py-2.5 text-left text-(--muted)">{row.label}</td>
+                  <td className="px-4 py-2.5 text-center"><CellValue v={row.free} /></td>
+                  <td className="px-4 py-2.5 text-center"><CellValue v={row.basic} /></td>
+                  <td className="px-4 py-2.5 text-center"><CellValue v={row.pro} /></td>
                 </tr>
               ))}
             </tbody>
@@ -363,7 +352,7 @@ export default function Page() {
       <section className="mx-auto w-full max-w-6xl px-4 pb-14 sm:px-6">
         <h2 className="text-xl font-bold sm:text-2xl">실제 사용자 후기</h2>
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
-          {testimonials.map((t) => (
+          {TESTIMONIALS.map((t) => (
             <blockquote
               key={t.author}
               className="rounded-2xl bg-(--card) p-5 shadow-[0_4px_20px_rgba(17,24,39,0.06)]"
@@ -397,15 +386,7 @@ export default function Page() {
         </div>
       </section>
 
-      <footer className="border-t border-black/5 px-4 py-8 text-center text-xs text-(--muted) sm:px-6">
-        <p>© 2026 InstaLink · 소상공인을 위한 인스타 링크 페이지</p>
-        <nav className="mt-3 flex flex-wrap justify-center gap-4">
-          <a href="/terms" className="hover:text-foreground">이용약관</a>
-          <a href="/content-policy" className="hover:text-foreground">콘텐츠 정책</a>
-          <a href="/refund" className="hover:text-foreground">환불 정책</a>
-          <a href="/privacy" className="hover:text-foreground">개인정보처리방침</a>
-        </nav>
-      </footer>
+      <LandingFooter />
     </main>
   );
 }

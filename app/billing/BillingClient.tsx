@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Script from "next/script";
 import { PLAN_META, type Plan, type BillingPeriod } from "@/lib/types";
+import { PLAN_FEATURE_ROWS } from "@/lib/plan-features";
 
 declare global {
   interface Window {
@@ -29,17 +30,6 @@ type Props = {
   siteUrl: string;
 };
 
-// 기능별 비교 테이블 데이터
-const COMPARE_ROWS: { label: string; free: string | boolean; basic: string | boolean; pro: string | boolean }[] = [
-  { label: "프로필 페이지",    free: true,       basic: true,       pro: true },
-  { label: "테마",             free: "1종",      basic: "6종",      pro: "6종" },
-  { label: "서비스 등록",      free: "3개",      basic: "무제한",   pro: "무제한" },
-  { label: "후기 등록",        free: "3개",      basic: "무제한",   pro: "무제한" },
-  { label: "카카오 문의 버튼", free: false,      basic: true,       pro: true },
-  { label: "방문자 통계",      free: false,      basic: false,      pro: true },
-  { label: "멀티 링크",        free: false,      basic: false,      pro: "예정" },
-  { label: "우선 지원",        free: false,      basic: false,      pro: true },
-];
 
 function CellValue({ v }: { v: string | boolean }) {
   if (v === true)  return <span className="text-green-500 font-bold">✓</span>;
@@ -345,7 +335,7 @@ export default function BillingClient({
             </tr>
           </thead>
           <tbody>
-            {COMPARE_ROWS.map((row, i) => (
+            {PLAN_FEATURE_ROWS.map((row, i) => (
               <tr
                 key={row.label}
                 className={`border-b border-gray-50 ${i % 2 === 0 ? "" : "bg-gray-50/40"}`}
