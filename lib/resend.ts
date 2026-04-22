@@ -92,6 +92,55 @@ export function paymentSuccessEmail(name: string, plan: string, amount: number) 
   };
 }
 
+export function weeklyReportEmail(
+  name: string,
+  slug: string,
+  siteUrl: string,
+  viewCount: number,
+  weekViews: number,
+  kakaoClicks: number,
+) {
+  const hasActivity = weekViews > 0 || kakaoClicks > 0;
+  return {
+    subject: `[InstaLink] 이번 주 ${name}님 페이지 방문 현황`,
+    html: `
+<div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;color:#111827">
+  <h1 style="font-size:20px;font-weight:700;margin:0 0 4px">안녕하세요, ${name}님! 👋</h1>
+  <p style="font-size:14px;color:#6b7280;margin:0 0 24px">이번 주 내 InstaLink 페이지 현황을 알려드려요.</p>
+
+  <div style="background:#f9fafb;border-radius:16px;padding:20px 24px;margin-bottom:24px">
+    <div style="display:flex;justify-content:space-between;margin-bottom:16px">
+      <div style="text-align:center">
+        <p style="font-size:28px;font-weight:700;margin:0;color:#111827">${weekViews}</p>
+        <p style="font-size:12px;color:#6b7280;margin:4px 0 0">이번 주 방문자</p>
+      </div>
+      <div style="text-align:center">
+        <p style="font-size:28px;font-weight:700;margin:0;color:#111827">${kakaoClicks}</p>
+        <p style="font-size:12px;color:#6b7280;margin:4px 0 0">카카오 문의 클릭</p>
+      </div>
+      <div style="text-align:center">
+        <p style="font-size:28px;font-weight:700;margin:0;color:#111827">${viewCount}</p>
+        <p style="font-size:12px;color:#6b7280;margin:4px 0 0">누적 방문자</p>
+      </div>
+    </div>
+    ${hasActivity
+      ? `<p style="font-size:13px;color:#059669;margin:0">✅ 이번 주도 고객들이 페이지를 방문했어요!</p>`
+      : `<p style="font-size:13px;color:#6b7280;margin:0">💡 인스타 bio 링크를 확인해보세요.</p>`}
+  </div>
+
+  <a href="${siteUrl}/dashboard"
+     style="display:inline-block;background:#111827;color:#fff;text-decoration:none;padding:12px 24px;border-radius:12px;font-size:14px;font-weight:600;margin-bottom:24px">
+    대시보드 보러 가기 →
+  </a>
+
+  <hr style="border:none;border-top:1px solid #f3f4f6;margin:0 0 16px">
+  <p style="font-size:12px;color:#9ca3af;margin:0">
+    내 페이지: <a href="${siteUrl}/${slug}" style="color:#111827">${siteUrl}/${slug}</a>
+  </p>
+</div>`,
+  };
+}
+
 export function renewalReminderEmail(name: string, plan: string, amount: number, billingDate: string) {
   return {
     subject: "[InstaLink] 3일 후 구독이 갱신됩니다",

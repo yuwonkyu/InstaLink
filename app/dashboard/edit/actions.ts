@@ -61,6 +61,9 @@ export type SaveProfilePayload = {
   kakao_url: string;
   kakao_booking_url?: string;
   naver_booking_url?: string;
+  phone_url?: string;
+  instagram_dm_url?: string;
+  kakao_channel_url?: string;
   instagram_id: string;
   location: string;
   hours: string;
@@ -92,6 +95,9 @@ export async function saveProfile(payload: SaveProfilePayload) {
       kakao_url: payload.kakao_url.trim(),
       kakao_booking_url: payload.kakao_booking_url?.trim() || null,
       naver_booking_url: payload.naver_booking_url?.trim() || null,
+      phone_url: payload.phone_url?.trim() || null,
+      instagram_dm_url: payload.instagram_dm_url?.trim() || null,
+      kakao_channel_url: payload.kakao_channel_url?.trim() || null,
       instagram_id: payload.instagram_id.trim(),
       location: payload.location.trim(),
       hours: payload.hours.trim(),

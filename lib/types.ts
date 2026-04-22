@@ -52,6 +52,10 @@ export type Profile = {
   referred_by?: string | null;
   custom_links?: CustomLink[] | null;
   view_count?: number;
+  is_available?: boolean;
+  phone_url?: string | null;
+  instagram_dm_url?: string | null;
+  kakao_channel_url?: string | null;
 };
 
 export type Subscription = {
