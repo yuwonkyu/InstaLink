@@ -3,7 +3,7 @@ import Link from "next/link";
 import { getSupabaseServerClient } from "@/lib/supabase";
 import { signOut } from "@/app/auth/actions";
 
-const ADMIN_EMAIL = "duck01777@naver.com";
+const ADMIN_EMAIL = "duck01777@gmail.com";
 
 export default async function DashboardLayout({
   children,

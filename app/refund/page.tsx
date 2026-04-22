@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "InstaLink 환불 정책",
 };
 
-const EMAIL = "duck01777@naver.com";
+const EMAIL = "duck01777@gmail.com";
 const DATE = "2026년 4월 22일";
 
 export default function RefundPage() {

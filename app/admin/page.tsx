@@ -6,7 +6,7 @@ import { PLAN_META, type Plan } from "@/lib/types";
 import { getSiteUrl } from "@/lib/site-url";
 import PlanSelect from "./PlanSelect";
 
-const ADMIN_EMAIL = "duck01777@naver.com";
+const ADMIN_EMAIL = "duck01777@gmail.com";
 const SITE_URL = getSiteUrl();
 
 const adminClient = createClient(
