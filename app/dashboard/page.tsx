@@ -9,26 +9,34 @@ import SlugEditor from "@/components/dashboard/SlugEditor";
 import ReferralCard from "./ReferralCard";
 import DeleteAccountButton from "./DeleteAccountButton";
 import InstaGuideModal from "./InstaGuideModal";
+import AvailabilityToggle from "./AvailabilityToggle";
 
-type ClickStats = { kakao: number; instagram: number };
+type ClickStats = { kakao: number; instagram: number; phone: number };
 
-async function getClickStats(profileId: string): Promise<ClickStats> {
-  const supabase = await getSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("link_clicks")
-    .select("link_type")
-    .eq("profile_id", profileId);
-
-  if (error || !data) return { kakao: 0, instagram: 0 };
-
-  return data.reduce(
+function sumClicks(data: { link_type: string }[] | null): ClickStats {
+  return (data ?? []).reduce(
     (acc, row) => {
-      if (row.link_type === "kakao") acc.kakao += 1;
+      if (row.link_type === "kakao")     acc.kakao     += 1;
       if (row.link_type === "instagram") acc.instagram += 1;
+      if (row.link_type === "phone")     acc.phone     += 1;
       return acc;
     },
-    { kakao: 0, instagram: 0 },
+    { kakao: 0, instagram: 0, phone: 0 },
   );
+}
+
+async function getClickStats(profileId: string): Promise<{ total: ClickStats; week: ClickStats }> {
+  const supabase = await getSupabaseServerClient();
+  const weekAgo = new Date();
+  weekAgo.setDate(weekAgo.getDate() - 7);
+
+  const [totalRes, weekRes] = await Promise.all([
+    supabase.from("link_clicks").select("link_type").eq("profile_id", profileId),
+    supabase.from("link_clicks").select("link_type").eq("profile_id", profileId)
+      .gte("created_at", weekAgo.toISOString()),
+  ]);
+
+  return { total: sumClicks(totalRes.data), week: sumClicks(weekRes.data) };
 }
 
 async function getMyProfile(ownerId: string): Promise<Profile | null> {
@@ -249,17 +257,34 @@ export default async function DashboardPage({
       {/* 클릭 통계 카드 */}
       {profile && clickStats && (
         <div className="rounded-2xl bg-(--card) p-5 shadow-[0_4px_20px_rgba(17,24,39,0.06)]">
-          <h2 className="mb-3 text-sm font-semibold text-foreground">링크 클릭 통계</h2>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-xl bg-(--secondary) p-3 text-center">
-              <p className="text-2xl font-bold text-foreground">{clickStats.kakao.toLocaleString()}</p>
-              <p className="mt-0.5 text-xs text-(--muted)">카카오 문의</p>
-            </div>
-            <div className="rounded-xl bg-(--secondary) p-3 text-center">
-              <p className="text-2xl font-bold text-foreground">{clickStats.instagram.toLocaleString()}</p>
-              <p className="mt-0.5 text-xs text-(--muted)">인스타그램</p>
-            </div>
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="text-sm font-semibold text-foreground">링크 클릭 통계</h2>
+            <span className="text-xs text-(--muted)">이번 주 / 전체</span>
           </div>
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              { label: "카카오 문의", week: clickStats.week.kakao,     total: clickStats.total.kakao },
+              { label: "인스타그램",  week: clickStats.week.instagram, total: clickStats.total.instagram },
+              { label: "전화 연결",   week: clickStats.week.phone,     total: clickStats.total.phone },
+            ].map(({ label, week, total }) => (
+              <div key={label} className="rounded-xl bg-(--secondary) p-3 text-center">
+                <p className="text-xl font-bold text-foreground">{week.toLocaleString()}</p>
+                <p className="text-xs text-(--muted)">{total > 0 ? `/ ${total}` : ""}</p>
+                <p className="mt-1 text-[10px] text-(--muted) leading-tight">{label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 예약 가능 토글 */}
+      {profile && (
+        <div className="rounded-2xl bg-(--card) p-5 shadow-[0_4px_20px_rgba(17,24,39,0.06)]">
+          <h2 className="mb-3 text-sm font-semibold text-foreground">예약 상태</h2>
+          <AvailabilityToggle initialValue={profile.is_available ?? true} />
+          <p className="mt-3 text-xs text-(--muted)">
+            매일 상태를 업데이트하면 고객이 실시간으로 예약 가능 여부를 확인할 수 있어요.
+          </p>
         </div>
       )}
 

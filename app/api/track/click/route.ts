@@ -8,8 +8,10 @@ const supabaseAdmin = createClient(
 
 type ClickBody = {
   profileId: string;
-  linkType: "kakao" | "instagram";
+  linkType: "kakao" | "instagram" | "phone";
 };
+
+const VALID_LINK_TYPES = ["kakao", "instagram", "phone"];
 
 export async function POST(req: NextRequest) {
   let body: ClickBody;
@@ -20,7 +22,7 @@ export async function POST(req: NextRequest) {
   }
 
   const { profileId, linkType } = body;
-  if (!profileId || !["kakao", "instagram"].includes(linkType)) {
+  if (!profileId || !VALID_LINK_TYPES.includes(linkType)) {
     return NextResponse.json({ error: "Invalid params" }, { status: 400 });
   }
 

@@ -229,10 +229,13 @@ export default function EditForm({ profile, plan }: Props) {
   const [shopName,        setShopName]  = useState(profile.shop_name ?? "");
   const [tagline,         setTagline]   = useState(profile.tagline ?? "");
   const [description,     setDesc]      = useState(profile.description ?? "");
-  const [kakaoUrl,        setKakaoUrl]  = useState(profile.kakao_url ?? "");
-  const [kakaoBookingUrl, setKakaoBk]   = useState(profile.kakao_booking_url ?? "");
-  const [naverBookingUrl, setNaverBk]   = useState(profile.naver_booking_url ?? "");
-  const [instagramId,     setInstaId]   = useState(profile.instagram_id ?? "");
+  const [kakaoUrl,        setKakaoUrl]    = useState(profile.kakao_url ?? "");
+  const [kakaoBookingUrl, setKakaoBk]     = useState(profile.kakao_booking_url ?? "");
+  const [naverBookingUrl, setNaverBk]     = useState(profile.naver_booking_url ?? "");
+  const [phoneUrl,        setPhoneUrl]    = useState(profile.phone_url ?? "");
+  const [instaDmUrl,      setInstaDmUrl]  = useState(profile.instagram_dm_url ?? "");
+  const [kakaoChanUrl,    setKakaoChan]   = useState(profile.kakao_channel_url ?? "");
+  const [instagramId,     setInstaId]     = useState(profile.instagram_id ?? "");
   const [location,        setLocation]  = useState(profile.location ?? "");
   const [hours,           setHours]     = useState(profile.hours ?? "");
   const [imageUrl,        setImageUrl]  = useState(profile.image_url ?? "");
@@ -295,7 +298,9 @@ export default function EditForm({ profile, plan }: Props) {
     const payload: SaveProfilePayload = {
       name, shop_name: shopName, tagline, description,
       kakao_url: kakaoUrl, kakao_booking_url: kakaoBookingUrl,
-      naver_booking_url: naverBookingUrl, instagram_id: instagramId,
+      naver_booking_url: naverBookingUrl,
+      phone_url: phoneUrl, instagram_dm_url: instaDmUrl, kakao_channel_url: kakaoChanUrl,
+      instagram_id: instagramId,
       location, hours, image_url: imageUrl, theme, services, reviews,
       custom_links: customLinks,
     };
@@ -390,6 +395,9 @@ export default function EditForm({ profile, plan }: Props) {
           <Field label="카카오 오픈채팅 URL"     value={kakaoUrl}        onChange={setKakaoUrl} placeholder="https://open.kakao.com/o/..." />
           <Field label="카카오 예약 URL (선택)" value={kakaoBookingUrl} onChange={setKakaoBk}  placeholder="https://pf.kakao.com/..." />
           <Field label="네이버 예약 URL (선택)" value={naverBookingUrl} onChange={setNaverBk}  placeholder="https://booking.naver.com/..." />
+          <Field label="전화 연결 (선택)"        value={phoneUrl}        onChange={setPhoneUrl} placeholder="010-1234-5678" />
+          <Field label="인스타 DM URL (선택)"    value={instaDmUrl}      onChange={setInstaDmUrl} placeholder="https://ig.me/m/아이디" />
+          <Field label="카카오채널 URL (선택)"   value={kakaoChanUrl}    onChange={setKakaoChan}  placeholder="https://pf.kakao.com/_채널아이디" />
         </div>
       </Section>
 

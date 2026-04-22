@@ -13,7 +13,7 @@ function toInstagramUrl(instagramId: string) {
   return `https://instagram.com/${cleaned}`;
 }
 
-function trackClick(profileId: string, linkType: "kakao" | "instagram") {
+function trackClick(profileId: string, linkType: "kakao" | "instagram" | "phone") {
   fetch("/api/track/click", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -59,7 +59,13 @@ export default function ProfilePage({ profile, showWatermark = false }: ProfileP
     : `@${profile.instagram_id}`;
   const instagramUrl = toInstagramUrl(profile.instagram_id);
 
-  const hasCta = profile.kakao_url || profile.kakao_booking_url || profile.naver_booking_url;
+  const hasCta =
+    profile.kakao_url ||
+    profile.kakao_booking_url ||
+    profile.naver_booking_url ||
+    profile.phone_url ||
+    profile.instagram_dm_url ||
+    profile.kakao_channel_url;
 
   return (
     <section className="rounded-xl p-6 backdrop-blur sm:p-8">
@@ -89,6 +95,20 @@ export default function ProfilePage({ profile, showWatermark = false }: ProfileP
           </p>
         </div>
       </div>
+
+      {/* ── 예약 상태 배지 ── */}
+      {profile.is_available === false && (
+        <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-red-50 px-3 py-1 text-xs font-semibold text-red-600">
+          <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
+          현재 예약 마감
+        </div>
+      )}
+      {profile.is_available === true && (
+        <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
+          <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
+          예약 가능
+        </div>
+      )}
 
       {/* ── 소개 ── */}
       {profile.description && (
@@ -148,6 +168,42 @@ export default function ProfilePage({ profile, showWatermark = false }: ProfileP
                 />
                 <span className="text-black! whitespace-nowrap">무료 상담 받기 (카카오톡)</span>
               </span>
+            </a>
+          )}
+          {profile.kakao_channel_url && (
+            <a
+              href={profile.kakao_channel_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl px-2 text-sm font-semibold text-black! shadow-[0_4px_14px_rgba(17,24,39,0.14)] active:translate-y-px"
+              style={{ backgroundColor: "#FEE500" }}
+            >
+              <Image src="/kakaosimbol.svg" alt="" width={18} height={18} className="h-4.5 w-4.5 shrink-0" />
+              <span className="text-black! whitespace-nowrap">카카오채널 문의</span>
+            </a>
+          )}
+          {profile.instagram_dm_url && (
+            <a
+              href={profile.instagram_dm_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl px-2 text-sm font-semibold text-white! shadow-[0_4px_14px_rgba(17,24,39,0.14)] active:translate-y-px"
+              style={{ background: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)" }}
+            >
+              <IconInstagram />
+              <span className="whitespace-nowrap">인스타그램 DM 보내기</span>
+            </a>
+          )}
+          {profile.phone_url && (
+            <a
+              href={`tel:${profile.phone_url.replace(/[^0-9+]/g, "")}`}
+              onClick={() => trackClick(profile.id, "phone")}
+              className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-black/10 bg-white px-2 text-sm font-semibold text-foreground shadow-[0_4px_14px_rgba(17,24,39,0.08)] active:translate-y-px"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.48 2 2 0 0 1 3.59 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.86a16 16 0 0 0 6 6l.92-.86a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+              <span className="whitespace-nowrap">전화 연결 {profile.phone_url}</span>
             </a>
           )}
         </div>
