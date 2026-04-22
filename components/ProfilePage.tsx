@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import type { Profile } from "@/lib/types";
 
@@ -29,6 +30,22 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
+function IconParking() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="3" y="3" width="18" height="18" rx="2" />
+      <path d="M9 17V7h4a3 3 0 0 1 0 6H9" />
+    </svg>
+  );
+}
+
+// "2025-03" → "2025년 3월"
+function formatReviewDate(d: string) {
+  const [y, m] = d.split("-");
+  if (!y || !m) return d;
+  return `${y}년 ${parseInt(m)}월`;
+}
+
 function IconClock() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -54,6 +71,8 @@ function IconInstagram() {
 }
 
 export default function ProfilePage({ profile, showWatermark = false }: ProfilePageProps) {
+  const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
+
   const instagramHandle = profile.instagram_id.startsWith("@")
     ? profile.instagram_id
     : `@${profile.instagram_id}`;
@@ -242,6 +261,98 @@ export default function ProfilePage({ profile, showWatermark = false }: ProfileP
         );
       })()}
 
+      {/* ── 갤러리 ── */}
+      {profile.gallery && profile.gallery.length > 0 && (
+        <>
+          <div className="my-6 h-px bg-black/20" />
+          <section>
+            <SectionLabel>포트폴리오 · 갤러리</SectionLabel>
+            <div className="grid grid-cols-3 gap-1.5">
+              {profile.gallery.map((img, idx) => (
+                <button
+                  key={img.url + idx}
+                  type="button"
+                  onClick={() => setLightboxIdx(idx)}
+                  className="relative aspect-square overflow-hidden rounded-xl bg-black/[0.035] focus:outline-none focus-visible:ring-2 focus-visible:ring-black/30"
+                >
+                  <Image
+                    src={img.url}
+                    alt={img.caption ?? `갤러리 ${idx + 1}`}
+                    fill
+                    sizes="(max-width: 480px) 30vw, 150px"
+                    className="object-cover transition-transform hover:scale-105"
+                  />
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* 라이트박스 */}
+          {lightboxIdx !== null && profile.gallery && (
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4"
+              onClick={() => setLightboxIdx(null)}
+            >
+              <div
+                className="relative w-full max-w-sm"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="relative aspect-square overflow-hidden rounded-2xl">
+                  <Image
+                    src={profile.gallery[lightboxIdx].url}
+                    alt={profile.gallery[lightboxIdx].caption ?? ""}
+                    fill
+                    sizes="480px"
+                    className="object-contain"
+                    priority
+                  />
+                </div>
+                {profile.gallery[lightboxIdx].caption && (
+                  <p className="mt-2 text-center text-sm text-white/80">
+                    {profile.gallery[lightboxIdx].caption}
+                  </p>
+                )}
+                {/* 이전/다음 */}
+                <div className="mt-3 flex items-center justify-between">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setLightboxIdx((i) =>
+                        i !== null && i > 0 ? i - 1 : profile.gallery!.length - 1
+                      )
+                    }
+                    className="rounded-full bg-white/20 px-4 py-2 text-sm text-white hover:bg-white/30"
+                  >
+                    ‹ 이전
+                  </button>
+                  <span className="text-xs text-white/60">
+                    {lightboxIdx + 1} / {profile.gallery.length}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setLightboxIdx((i) =>
+                        i !== null && i < profile.gallery!.length - 1 ? i + 1 : 0
+                      )
+                    }
+                    className="rounded-full bg-white/20 px-4 py-2 text-sm text-white hover:bg-white/30"
+                  >
+                    다음 ›
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setLightboxIdx(null)}
+                  className="absolute right-3 top-3 rounded-full bg-black/50 px-2.5 py-1 text-xs text-white hover:bg-black/70"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
       {/* ── 서비스 ── */}
       {profile.services.length > 0 && (
         <>
@@ -289,7 +400,14 @@ export default function ProfilePage({ profile, showWatermark = false }: ProfileP
                     <p className="text-sm leading-6 text-foreground">
                       &#8220;{review.text}&#8221;
                     </p>
-                    <p className="mt-2 text-[11px] font-semibold text-(--muted)">— {review.author}</p>
+                    <div className="mt-2 flex items-center justify-between gap-2">
+                      <p className="text-[11px] font-semibold text-(--muted)">— {review.author}</p>
+                      {review.date && (
+                        <p className="shrink-0 text-[10px] text-(--muted) opacity-70">
+                          {formatReviewDate(review.date)}
+                        </p>
+                      )}
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -304,7 +422,7 @@ export default function ProfilePage({ profile, showWatermark = false }: ProfileP
       })()}
 
       {/* ── 운영정보 ── */}
-      {(profile.hours || profile.location || profile.instagram_id) && (
+      {(profile.hours || profile.location || profile.parking_info || profile.instagram_id) && (
         <>
           <div className="my-6 h-px bg-black/20" />
           <div className="space-y-2.5">
@@ -318,6 +436,12 @@ export default function ProfilePage({ profile, showWatermark = false }: ProfileP
               <div className="flex items-center gap-2 text-sm text-(--muted)">
                 <IconPin />
                 <span>{profile.location}</span>
+              </div>
+            )}
+            {profile.parking_info && (
+              <div className="flex items-center gap-2 text-sm text-(--muted)">
+                <IconParking />
+                <span>{profile.parking_info}</span>
               </div>
             )}
             {profile.instagram_id && (

@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getSupabaseServerClient } from "@/lib/supabase";
-import type { Service, Review, Theme, CustomLink } from "@/lib/types";
+import type { Service, Review, Theme, CustomLink, GalleryImage } from "@/lib/types";
 
 // ──────────────────────────────────────────────
 // 슬러그 커스텀 (Pro 전용)
@@ -72,6 +72,8 @@ export type SaveProfilePayload = {
   services: Service[];
   reviews: Review[];
   custom_links: CustomLink[];
+  gallery: GalleryImage[];
+  parking_info?: string;
 };
 
 export async function saveProfile(payload: SaveProfilePayload) {
@@ -106,6 +108,8 @@ export async function saveProfile(payload: SaveProfilePayload) {
       services: payload.services,
       reviews: payload.reviews,
       custom_links: payload.custom_links,
+      gallery: payload.gallery,
+      parking_info: payload.parking_info?.trim() || null,
       is_active: true, // 저장하면 페이지 공개
     })
     .eq("owner_id", user.id);

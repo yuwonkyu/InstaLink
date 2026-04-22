@@ -4,11 +4,12 @@ import { useState, useTransition, useEffect } from "react";
 import Image from "next/image";
 import { CldUploadWidget } from "next-cloudinary";
 import { saveProfile, type SaveProfilePayload } from "./actions";
-import type { Profile, Service, Review, Theme, CustomLink } from "@/lib/types";
+import type { Profile, Service, Review, Theme, CustomLink, GalleryImage } from "@/lib/types";
 import ThemeSelector   from "@/components/dashboard/ThemeSelector";
 import ServiceManager  from "@/components/dashboard/ServiceManager";
 import ReviewManager   from "@/components/dashboard/ReviewManager";
 import LinkManager     from "@/components/dashboard/LinkManager";
+import GalleryManager  from "@/components/dashboard/GalleryManager";
 
 // ─── 업종별 예시 템플릿 ──────────────────────────────────────
 const CATEGORIES = ["PT/헬스", "필라테스/요가", "미용실/네일", "카페", "프리랜서/크리에이터"];
@@ -245,6 +246,8 @@ export default function EditForm({ profile, plan }: Props) {
   const [services,     setServices]    = useState<Service[]>(profile.services ?? []);
   const [reviews,      setReviews]     = useState<Review[]>(profile.reviews ?? []);
   const [customLinks,  setCustomLinks] = useState<CustomLink[]>(profile.custom_links ?? []);
+  const [gallery,      setGallery]     = useState<GalleryImage[]>(profile.gallery ?? []);
+  const [parkingInfo,  setParkingInfo] = useState(profile.parking_info ?? "");
 
   // 업종 (예시/AI 공통)
   const [category, setCategory] = useState("카페");
@@ -303,6 +306,8 @@ export default function EditForm({ profile, plan }: Props) {
       instagram_id: instagramId,
       location, hours, image_url: imageUrl, theme, services, reviews,
       custom_links: customLinks,
+      gallery,
+      parking_info: parkingInfo,
     };
     startTransition(async () => {
       try {
@@ -391,6 +396,7 @@ export default function EditForm({ profile, plan }: Props) {
 
           <Field label="위치"            value={location}    onChange={setLocation}    placeholder="서울 서초구 방배동" />
           <Field label="운영시간"         value={hours}       onChange={setHours}       placeholder="평일 07:00 ~ 21:00" />
+          <Field label="주차 안내 (선택)" value={parkingInfo} onChange={setParkingInfo}  placeholder="건물 내 무료 주차 2시간 · 발레파킹 가능" />
           <Field label="인스타그램 ID"    value={instagramId} onChange={setInstaId}     placeholder="fitwithji" />
           <Field label="카카오 오픈채팅 URL"     value={kakaoUrl}        onChange={setKakaoUrl} placeholder="https://open.kakao.com/o/..." />
           <Field label="카카오 예약 URL (선택)" value={kakaoBookingUrl} onChange={setKakaoBk}  placeholder="https://pf.kakao.com/..." />
@@ -476,6 +482,11 @@ export default function EditForm({ profile, plan }: Props) {
       {/* ── 추가 링크 ── */}
       <Section title="추가 링크 (선택)">
         <LinkManager links={customLinks} onChange={setCustomLinks} />
+      </Section>
+
+      {/* ── 갤러리 ── */}
+      <Section title="포트폴리오 · 갤러리 (선택)">
+        <GalleryManager images={gallery} onChange={setGallery} />
       </Section>
 
       {/* ── 후기 ── */}
