@@ -1,7 +1,29 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useFormStatus } from "react-dom";
 import { signUp } from "@/app/auth/actions";
+
+function SubmitButton({ disabled }: { disabled: boolean }) {
+  const { pending } = useFormStatus();
+  const isDisabled = disabled || pending;
+  return (
+    <button
+      type="submit"
+      disabled={isDisabled}
+      className="mt-1 w-full rounded-xl bg-foreground py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-80 active:opacity-70 disabled:cursor-not-allowed disabled:opacity-40"
+    >
+      {pending ? (
+        <span className="flex items-center justify-center gap-2">
+          <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+          처리 중…
+        </span>
+      ) : (
+        "가입하기"
+      )}
+    </button>
+  );
+}
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -189,13 +211,7 @@ export default function SignUpForm({ refCode }: Props) {
         </p>
       </div>
 
-      <button
-        type="submit"
-        disabled={submitDisabled}
-        className="mt-1 w-full rounded-xl bg-foreground py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-80 active:opacity-70 disabled:cursor-not-allowed disabled:opacity-40"
-      >
-        가입하기
-      </button>
+      <SubmitButton disabled={submitDisabled} />
     </form>
   );
 }
