@@ -9,9 +9,15 @@ export type CustomLink = {
   url: string;
 };
 
+export type GalleryImage = {
+  url: string;
+  caption?: string;
+};
+
 export type Review = {
   text: string;
   author: string;
+  date?: string; // "YYYY-MM" 형식 (예: "2025-03")
 };
 
 export type Theme =
@@ -56,6 +62,8 @@ export type Profile = {
   phone_url?: string | null;
   instagram_dm_url?: string | null;
   kakao_channel_url?: string | null;
+  gallery?: GalleryImage[] | null;
+  parking_info?: string | null;
 };
 
 export type Subscription = {

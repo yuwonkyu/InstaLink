@@ -1,0 +1,173 @@
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
+import { CldUploadWidget } from "next-cloudinary";
+import type { GalleryImage } from "@/lib/types";
+
+const MAX_GALLERY = 9;
+
+type Props = {
+  images: GalleryImage[];
+  onChange: (images: GalleryImage[]) => void;
+};
+
+export default function GalleryManager({ images, onChange }: Props) {
+  const [editIdx, setEditIdx] = useState<number | null>(null);
+  const [editCaption, setEditCaption] = useState("");
+
+  function remove(idx: number) {
+    onChange(images.filter((_, i) => i !== idx));
+  }
+
+  function startEdit(idx: number) {
+    setEditIdx(idx);
+    setEditCaption(images[idx].caption ?? "");
+  }
+
+  function saveCaption() {
+    if (editIdx === null) return;
+    onChange(
+      images.map((img, i) =>
+        i === editIdx ? { ...img, caption: editCaption.trim() || undefined } : img
+      )
+    );
+    setEditIdx(null);
+  }
+
+  function moveUp(idx: number) {
+    if (idx === 0) return;
+    const next = [...images];
+    [next[idx - 1], next[idx]] = [next[idx], next[idx - 1]];
+    onChange(next);
+  }
+
+  function moveDown(idx: number) {
+    if (idx === images.length - 1) return;
+    const next = [...images];
+    [next[idx], next[idx + 1]] = [next[idx + 1], next[idx]];
+    onChange(next);
+  }
+
+  const canAdd = images.length < MAX_GALLERY;
+
+  return (
+    <div className="flex flex-col gap-3">
+      {/* 갤러리 그리드 */}
+      {images.length > 0 && (
+        <div className="grid grid-cols-3 gap-2">
+          {images.map((img, idx) => (
+            <div key={img.url + idx} className="flex flex-col gap-1">
+              <div className="relative aspect-square overflow-hidden rounded-xl border border-gray-200 bg-gray-50 group">
+                <Image
+                  src={img.url}
+                  alt={img.caption ?? `갤러리 ${idx + 1}`}
+                  fill
+                  sizes="120px"
+                  className="object-cover"
+                />
+                {/* 오버레이 버튼 */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex gap-1">
+                    <button
+                      type="button"
+                      onClick={() => moveUp(idx)}
+                      disabled={idx === 0}
+                      className="rounded-md bg-white/80 px-1.5 py-0.5 text-[10px] font-medium disabled:opacity-30"
+                    >
+                      ←
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => moveDown(idx)}
+                      disabled={idx === images.length - 1}
+                      className="rounded-md bg-white/80 px-1.5 py-0.5 text-[10px] font-medium disabled:opacity-30"
+                    >
+                      →
+                    </button>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => startEdit(idx)}
+                    className="rounded-md bg-white/80 px-2 py-0.5 text-[10px] font-medium"
+                  >
+                    캡션
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => remove(idx)}
+                    className="rounded-md bg-red-500 px-2 py-0.5 text-[10px] font-medium text-white"
+                  >
+                    삭제
+                  </button>
+                </div>
+              </div>
+              {/* 캡션 수정 인라인 */}
+              {editIdx === idx ? (
+                <div className="flex gap-1">
+                  <input
+                    type="text"
+                    value={editCaption}
+                    onChange={(e) => setEditCaption(e.target.value)}
+                    placeholder="사진 설명 (선택)"
+                    autoFocus
+                    className="flex-1 rounded-lg border border-gray-200 bg-white px-2 py-1 text-[11px] outline-none focus:border-gray-400"
+                  />
+                  <button
+                    type="button"
+                    onClick={saveCaption}
+                    className="rounded-lg bg-foreground px-2 py-1 text-[11px] font-medium text-white"
+                  >
+                    저장
+                  </button>
+                </div>
+              ) : (
+                img.caption && (
+                  <p className="truncate text-[10px] text-(--muted)">{img.caption}</p>
+                )
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* 업로드 버튼 */}
+      {canAdd ? (
+        <CldUploadWidget
+          uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET ?? "instalink_unsigned"}
+          options={{ multiple: true, maxFiles: MAX_GALLERY - images.length }}
+          onSuccess={(result) => {
+            if (
+              result.event === "success" &&
+              typeof result.info === "object" &&
+              result.info !== null &&
+              "secure_url" in result.info
+            ) {
+              const url = result.info.secure_url as string;
+              onChange([...images, { url }]);
+            }
+          }}
+        >
+          {({ open }) => (
+            <button
+              type="button"
+              onClick={() => open()}
+              className="flex items-center justify-center gap-2 rounded-xl border border-dashed border-gray-300 py-3 text-sm font-medium text-(--muted) hover:border-gray-400 hover:text-foreground transition-colors"
+            >
+              <span className="text-lg leading-none">＋</span>
+              사진 추가 ({images.length}/{MAX_GALLERY})
+            </button>
+          )}
+        </CldUploadWidget>
+      ) : (
+        <p className="text-center text-xs text-(--muted)">
+          최대 {MAX_GALLERY}장까지 업로드할 수 있습니다.
+        </p>
+      )}
+
+      <p className="text-xs text-(--muted)">
+        작업물·매장 사진을 올리면 고객 신뢰도가 높아집니다. 사진을 누르면 순서 변경·캡션 추가·삭제가 가능합니다.
+      </p>
+    </div>
+  );
+}
