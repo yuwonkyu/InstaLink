@@ -9,9 +9,25 @@ const supabaseAdmin = createClient(
 );
 
 export async function POST(req: NextRequest) {
+  const cronSecret = process.env.CRON_SECRET;
   const authHeader = req.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!cronSecret || authHeader !== `Bearer ${cronSecret}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // ── 플랜 만료 정리: plan_expires_at이 지난 유료 프로필을 free로 전환 ──
+  const { data: expiredProfiles } = await supabaseAdmin
+    .from("profiles")
+    .select("id")
+    .neq("plan", "free")
+    .not("plan_expires_at", "is", null)
+    .lt("plan_expires_at", new Date().toISOString());
+
+  if (expiredProfiles && expiredProfiles.length > 0) {
+    await supabaseAdmin
+      .from("profiles")
+      .update({ plan: "free", plan_expires_at: null })
+      .in("id", expiredProfiles.map((p: { id: string }) => p.id));
   }
 
   // 3일 후 갱신 예정 구독 조회 (±12시간 window → 하루 1회 실행 시 중복 없음)
