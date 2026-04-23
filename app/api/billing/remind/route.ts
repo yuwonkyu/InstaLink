@@ -15,7 +15,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // ── 플랜 만료 정리: plan_expires_at이 지난 유료 프로필을 free로 전환 ──
+  // ── 플랜 만료 정리 ─────────────────────────────────────────
+  // 취소된 구독의 plan_expires_at이 지났으면 free로 전환
+  // (charge cron은 월 1회지만 remind는 매일 실행 → 만료 당일 처리 가능)
   const { data: expiredProfiles } = await supabaseAdmin
     .from("profiles")
     .select("id")

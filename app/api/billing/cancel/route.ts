@@ -18,7 +18,8 @@ export async function POST() {
 
   const now = new Date().toISOString();
 
-  // 2. 구독 취소: billing_key만 제거해 자동 갱신을 차단하고
+  // 2. 구독 취소 (순차 처리)
+  //    billing_key만 제거해 자동 갱신을 차단하고,
   //    plan·plan_expires_at은 유지 → 결제 기간 만료까지 서비스 계속 이용 가능
   await supabase
     .from("subscriptions")
