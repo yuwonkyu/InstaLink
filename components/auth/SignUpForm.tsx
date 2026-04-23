@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { signUp } from "@/app/auth/actions";
-import { getSupabaseBrowserClient } from "@/lib/supabase";
+import { createBrowserClient } from "@supabase/ssr";
 
 function SubmitButton({ disabled }: { disabled: boolean }) {
   const { pending } = useFormStatus();
@@ -43,7 +43,10 @@ export default function SignUpForm({ refCode }: Props) {
   const agreedAll = agreedTerms && agreedPrivacy;
 
   const handleSocialLogin = async (provider: "google" | "kakao") => {
-    const supabase = getSupabaseBrowserClient();
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? "",
+    );
     await supabase.auth.signInWithOAuth({
       provider,
       options: {
