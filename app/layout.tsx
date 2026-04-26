@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "InstaLink" }],
   verification: {
-    google: "google6d695433dcf38097",
+    google: "XdM9zh2wbDIGWYZDlaBjiPCaU7CL4jx4QaVIceeAQZ0",
   },
   metadataBase: new URL(SITE),
   openGraph: {
