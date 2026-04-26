@@ -23,6 +23,9 @@ export const metadata: Metadata = {
     "인스타그램 바이오 링크",
   ],
   authors: [{ name: "InstaLink" }],
+  verification: {
+    google: "google6d695433dcf38097",
+  },
   metadataBase: new URL(SITE),
   openGraph: {
     type: "website",
