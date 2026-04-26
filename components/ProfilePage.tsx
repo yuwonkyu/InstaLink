@@ -117,6 +117,7 @@ export default function ProfilePage({ profile, showWatermark = false }: ProfileP
     profile.kakao_channel_url;
 
   return (
+  <>
     <section className="rounded-xl p-6 backdrop-blur sm:p-8">
 
       {/* ── 프로필 헤더 ── */}
@@ -532,22 +533,26 @@ export default function ProfilePage({ profile, showWatermark = false }: ProfileP
           </div>
         </>
       )}
-      {/* ── 워터마크 (무료 플랜) ── */}
-      {showWatermark && (
-        <div className="mt-6 border-t border-black/8 pt-4 text-center">
-          <a
-            href="https://kku-ui.vercel.app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-[11px] text-(--muted) hover:text-foreground transition-colors"
-          >
-            <span>⚡</span>
-            <span>
-              <span className="font-semibold text-foreground">InstaLink</span>로 만든 페이지
-            </span>
-          </a>
-        </div>
-      )}
+      {/* 워터마크 아래 여백 (Fixed 워터마크 높이만큼) */}
+      {showWatermark && <div className="mt-6 h-14" aria-hidden="true" />}
     </section>
+
+    {/* ── 무료 플랜 고정 워터마크 (화면 하단 항상 표시) ── */}
+    {showWatermark && (
+      <a
+        href="/"
+        className="fixed bottom-0 left-0 right-0 z-50 flex items-center justify-center gap-2.5 border-t border-black/8 bg-white/95 py-3 backdrop-blur-sm transition-colors hover:bg-white"
+      >
+        <span className="text-sm">⚡</span>
+        <span className="text-sm font-semibold text-foreground">
+          InstaLink
+        </span>
+        <span className="text-xs text-(--muted)">로 만든 페이지</span>
+        <span className="ml-1 rounded-full bg-foreground px-2.5 py-0.5 text-[11px] font-bold text-white">
+          무료로 시작하기
+        </span>
+      </a>
+    )}
+  </>
   );
 }

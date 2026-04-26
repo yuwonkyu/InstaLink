@@ -71,8 +71,14 @@ export default async function StatsPage() {
 
   const isPaid = profile.plan === "basic" || profile.plan === "pro";
 
-  // 유료 플랜이 아니면 업그레이드 안내
-  if (!isPaid) {
+  // 14일 무료 체험: 가입일로부터 14일 이내의 무료 사용자
+  const createdAt   = profile.created_at ? new Date(profile.created_at) : null;
+  const daysSince   = createdAt ? Math.floor((Date.now() - createdAt.getTime()) / 86_400_000) : 999;
+  const inTrial     = !isPaid && daysSince < 14;
+  const trialDaysLeft = Math.max(0, 13 - daysSince);
+
+  // 유료 플랜도, 무료 체험도 아니면 업그레이드 안내
+  if (!isPaid && !inTrial) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <span className="text-4xl mb-4">📊</span>
@@ -112,6 +118,21 @@ export default async function StatsPage() {
           ← 대시보드
         </Link>
       </div>
+
+      {/* 무료 체험 배너 */}
+      {inTrial && (
+        <div className="rounded-xl border border-blue-100 bg-blue-50 px-4 py-3">
+          <p className="text-xs font-semibold text-blue-800">
+            🎁 무료 체험 중 — {trialDaysLeft}일 남음
+          </p>
+          <p className="mt-0.5 text-xs text-blue-700">
+            가입 후 14일간 통계를 무료로 이용할 수 있어요.{" "}
+            <Link href="/billing" className="font-semibold underline underline-offset-2">
+              업그레이드하면 계속 이용 가능
+            </Link>
+          </p>
+        </div>
+      )}
 
       {/* 요약 카드 2개 */}
       <div className="grid grid-cols-2 gap-3">
