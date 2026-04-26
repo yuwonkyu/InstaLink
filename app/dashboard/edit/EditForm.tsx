@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useEffect } from "react";
+import { useState, useTransition, useEffect, useRef } from "react";
 import Image from "next/image";
 import { CldUploadWidget } from "next-cloudinary";
 import { saveProfile, type SaveProfilePayload } from "./actions";
@@ -277,6 +277,24 @@ export default function EditForm({ profile, plan }: Props) {
   const [saveError, setSaveError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
+  // UX: 미저장 변경 추적 · 저장 상태 · 저장 후 모달 · AI 생성 안내
+  const isFirstRender = useRef(true);
+  const [isDirty, setIsDirty]         = useState(false);
+  const [saveStatus, setSaveStatus]   = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [showPostSave, setShowPostSave] = useState(false);
+  const [aiNotice, setAiNotice]       = useState(false);
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // 어느 필드든 바뀌면 isDirty = true (첫 렌더는 스킵)
+  useEffect(() => {
+    if (isFirstRender.current) { isFirstRender.current = false; return; }
+    setIsDirty(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [name, shopName, tagline, description, kakaoUrl, kakaoBookingUrl,
+      naverBookingUrl, phoneUrl, instaDmUrl, kakaoChanUrl, instagramId,
+      location, hours, imageUrl, theme, services, reviews, customLinks,
+      gallery, parkingInfo, sectionOrder, buttonColor]);
+
   // ── AI 추천 ──
   async function aiSuggest(type: "tagline" | "description" | "services") {
     if (!isProPlan) {
@@ -300,6 +318,7 @@ export default function EditForm({ profile, plan }: Props) {
       if (type === "tagline")     setTagline(result.split("\n")[0] ?? result);
       if (type === "description") setDesc(result);
       if (type === "services" && Array.isArray(result)) setServices(result);
+      setAiNotice(true); // AI 생성 안내 표시
     } catch {
       alert("AI 추천 실패. 잠시 후 다시 시도해주세요.");
     } finally {
@@ -310,6 +329,7 @@ export default function EditForm({ profile, plan }: Props) {
   // ── 저장 ──
   function handleSave() {
     setSaveError(null);
+    setSaveStatus("saving");
     const payload: SaveProfilePayload = {
       name, shop_name: shopName, tagline, description,
       kakao_url: kakaoUrl, kakao_booking_url: kakaoBookingUrl,
@@ -326,24 +346,99 @@ export default function EditForm({ profile, plan }: Props) {
     startTransition(async () => {
       try {
         await saveProfile(payload);
+        // 저장 성공
+        setIsDirty(false);
+        setSaveStatus("saved");
+        setShowPostSave(true);
+        setAiNotice(false);
+        // 3초 후 저장 상태 초기화
+        if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+        saveTimerRef.current = setTimeout(() => setSaveStatus("idle"), 3000);
       } catch (e) {
         // Next.js redirect()는 내부적으로 특수 예외를 throw함 — 다시 던져야 함
         if (typeof e === "object" && e !== null && "digest" in e) throw e;
-        setSaveError(e instanceof Error ? e.message : "저장 중 오류가 발생했습니다.");
+        const msg = e instanceof Error ? e.message : "저장 중 오류가 발생했습니다.";
+        setSaveError(msg);
+        setSaveStatus("error");
       }
     });
   }
 
   return (
     <div className="flex flex-col gap-5">
+
+      {/* ── 저장 후 모달 ── */}
+      {showPostSave && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center" onClick={() => setShowPostSave(false)}>
+          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="mb-1 flex items-center gap-2">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-green-100 text-xl">🎉</span>
+              <p className="text-base font-bold text-foreground">저장 완료!</p>
+            </div>
+            <p className="ml-11 text-sm text-(--muted)">변경사항이 내 페이지에 즉시 반영됐어요.</p>
+            <div className="mt-5 flex flex-col gap-2">
+              <a
+                href="/dashboard"
+                className="block w-full rounded-xl bg-foreground py-2.5 text-center text-sm font-semibold text-white transition hover:opacity-85"
+              >
+                대시보드로 이동
+              </a>
+              <button
+                type="button"
+                onClick={() => setShowPostSave(false)}
+                className="w-full rounded-xl border border-gray-200 py-2.5 text-sm font-medium text-foreground hover:bg-(--secondary) transition-colors"
+              >
+                계속 편집하기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── 미저장 변경 배너 ── */}
+      {isDirty && (
+        <div className="sticky top-0 z-40 -mx-1 flex items-center justify-between rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 shadow-sm">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-amber-400" />
+            <p className="text-xs font-semibold text-amber-800">저장되지 않은 변경사항이 있습니다</p>
+          </div>
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={isPending}
+            className="rounded-lg bg-amber-400 px-3 py-1 text-xs font-semibold text-white hover:bg-amber-500 disabled:opacity-60 transition-colors"
+          >
+            {isPending ? "저장 중…" : "지금 저장"}
+          </button>
+        </div>
+      )}
+
+      {/* ── AI 생성 안내 ── */}
+      {aiNotice && (
+        <div className="flex items-start gap-3 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3">
+          <span className="text-lg leading-none">✨</span>
+          <div className="flex-1">
+            <p className="text-xs font-semibold text-blue-800">AI가 자동 생성한 내용입니다</p>
+            <p className="mt-0.5 text-xs text-blue-700">실제 운영 전 반드시 내용을 직접 확인하고 수정해주세요. AI 내용을 그대로 사용하면 고객에게 부정확한 정보가 전달될 수 있습니다.</p>
+          </div>
+          <button type="button" onClick={() => setAiNotice(false)} className="shrink-0 text-blue-400 hover:text-blue-600 text-sm">✕</button>
+        </div>
+      )}
+
       {saveError && (
         <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{saveError}</div>
       )}
 
       {/* ── 기본 정보 ── */}
       <Section title="기본 정보">
+        <div className="mb-3 rounded-xl bg-blue-50 border border-blue-100 px-3.5 py-3">
+          <p className="text-xs font-semibold text-blue-800">💡 TIP</p>
+          <p className="mt-0.5 text-xs text-blue-700 leading-relaxed">
+            이름과 한 줄 소개는 고객이 제일 먼저 보는 정보예요. 내 전문성과 강점이 한눈에 보이도록 작성해주세요.
+          </p>
+        </div>
         <div className="flex flex-col gap-3">
-          <Field label="이름" value={name} onChange={setName} placeholder="김지수 트레이너" />
+          <Field label="이름 (고객에게 표시됨)" value={name} onChange={setName} placeholder="김지수 트레이너" />
           <Field label="브랜드명 / 상호" value={shopName} onChange={setShopName} placeholder="FIT WITH JI" />
 
           {/* 태그라인 + 예시 */}
@@ -601,15 +696,36 @@ export default function EditForm({ profile, plan }: Props) {
       )}
 
       {/* ── 저장 버튼 ── */}
-      <div className="flex gap-3 pb-8">
-        <button type="button" onClick={handleSave} disabled={isPending}
-          className="flex-1 rounded-xl bg-foreground py-3 text-sm font-semibold text-white transition-opacity hover:opacity-80 disabled:opacity-50">
-          {isPending ? "저장 중…" : "저장하고 페이지 공개하기"}
-        </button>
-        <a href="/dashboard"
-          className="rounded-xl border border-gray-200 px-5 py-3 text-sm font-medium text-(--muted) hover:bg-(--secondary) transition-colors">
-          취소
-        </a>
+      <div className="flex flex-col gap-2 pb-8">
+        <div className="flex gap-3">
+          <button type="button" onClick={handleSave} disabled={isPending}
+            className={`flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white transition-all disabled:opacity-50 ${
+              saveStatus === "saved"  ? "bg-green-500" :
+              saveStatus === "error"  ? "bg-red-500" :
+              "bg-foreground hover:opacity-80"
+            }`}
+          >
+            {isPending ? (
+              <>
+                <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                저장 중…
+              </>
+            ) : saveStatus === "saved" ? (
+              <>✓ 저장됨</>
+            ) : saveStatus === "error" ? (
+              <>다시 저장하기</>
+            ) : (
+              "저장하고 페이지 공개하기"
+            )}
+          </button>
+          <a href="/dashboard"
+            className="rounded-xl border border-gray-200 px-5 py-3 text-sm font-medium text-(--muted) hover:bg-(--secondary) transition-colors">
+            취소
+          </a>
+        </div>
+        {saveStatus === "saved" && !showPostSave && (
+          <p className="text-center text-xs text-green-600">✓ 변경사항이 페이지에 즉시 반영됐습니다.</p>
+        )}
       </div>
     </div>
   );

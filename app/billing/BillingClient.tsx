@@ -213,9 +213,11 @@ export default function BillingClient({
                 disabled={isCurrent || isLoading}
                 onClick={() => handleSelectPlan(plan)}
                 className={`mt-5 w-full rounded-xl py-3 text-sm font-semibold transition-opacity disabled:cursor-not-allowed disabled:opacity-40 ${
-                  plan === "free"
-                    ? "border border-gray-200 text-foreground hover:bg-(--secondary)"
-                    : "bg-foreground text-white hover:opacity-80"
+                  isCurrent
+                    ? "border border-gray-200 text-(--muted) cursor-not-allowed"
+                    : plan === "free"
+                      ? "border border-gray-200 text-foreground hover:bg-(--secondary)"
+                      : "bg-foreground text-white hover:opacity-80"
                 }`}
               >
                 {isLoading
@@ -223,8 +225,8 @@ export default function BillingClient({
                   : isCurrent
                     ? "현재 플랜"
                     : plan === "free"
-                      ? "다운그레이드"
-                      : "이 플랜 시작하기"}
+                      ? "Free로 다운그레이드"
+                      : `${meta.label} 시작하기`}
               </button>
             </div>
           );
@@ -292,9 +294,11 @@ export default function BillingClient({
                 disabled={isCurrent || isLoading}
                 onClick={() => handleSelectPlan(plan)}
                 className={`mt-5 w-full rounded-xl py-2.5 text-sm font-semibold transition-opacity disabled:cursor-not-allowed disabled:opacity-40 ${
-                  plan === "free"
-                    ? "border border-gray-200 text-foreground hover:bg-(--secondary)"
-                    : "bg-foreground text-white hover:opacity-80"
+                  isCurrent
+                    ? "border border-gray-200 text-(--muted) cursor-not-allowed"
+                    : plan === "free"
+                      ? "border border-gray-200 text-foreground hover:bg-(--secondary)"
+                      : "bg-foreground text-white hover:opacity-80"
                 }`}
               >
                 {isLoading
@@ -302,8 +306,8 @@ export default function BillingClient({
                   : isCurrent
                     ? "현재 플랜"
                     : plan === "free"
-                      ? "다운그레이드"
-                      : "이 플랜 시작하기"}
+                      ? "Free로 다운그레이드"
+                      : `${meta.label} 시작하기`}
               </button>
             </div>
           );

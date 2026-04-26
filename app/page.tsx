@@ -56,19 +56,29 @@ const FEATURES = [
     desc: "고객이 제일 먼저 궁금해하는 것, 바로 \"얼마예요?\". 서비스별 가격을 깔끔하게 정리해 물어보기 전에 미리 답합니다.",
   },
   {
+    emoji: "🖼️",
+    title: "포트폴리오·갤러리 통합",
+    desc: "작업물·매장 사진을 갤러리로 올리면 고객 신뢰도가 올라갑니다. 클릭하면 크게 볼 수 있어요.",
+  },
+  {
+    emoji: "📅",
+    title: "카카오·네이버 예약 바로 연결",
+    desc: "카카오 예약, 네이버 예약, 오픈채팅까지 버튼 하나로 연결. 예약 과정의 마찰을 없애세요.",
+  },
+  {
     emoji: "⭐",
     title: "실제 후기로 신뢰 쌓기",
     desc: "\"좋았어요\" 한마디가 열 번의 설명보다 낫습니다. 후기를 한 화면에 모아 처음 오는 고객도 안심하게 만드세요.",
   },
   {
-    emoji: "💬",
-    title: "카카오로 바로 문의",
-    desc: "복잡한 DM 없이 버튼 하나로 카카오 상담까지 연결. 고객이 이탈하기 전에 잡습니다.",
+    emoji: "🎨",
+    title: "UI 커스터마이징 — 내 브랜드 색으로",
+    desc: "라이트·다크·따뜻한 리넨 등 6가지 테마. Pro 플랜은 버튼 색상도 브랜드 컬러로 맞출 수 있어요.",
   },
   {
     emoji: "📊",
     title: "방문자 통계 한눈에",
-    desc: "오늘 몇 명이 내 페이지를 봤는지, 어떤 서비스를 클릭했는지 대시보드에서 바로 확인합니다.",
+    desc: "오늘 몇 명이 내 페이지를 봤는지, 어떤 링크를 클릭했는지 대시보드에서 바로 확인합니다.",
   },
 ];
 
@@ -143,20 +153,25 @@ export default function Page() {
       {/* 히어로 */}
       <section className="mx-auto w-full max-w-6xl px-4 pb-4 pt-14 sm:px-6">
         <div className="rounded-3xl bg-(--card) px-6 py-12 shadow-[0_4px_20px_rgba(17,24,39,0.06)] sm:px-12 sm:py-16">
-          <p className="inline-block rounded-full border border-black/10 bg-white px-3 py-1 text-xs font-semibold text-(--muted)">
-            PT · 필라테스 · 미용 · 카페 소상공인용
-          </p>
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="inline-block rounded-full border border-black/10 bg-white px-3 py-1 text-xs font-semibold text-(--muted)">
+              PT · 필라테스 · 미용 · 카페 소상공인용
+            </p>
+            <p className="inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-700">
+              ✓ 무료로 시작 가능
+            </p>
+          </div>
           <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl">
-            인스타 바이오 링크 하나로
+            나만의 링크 페이지를
             <br />
-            <span className="text-(--muted)">고객이 알아서 문의합니다</span>
+            <span className="text-(--muted)">1분 만에 만드세요</span>
           </h1>
           <p className="mt-5 max-w-xl text-sm leading-7 text-(--muted) sm:text-base">
             링크트리는 그냥 링크 목록이에요.
             <br />
             InstaLink는{" "}
             <strong className="font-semibold text-foreground">
-              서비스 소개 + 가격 + 후기 + 카카오 상담
+              포트폴리오 + 예약 + 후기 + 카카오 상담
             </strong>
             까지 한 페이지에 담아 고객을 직접 문의로 이끕니다.
           </p>
@@ -165,17 +180,19 @@ export default function Page() {
               href="/auth/signup"
               className="rounded-xl bg-foreground px-6 py-3 text-sm font-semibold text-white transition hover:opacity-85"
             >
-              무료로 시작하기 →
+              지금 무료로 시작하기 →
             </Link>
             <Link
               href="/sample"
+              target="_blank"
+              rel="noopener noreferrer"
               className="rounded-xl border border-black/10 bg-white px-6 py-3 text-sm font-semibold transition hover:bg-black/5"
             >
               예시 페이지 보기
             </Link>
           </div>
           <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1">
-            {["카드 등록 없음", "5분 완성", "즉시 공유 가능"].map((item) => (
+            {["카드 등록 없음", "가입만 하면 바로 사용", "즉시 공유 가능", "영원히 무료 플랜 제공"].map((item) => (
               <span key={item} className="flex items-center gap-1.5 text-xs text-(--muted)">
                 <span className="text-green-500 font-bold">✔</span>
                 {item}
@@ -313,36 +330,45 @@ export default function Page() {
           {PLANS.map((plan) => {
             const meta = PLAN_META[plan];
             const isHighlight = plan === "basic";
+            const isFree      = plan === "free";
             return (
               <div
                 key={plan}
-                className={`rounded-2xl p-5 shadow-[0_4px_20px_rgba(17,24,39,0.06)] ${
+                className={`relative rounded-2xl p-5 shadow-[0_4px_20px_rgba(17,24,39,0.06)] ${
                   isHighlight
                     ? "border-2 border-foreground bg-foreground text-white shadow-[0_8px_30px_rgba(17,24,39,0.18)]"
                     : "border border-black/5 bg-(--card)"
                 }`}
               >
-                <p className={`flex items-center gap-1.5 text-sm font-semibold ${isHighlight ? "opacity-70" : "text-(--muted)"}`}>
+                {isHighlight && (
+                  <span className="absolute -top-3 left-4 rounded-full bg-amber-400 px-2.5 py-0.5 text-[11px] font-bold text-white">
+                    가장 인기
+                  </span>
+                )}
+                {/* 플랜명 */}
+                <p className={`text-xs font-bold uppercase tracking-widest ${isHighlight ? "opacity-60" : "text-(--muted)"}`}>
                   {meta.label}
-                  {isHighlight && (
-                    <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs">인기</span>
-                  )}
                 </p>
-                <p className="mt-1 text-2xl font-extrabold">
-                  {meta.price === 0 ? "무료" : `${meta.price.toLocaleString()}원`}
+                {/* 가격 */}
+                <p className="mt-1.5 text-2xl font-extrabold">
+                  {meta.price === 0 ? "₩0" : `₩${meta.price.toLocaleString()}`}
+                  {meta.price > 0 && <span className={`ml-1 text-sm font-normal ${isHighlight ? "opacity-60" : "text-(--muted)"}`}>/월</span>}
                 </p>
                 <p className={`mt-0.5 text-xs ${isHighlight ? "opacity-60" : "text-(--muted)"}`}>
-                  {meta.price === 0 ? "영원히 무료" : "월 / 언제든 해지 가능"}
+                  {meta.price === 0 ? "영원히 무료 · 카드 등록 없음" : "언제든 해지 가능"}
                 </p>
+                {/* CTA */}
                 <Link
                   href="/auth/signup"
-                  className={`mt-4 block rounded-xl py-2 text-center text-sm font-semibold transition ${
+                  className={`mt-4 block rounded-xl py-2.5 text-center text-sm font-bold transition ${
                     isHighlight
                       ? "bg-white text-foreground hover:opacity-90"
-                      : "border border-black/10 hover:bg-black/5"
+                      : isFree
+                        ? "border-2 border-foreground bg-foreground text-white hover:opacity-85"
+                        : "border border-black/10 hover:bg-black/5"
                   }`}
                 >
-                  시작하기
+                  {isFree ? "무료로 시작하기" : isHighlight ? "이 플랜으로 시작하기" : "Pro 시작하기"}
                 </Link>
               </div>
             );
@@ -413,20 +439,34 @@ export default function Page() {
       {/* 최종 CTA */}
       <section className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6">
         <div className="rounded-3xl bg-foreground px-6 py-12 text-center text-white shadow-[0_8px_40px_rgba(17,24,39,0.2)] sm:px-12 sm:py-16">
-          <h2 className="text-2xl font-extrabold sm:text-4xl">
-            5분이면 내 가게 페이지 완성
+          <p className="inline-block rounded-full bg-white/20 px-3 py-1 text-xs font-semibold">
+            🎁 무료 플랜 — 카드 등록 없음
+          </p>
+          <h2 className="mt-4 text-2xl font-extrabold sm:text-4xl">
+            지금 무료로 시작하세요
           </h2>
           <p className="mt-4 text-sm leading-7 opacity-70 sm:text-base">
-            지금 바로 만들어서 인스타 바이오에 붙여보세요.
+            가입만 하면 바로 내 링크 페이지가 만들어집니다.
             <br />
-            무료 플랜은 카드 등록 없이 바로 시작할 수 있어요.
+            5분 안에 인스타 바이오에 붙여보세요.
           </p>
-          <Link
-            href="/auth/signup"
-            className="mt-8 inline-block rounded-xl bg-white px-8 py-3.5 text-sm font-bold text-foreground transition hover:opacity-90"
-          >
-            무료로 내 페이지 만들기 →
-          </Link>
+          <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+            <Link
+              href="/auth/signup"
+              className="w-full rounded-xl bg-white px-8 py-3.5 text-sm font-bold text-foreground transition hover:opacity-90 sm:w-auto"
+            >
+              무료로 내 페이지 만들기 →
+            </Link>
+            <Link
+              href="/sample"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full rounded-xl border border-white/30 px-8 py-3.5 text-sm font-semibold text-white transition hover:bg-white/10 sm:w-auto"
+            >
+              예시 페이지 먼저 보기
+            </Link>
+          </div>
+          <p className="mt-4 text-xs opacity-50">회원가입 없이 예시 페이지를 바로 확인할 수 있어요.</p>
         </div>
       </section>
 

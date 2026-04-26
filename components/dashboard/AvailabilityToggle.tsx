@@ -8,20 +8,28 @@ type Props = {
 
 export default function AvailabilityToggle({ initialValue }: Props) {
   const [isAvailable, setIsAvailable] = useState(initialValue);
-  const [loading, setLoading]         = useState(false);
+  const [syncing, setSyncing]         = useState(false); // 배경 동기화 중
 
   async function toggle() {
-    setLoading(true);
     const next = !isAvailable;
+    // Optimistic update: UI 즉시 반영
+    setIsAvailable(next);
+    setSyncing(true);
     try {
       const res = await fetch("/api/profile/availability", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ is_available: next }),
       });
-      if (res.ok) setIsAvailable(next);
+      if (!res.ok) {
+        // 서버 실패 → 롤백
+        setIsAvailable(!next);
+      }
+    } catch {
+      // 네트워크 오류 → 롤백
+      setIsAvailable(!next);
     } finally {
-      setLoading(false);
+      setSyncing(false);
     }
   }
 
@@ -30,6 +38,9 @@ export default function AvailabilityToggle({ initialValue }: Props) {
       <div>
         <p className="text-sm font-medium text-foreground">
           {isAvailable ? "✅ 예약 가능" : "❌ 현재 마감"}
+          {syncing && (
+            <span className="ml-2 inline-block h-3 w-3 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600" />
+          )}
         </p>
         <p className="text-xs text-(--muted)">
           {isAvailable
@@ -40,9 +51,8 @@ export default function AvailabilityToggle({ initialValue }: Props) {
       <button
         type="button"
         onClick={toggle}
-        disabled={loading}
         aria-label="예약 가능 여부 토글"
-        className={`relative h-6 w-11 rounded-full transition-colors duration-200 focus:outline-none disabled:opacity-50 ${
+        className={`relative h-6 w-11 rounded-full transition-colors duration-200 focus:outline-none ${
           isAvailable ? "bg-green-500" : "bg-gray-300"
         }`}
       >
