@@ -20,15 +20,15 @@ export default function FreeCtaBanner() {
     >
       <Link
         href="/auth/signup"
-        className="flex items-center gap-3 rounded-2xl bg-foreground px-5 py-3 shadow-[0_8px_32px_rgba(17,24,39,0.28)] transition hover:opacity-90 active:scale-[0.98]"
+        className="flex items-center gap-3 rounded-2xl bg-[#FFD600] px-5 py-3 shadow-[0_8px_32px_rgba(255,214,0,0.35)] transition hover:brightness-95 active:scale-[0.98]"
       >
-        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-[#FFD600] text-sm font-black text-[#111]">
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-[#111] text-sm font-black text-[#FFD600]">
           ⚡
         </span>
-        <span className="text-sm font-bold text-white">
+        <span className="text-sm font-bold text-[#111]">
           나도 무료로 만들러 가기
         </span>
-        <span className="rounded-lg bg-white/15 px-2 py-0.5 text-[11px] font-semibold text-white">
+        <span className="rounded-lg bg-[#111]/10 px-2 py-0.5 text-[11px] font-bold text-[#111]">
           무료
         </span>
       </Link>
