@@ -6,6 +6,7 @@ import { PLAN_META, type Plan } from "@/lib/types";
 import { getSiteUrl } from "@/lib/site-url";
 import PlanSelect from "./PlanSelect";
 import SuspendButton from "./SuspendButton";
+import AdminDeleteButton from "./AdminDeleteButton";
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "";
 const SITE_URL = getSiteUrl();
@@ -192,6 +193,7 @@ export default async function AdminPage({
                 <th className="px-4 py-3 font-medium">조회수</th>
                 <th className="px-4 py-3 font-medium">가입일</th>
                 <th className="px-4 py-3 font-medium">중지</th>
+                <th className="px-4 py-3 font-medium">삭제/복구</th>
                 <th className="px-4 py-3 font-medium">바로가기</th>
               </tr>
             </thead>
@@ -242,6 +244,14 @@ export default async function AdminPage({
                     />
                   </td>
                   <td className="px-4 py-3">
+                    <AdminDeleteButton
+                      profileId={p.id}
+                      slug={p.slug}
+                      name={p.name || p.shop_name || p.slug}
+                      isActive={p.is_active ?? true}
+                    />
+                  </td>
+                  <td className="px-4 py-3">
                     <a
                       href={`${SITE_URL}/${p.slug}`}
                       target="_blank"
@@ -256,7 +266,7 @@ export default async function AdminPage({
               {!profiles?.length && (
                 <tr>
                   <td
-                    colSpan={9}
+                    colSpan={10}
                     className="px-4 py-8 text-center text-sm text-(--muted)"
                   >
                     고객이 없습니다.
