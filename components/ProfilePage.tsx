@@ -421,7 +421,7 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
                 <div className="mt-4">
                   <a
                     href={`/${profile.slug}/review`}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-black/10 bg-white py-3 text-sm font-semibold text-foreground transition-colors hover:bg-black/[0.035] active:scale-[0.99]"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl border border-(--muted)/25 bg-(--secondary) py-3 text-sm font-semibold text-foreground transition-colors hover:opacity-80 active:scale-[0.99]"
                   >
                     ✍️ 후기 남기기
                   </a>
