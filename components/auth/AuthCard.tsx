@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 type Props = {
   subtitle: string;
   heading: string;
@@ -13,7 +15,9 @@ export default function AuthCard({ subtitle, heading, error, success, children, 
       <div className="w-full max-w-sm">
         {/* 로고 */}
         <div className="mb-8 text-center">
-          <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">InstaLink</h1>
+          <Link href="/" className="font-display text-2xl font-bold tracking-tight text-foreground hover:opacity-80 transition">
+            InstaLink
+          </Link>
           <p className="mt-1 text-sm text-(--muted)">{subtitle}</p>
         </div>
 

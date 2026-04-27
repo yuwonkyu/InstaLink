@@ -36,6 +36,8 @@ body {
   background: var(--secondary);
   color: var(--foreground);
   font-family: var(--font-body), sans-serif;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 a {

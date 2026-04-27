@@ -2,6 +2,7 @@ import Link from "next/link";
 import LandingHeader from "@/components/landing/LandingHeader";
 import LandingFooter from "@/components/landing/LandingFooter";
 import DonationSection from "@/components/landing/DonationSection";
+import HeroCarousel from "@/components/landing/HeroCarousel";
 import { PLAN_META, type Plan } from "@/lib/types";
 import { PLAN_FEATURE_ROWS } from "@/lib/plan-features";
 
@@ -163,51 +164,63 @@ export default function Page() {
       {/* 히어로 */}
       <section className="mx-auto w-full max-w-6xl px-4 pb-4 pt-14 sm:px-6">
         <div className="rounded-3xl bg-(--card) px-6 py-12 shadow-[0_4px_20px_rgba(17,24,39,0.06)] sm:px-12 sm:py-16">
-          <div className="flex flex-wrap items-center gap-2">
-            <p className="inline-block rounded-full border border-black/10 bg-white px-3 py-1 text-xs font-semibold text-(--muted)">
-              PT · 필라테스 · 미용 · 카페 소상공인용
-            </p>
-            <p className="inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-700">
-              ✓ 무료로 시작 가능
-            </p>
-          </div>
-          <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl">
-            나만의 링크 페이지를
-            <br />
-            <span className="text-(--muted)">1분 만에 만드세요</span>
-          </h1>
-          <p className="mt-5 max-w-xl text-sm leading-7 text-(--muted) sm:text-base">
-            링크트리는 그냥 링크 목록이에요.
-            <br />
-            InstaLink는{" "}
-            <strong className="font-semibold text-foreground">
-              포트폴리오 + 예약 + 후기 + 카카오 상담
-            </strong>
-            까지 한 페이지에 담아 고객을 직접 문의로 이끕니다.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href="/auth/signup"
-              className="rounded-xl bg-foreground px-6 py-3 text-sm font-semibold text-white transition hover:opacity-85"
-            >
-              지금 무료로 시작하기 →
-            </Link>
-            <Link
-              href="/sample1"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-xl border border-black/10 bg-white px-6 py-3 text-sm font-semibold transition hover:bg-black/5"
-            >
-              예시 페이지 보기
-            </Link>
-          </div>
-          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1">
-            {["카드 등록 없음", "가입만 하면 바로 사용", "즉시 공유 가능", "영원히 무료 플랜 제공"].map((item) => (
-              <span key={item} className="flex items-center gap-1.5 text-xs text-(--muted)">
-                <span className="text-green-500 font-bold">✔</span>
-                {item}
-              </span>
-            ))}
+          <div className="flex flex-col items-center gap-10 md:flex-row md:items-center md:gap-12">
+
+            {/* 좌: 텍스트 영역 */}
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="inline-block rounded-full border border-black/10 bg-white px-3 py-1 text-xs font-semibold text-(--muted)">
+                  PT · 필라테스 · 미용 · 카페 소상공인용
+                </p>
+                <p className="inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-700">
+                  ✓ 무료로 시작 가능
+                </p>
+              </div>
+              <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl">
+                나만의 링크 페이지를
+                <br />
+                <span className="text-(--muted)">1분 만에 만드세요</span>
+              </h1>
+              <p className="mt-5 max-w-xl text-sm leading-7 text-(--muted) sm:text-base">
+                링크트리는 그냥 링크 목록이에요.
+                <br />
+                InstaLink는{" "}
+                <strong className="font-semibold text-foreground">
+                  포트폴리오 + 예약 + 후기 + 카카오 상담
+                </strong>
+                까지 한 페이지에 담아 고객을 직접 문의로 이끕니다.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link
+                  href="/auth/signup"
+                  className="rounded-xl bg-foreground px-6 py-3 text-sm font-semibold text-white transition hover:opacity-85"
+                >
+                  지금 무료로 시작하기 →
+                </Link>
+                <Link
+                  href="/sample1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-xl border border-black/10 bg-white px-6 py-3 text-sm font-semibold transition hover:bg-black/5"
+                >
+                  예시 페이지 보기
+                </Link>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1">
+                {["카드 등록 없음", "가입만 하면 바로 사용", "즉시 공유 가능", "영원히 무료 플랜 제공"].map((item) => (
+                  <span key={item} className="flex items-center gap-1.5 text-xs text-(--muted)">
+                    <span className="text-green-500 font-bold">✔</span>
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* 우: 자동 전환 슬라이드 */}
+            <div className="shrink-0 flex justify-center md:w-[240px]">
+              <HeroCarousel />
+            </div>
+
           </div>
         </div>
       </section>
@@ -460,9 +473,6 @@ export default function Page() {
         </div>
       </section>
 
-      {/* 후원 */}
-      <DonationSection />
-
       {/* 최종 CTA */}
       <section className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6">
         <div className="rounded-3xl bg-foreground px-6 py-12 text-center text-white shadow-[0_8px_40px_rgba(17,24,39,0.2)] sm:px-12 sm:py-16">
@@ -496,6 +506,9 @@ export default function Page() {
           <p className="mt-4 text-xs opacity-50">회원가입 없이 예시 페이지를 바로 확인할 수 있어요.</p>
         </div>
       </section>
+
+      {/* 후원 — 페이지 최하단 */}
+      <DonationSection />
 
       <LandingFooter />
 
