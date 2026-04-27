@@ -18,6 +18,15 @@ const adminClient = createClient(
 
 type SortKey = "created_desc" | "created_asc" | "views_desc" | "views_asc" | "expires_soon";
 
+/** 날짜를 yy.mm.dd 형식으로 */
+function fmtDate(iso: string) {
+  const d = new Date(iso);
+  const yy = String(d.getFullYear()).slice(2);
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${yy}.${mm}.${dd}`;
+}
+
 export default async function AdminPage({
   searchParams,
 }: {
@@ -179,6 +188,207 @@ export default async function AdminPage({
           )}
         </div>
 
+        {/* ── 필터 바 ── */}
+        <div className="rounded-2xl bg-white p-4 shadow-[0_2px_12px_rgba(17,24,39,0.06)] flex flex-col gap-3">
+          <form className="flex flex-col gap-3">
+            {/* 검색 */}
+            <div className="flex gap-2">
+              <input
+                name="q"
+                defaultValue={q}
+                placeholder="이름 · 상호명 · 슬러그 검색"
+                className="flex-1 rounded-xl border border-gray-200 bg-(--secondary) px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-colors"
+              />
+              <button
+                type="submit"
+                className="rounded-xl bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-80 transition-opacity"
+              >
+                검색
+              </button>
+            </div>
+
+            {/* 플랜 필터 */}
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="text-xs font-medium text-(--muted) w-8">플랜</span>
+              {[
+                { value: "all",   label: "전체" },
+                { value: "free",  label: "Free" },
+                { value: "basic", label: "Basic" },
+                { value: "pro",   label: "Pro" },
+              ].map(({ value, label }) => (
+                <button key={value} name="plan" value={value} type="submit"
+                  className={`rounded-lg border px-3 py-1 text-xs font-medium transition-colors ${
+                    (planFilter ?? "all") === value
+                      ? "border-foreground bg-foreground text-white"
+                      : "border-gray-200 bg-white text-(--muted) hover:border-gray-400 hover:bg-gray-100 hover:text-foreground"
+                  }`}
+                >
+                  {label}
+                  {value !== "all" && (
+                    <span className="ml-1 opacity-60">({planCounts[value] ?? 0})</span>
+                  )}
+                </button>
+              ))}
+            </div>
+
+            {/* 상태 필터 */}
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="text-xs font-medium text-(--muted) w-8">상태</span>
+              {[
+                { value: "all",      label: "전체" },
+                { value: "active",   label: "공개 중" },
+                { value: "inactive", label: "비공개" },
+              ].map(({ value, label }) => (
+                <button key={value} name="status" value={value} type="submit"
+                  className={`rounded-lg border px-3 py-1 text-xs font-medium transition-colors ${
+                    (statusFilter ?? "all") === value
+                      ? "border-foreground bg-foreground text-white"
+                      : "border-gray-200 bg-white text-(--muted) hover:border-gray-400 hover:bg-gray-100 hover:text-foreground"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {/* 정렬 */}
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="text-xs font-medium text-(--muted) w-8">정렬</span>
+              {[
+                { value: "created_desc",  label: "최신 가입순" },
+                { value: "created_asc",   label: "오래된 가입순" },
+                { value: "views_desc",    label: "조회수 높은순" },
+                { value: "views_asc",     label: "조회수 낮은순" },
+                { value: "expires_soon",  label: `만료 임박 (${expiresSoonCount}명)` },
+              ].map(({ value, label }) => (
+                <button key={value} name="sort" value={value} type="submit"
+                  className={`rounded-lg border px-3 py-1 text-xs font-medium transition-colors ${
+                    sort === value
+                      ? "border-blue-500 bg-blue-50 text-blue-700"
+                      : "border-gray-200 bg-white text-(--muted) hover:border-blue-400 hover:bg-blue-50 hover:text-blue-600"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {/* 숨김 필드: 현재 필터 유지 */}
+            {q          && <input type="hidden" name="q"      value={q} />}
+            {planFilter && <input type="hidden" name="plan"   value={planFilter} />}
+            {statusFilter && <input type="hidden" name="status" value={statusFilter} />}
+            {sort       && <input type="hidden" name="sort"   value={sort} />}
+          </form>
+
+          {/* 결과 요약 */}
+          <p className="text-xs text-(--muted)">
+            {q || (planFilter && planFilter !== "all") || (statusFilter && statusFilter !== "all") || sort !== "created_desc"
+              ? `${profiles.length}명 표시 중`
+              : `전체 ${allProfiles?.length ?? 0}명`}
+          </p>
+        </div>
+
+        {/* ── 고객 테이블 ── */}
+        <div className="overflow-x-auto rounded-2xl bg-white shadow-[0_2px_12px_rgba(17,24,39,0.06)]">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-gray-100 text-left text-xs text-(--muted)">
+                <th className="px-4 py-3 font-medium">슬러그</th>
+                <th className="px-4 py-3 font-medium">이름 / 상호 <span className="opacity-50 font-normal">(클릭 → 이메일)</span></th>
+                <th className="px-4 py-3 font-medium">플랜</th>
+                <th className="px-4 py-3 font-medium">만료일</th>
+                <th className="px-4 py-3 font-medium">상태</th>
+                <th className="px-4 py-3 font-medium">조회수</th>
+                <th className="px-4 py-3 font-medium">가입일</th>
+                <th className="px-4 py-3 font-medium">중지</th>
+                <th className="px-4 py-3 font-medium">삭제</th>
+                <th className="px-4 py-3 font-medium">바로가기</th>
+              </tr>
+            </thead>
+            <tbody>
+              {profiles.map((p) => {
+                const expiresSoon = p.plan_expires_at
+                  && new Date(p.plan_expires_at) <= new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+                const email = p.owner_id ? (emailMap[p.owner_id] ?? null) : null;
+                return (
+                  <tr key={p.id} className={`border-b border-gray-50 hover:bg-gray-50/50 ${expiresSoon ? "bg-amber-50/40" : ""}`}>
+                    <td className="px-4 py-3 font-mono text-xs text-foreground">{p.slug}</td>
+                    <td className="px-4 py-3 text-foreground">
+                      <details className="group/email">
+                        <summary className="cursor-pointer list-none">
+                          <div className="flex flex-col">
+                            <span className="group-open/email:text-blue-600 transition-colors">
+                              {p.name || "—"}
+                            </span>
+                            {p.shop_name && p.shop_name !== p.name && (
+                              <span className="text-[11px] text-(--muted)">{p.shop_name}</span>
+                            )}
+                          </div>
+                        </summary>
+                        <span className="mt-1 block text-[11px] text-blue-500 select-all">
+                          {email ?? <span className="text-(--muted) opacity-50">이메일 없음</span>}
+                        </span>
+                      </details>
+                    </td>
+                    <td className="px-4 py-3">
+                      <PlanSelect profileId={p.id} current={(p.plan ?? "free") as Plan} />
+                    </td>
+                    <td className="px-4 py-3 text-xs">
+                      {p.plan_expires_at ? (
+                        <span className={expiresSoon ? "font-semibold text-amber-600" : "text-(--muted)"}>
+                          {expiresSoon && "⚠️ "}
+                          {fmtDate(p.plan_expires_at)}
+                        </span>
+                      ) : "—"}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                        p.is_active ? "bg-green-100 text-green-700" : "bg-gray-100 text-(--muted)"
+                      }`}>
+                        {p.is_active ? "공개" : "비공개"}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-xs text-(--muted)">
+                      {(p.view_count ?? 0).toLocaleString()}
+                    </td>
+                    <td className="px-4 py-3 text-xs text-(--muted)">
+                      {fmtDate(p.created_at)}
+                    </td>
+                    <td className="px-4 py-3">
+                      <SuspendButton profileId={p.id} initialActive={p.is_active ?? true} />
+                    </td>
+                    <td className="px-4 py-3">
+                      <AdminDeleteButton
+                        profileId={p.id}
+                        slug={p.slug}
+                        name={p.name || p.shop_name || p.slug}
+                        isActive={p.is_active ?? true}
+                      />
+                    </td>
+                    <td className="px-4 py-3">
+                      <a
+                        href={`${SITE_URL}/${p.slug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-blue-500 hover:underline"
+                      >
+                        보기 →
+                      </a>
+                    </td>
+                  </tr>
+                );
+              })}
+              {!profiles.length && (
+                <tr>
+                  <td colSpan={10} className="px-4 py-10 text-center text-sm text-(--muted)">
+                    조건에 맞는 고객이 없습니다.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
         {/* ── Supabase 삭제 가이드 (접이식 메모) ── */}
         <details className="group rounded-2xl bg-amber-50 border border-amber-200 shadow-[0_2px_12px_rgba(17,24,39,0.04)]">
           <summary className="flex cursor-pointer items-center justify-between px-5 py-4 select-none">
@@ -232,203 +442,6 @@ WHERE email = '삭제할이메일@example.com';`}
             </div>
           </div>
         </details>
-
-        {/* ── 필터 바 ── */}
-        <div className="rounded-2xl bg-white p-4 shadow-[0_2px_12px_rgba(17,24,39,0.06)] flex flex-col gap-3">
-          <form className="flex flex-col gap-3">
-            {/* 검색 */}
-            <div className="flex gap-2">
-              <input
-                name="q"
-                defaultValue={q}
-                placeholder="이름 · 상호명 · 슬러그 검색"
-                className="flex-1 rounded-xl border border-gray-200 bg-(--secondary) px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-colors"
-              />
-              <button
-                type="submit"
-                className="rounded-xl bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-80 transition-opacity"
-              >
-                검색
-              </button>
-            </div>
-
-            {/* 플랜 필터 */}
-            <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-xs font-medium text-(--muted) w-8">플랜</span>
-              {[
-                { value: "all",   label: "전체" },
-                { value: "free",  label: "Free" },
-                { value: "basic", label: "Basic" },
-                { value: "pro",   label: "Pro" },
-              ].map(({ value, label }) => (
-                <button key={value} name="plan" value={value} type="submit"
-                  className={`rounded-lg border px-3 py-1 text-xs font-medium transition-colors ${
-                    (planFilter ?? "all") === value
-                      ? "border-foreground bg-foreground text-white"
-                      : "border-gray-200 bg-white text-(--muted) hover:border-gray-300"
-                  }`}
-                >
-                  {label}
-                  {value !== "all" && (
-                    <span className="ml-1 opacity-60">({planCounts[value] ?? 0})</span>
-                  )}
-                </button>
-              ))}
-            </div>
-
-            {/* 상태 필터 */}
-            <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-xs font-medium text-(--muted) w-8">상태</span>
-              {[
-                { value: "all",      label: "전체" },
-                { value: "active",   label: "공개 중" },
-                { value: "inactive", label: "비공개" },
-              ].map(({ value, label }) => (
-                <button key={value} name="status" value={value} type="submit"
-                  className={`rounded-lg border px-3 py-1 text-xs font-medium transition-colors ${
-                    (statusFilter ?? "all") === value
-                      ? "border-foreground bg-foreground text-white"
-                      : "border-gray-200 bg-white text-(--muted) hover:border-gray-300"
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-
-            {/* 정렬 */}
-            <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-xs font-medium text-(--muted) w-8">정렬</span>
-              {[
-                { value: "created_desc",  label: "최신 가입순" },
-                { value: "created_asc",   label: "오래된 가입순" },
-                { value: "views_desc",    label: "조회수 높은순" },
-                { value: "views_asc",     label: "조회수 낮은순" },
-                { value: "expires_soon",  label: `만료 임박 (${expiresSoonCount}명)` },
-              ].map(({ value, label }) => (
-                <button key={value} name="sort" value={value} type="submit"
-                  className={`rounded-lg border px-3 py-1 text-xs font-medium transition-colors ${
-                    sort === value
-                      ? "border-blue-500 bg-blue-50 text-blue-700"
-                      : "border-gray-200 bg-white text-(--muted) hover:border-gray-300"
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-
-            {/* 숨김 필드: 현재 필터 유지 */}
-            {q          && <input type="hidden" name="q"      value={q} />}
-            {planFilter && <input type="hidden" name="plan"   value={planFilter} />}
-            {statusFilter && <input type="hidden" name="status" value={statusFilter} />}
-            {sort       && <input type="hidden" name="sort"   value={sort} />}
-          </form>
-
-          {/* 결과 요약 */}
-          <p className="text-xs text-(--muted)">
-            {q || (planFilter && planFilter !== "all") || (statusFilter && statusFilter !== "all") || sort !== "created_desc"
-              ? `${profiles.length}명 표시 중`
-              : `전체 ${allProfiles?.length ?? 0}명`}
-          </p>
-        </div>
-
-        {/* ── 고객 테이블 ── */}
-        <div className="overflow-x-auto rounded-2xl bg-white shadow-[0_2px_12px_rgba(17,24,39,0.06)]">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-gray-100 text-left text-xs text-(--muted)">
-                <th className="px-4 py-3 font-medium">슬러그</th>
-                <th className="px-4 py-3 font-medium">이름 / 상호</th>
-                <th className="px-4 py-3 font-medium">이메일</th>
-                <th className="px-4 py-3 font-medium">플랜</th>
-                <th className="px-4 py-3 font-medium">만료일</th>
-                <th className="px-4 py-3 font-medium">상태</th>
-                <th className="px-4 py-3 font-medium">조회수</th>
-                <th className="px-4 py-3 font-medium">가입일</th>
-                <th className="px-4 py-3 font-medium">중지</th>
-                <th className="px-4 py-3 font-medium">삭제</th>
-                <th className="px-4 py-3 font-medium">바로가기</th>
-              </tr>
-            </thead>
-            <tbody>
-              {profiles.map((p) => {
-                const expiresSoon = p.plan_expires_at
-                  && new Date(p.plan_expires_at) <= new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-                return (
-                  <tr key={p.id} className={`border-b border-gray-50 hover:bg-gray-50/50 ${expiresSoon ? "bg-amber-50/40" : ""}`}>
-                    <td className="px-4 py-3 font-mono text-xs text-foreground">{p.slug}</td>
-                    <td className="px-4 py-3 text-foreground">
-                      <div className="flex flex-col">
-                        <span>{p.name || "—"}</span>
-                        {p.shop_name && p.shop_name !== p.name && (
-                          <span className="text-[11px] text-(--muted)">{p.shop_name}</span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 text-xs text-(--muted)">
-                      {p.owner_id && emailMap[p.owner_id]
-                        ? emailMap[p.owner_id]
-                        : <span className="opacity-40">—</span>}
-                    </td>
-                    <td className="px-4 py-3">
-                      <PlanSelect profileId={p.id} current={(p.plan ?? "free") as Plan} />
-                    </td>
-                    <td className="px-4 py-3 text-xs">
-                      {p.plan_expires_at ? (
-                        <span className={expiresSoon ? "font-semibold text-amber-600" : "text-(--muted)"}>
-                          {expiresSoon && "⚠️ "}
-                          {new Date(p.plan_expires_at).toLocaleDateString("ko-KR")}
-                        </span>
-                      ) : "—"}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                        p.is_active ? "bg-green-100 text-green-700" : "bg-gray-100 text-(--muted)"
-                      }`}>
-                        {p.is_active ? "공개" : "비공개"}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-xs text-(--muted)">
-                      {(p.view_count ?? 0).toLocaleString()}
-                    </td>
-                    <td className="px-4 py-3 text-xs text-(--muted)">
-                      {new Date(p.created_at).toLocaleDateString("ko-KR")}
-                    </td>
-                    <td className="px-4 py-3">
-                      <SuspendButton profileId={p.id} initialActive={p.is_active ?? true} />
-                    </td>
-                    <td className="px-4 py-3">
-                      <AdminDeleteButton
-                        profileId={p.id}
-                        slug={p.slug}
-                        name={p.name || p.shop_name || p.slug}
-                        isActive={p.is_active ?? true}
-                      />
-                    </td>
-                    <td className="px-4 py-3">
-                      <a
-                        href={`${SITE_URL}/${p.slug}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-xs text-blue-500 hover:underline"
-                      >
-                        보기 →
-                      </a>
-                    </td>
-                  </tr>
-                );
-              })}
-              {!profiles.length && (
-                <tr>
-                  <td colSpan={11} className="px-4 py-10 text-center text-sm text-(--muted)">
-                    조건에 맞는 고객이 없습니다.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
 
       </main>
     </div>
