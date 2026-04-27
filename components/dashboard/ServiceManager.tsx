@@ -75,7 +75,7 @@ export default function ServiceManager({
     setShowTemplates(false);
   }
 
-  const inputCls = "rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm outline-none focus:border-gray-400";
+  const inputCls = "rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15";
 
   return (
     <div>
@@ -87,7 +87,7 @@ export default function ServiceManager({
             <select
               value={category}
               onChange={(e) => onCategoryChange(e.target.value)}
-              className="flex-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-xs text-foreground outline-none focus:border-gray-400"
+              className="flex-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-xs text-foreground outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
             >
               {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
@@ -196,12 +196,12 @@ export default function ServiceManager({
           </p>
           <div className="flex min-w-0 gap-2">
             <input type="text" value={name}  onChange={(e) => setName(e.target.value)}  placeholder="서비스명 (예: PT 1회)"
-              className="min-w-0 flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-gray-400" />
+              className="min-w-0 flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15" />
             <input type="text" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="50,000원"
-              className="w-24 shrink-0 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-gray-400" />
+              className="w-24 shrink-0 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15" />
           </div>
           <input type="text" value={note} onChange={(e) => setNote(e.target.value)} placeholder="메모 (선택)"
-            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-gray-400" />
+            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15" />
           <button type="button" onClick={add} disabled={!name.trim() || !price.trim()}
             className="self-start rounded-lg bg-foreground px-4 py-1.5 text-sm font-medium text-white disabled:opacity-40">
             + 추가

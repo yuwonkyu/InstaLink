@@ -123,7 +123,7 @@ export default function GalleryManager({ images, onChange, limit }: Props) {
                     onChange={(e) => setEditCaption(e.target.value)}
                     placeholder="사진 설명 (선택)"
                     autoFocus
-                    className="flex-1 rounded-lg border border-gray-200 bg-white px-2 py-1 text-[11px] text-gray-900 outline-none focus:border-gray-400"
+                    className="flex-1 rounded-lg border border-gray-200 bg-white px-2 py-1 text-[11px] text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
                   />
                   <button
                     type="button"

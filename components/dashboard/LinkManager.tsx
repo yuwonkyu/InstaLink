@@ -47,7 +47,7 @@ export default function LinkManager({ links, onChange }: Props) {
   }
 
   const inputCls =
-    "rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm outline-none focus:border-gray-400";
+    "rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15";
 
   return (
     <div>
@@ -129,14 +129,14 @@ export default function LinkManager({ links, onChange }: Props) {
           value={label}
           onChange={(e) => setLabel(e.target.value)}
           placeholder="버튼 이름 (예: 네이버 스토어 바로가기)"
-          className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-gray-400"
+          className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
         />
         <input
           type="url"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           placeholder="https://..."
-          className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-gray-400"
+          className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
           onKeyDown={(e) => e.key === "Enter" && add()}
         />
         <button

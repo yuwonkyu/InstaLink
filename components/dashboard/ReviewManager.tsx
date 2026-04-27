@@ -59,7 +59,7 @@ function DatePicker({
       <select
         value={localYear}
         onChange={(e) => handleYearChange(e.target.value)}
-        className="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:border-gray-400"
+        className="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
       >
         <option value="">연도</option>
         {YEARS.map((y) => (
@@ -71,7 +71,7 @@ function DatePicker({
       <select
         value={localMonth}
         onChange={(e) => handleMonthChange(e.target.value)}
-        className="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:border-gray-400"
+        className="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
       >
         <option value="">월</option>
         {MONTHS.map((m) => (
@@ -152,13 +152,13 @@ export default function ReviewManager({ reviews, onChange, limit, reviewUrl }: P
                     value={editText}
                     onChange={(e) => setEditText(e.target.value)}
                     placeholder="후기 내용"
-                    className="resize-none rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-gray-400"
+                    className="resize-none rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
                   />
                   <input
                     value={editAuthor}
                     onChange={(e) => setEditAuthor(e.target.value)}
                     placeholder="작성자 (예: 30대 여성 회원)"
-                    className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm outline-none focus:border-gray-400"
+                    className="rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
                   />
                   <div className="flex flex-col gap-1">
                     <span className="text-[11px] text-(--muted)">후기 날짜 (선택)</span>
@@ -240,14 +240,14 @@ export default function ReviewManager({ reviews, onChange, limit, reviewUrl }: P
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="후기 내용"
-            className="resize-none rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-gray-400"
+            className="resize-none rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
           />
           <input
             type="text"
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
             placeholder="작성자 (예: 30대 여성 회원)"
-            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-gray-400"
+            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
           />
           <div className="flex flex-col gap-1">
             <span className="text-[11px] text-(--muted)">후기 날짜 (선택)</span>

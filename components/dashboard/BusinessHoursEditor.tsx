@@ -71,7 +71,7 @@ export default function BusinessHoursEditor({ value, onChange }: Props) {
               value={value[key] ?? ""}
               onChange={(e) => setTime(key, e.target.value)}
               placeholder="09:00-18:00"
-              className="flex-1 rounded-lg border border-gray-200 bg-(--secondary) px-3 py-1.5 text-xs text-foreground outline-none focus:border-gray-400 transition-colors"
+              className="flex-1 rounded-lg border border-gray-200 bg-(--secondary) px-3 py-1.5 text-xs text-foreground outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-colors"
             />
           </div>
         ))}

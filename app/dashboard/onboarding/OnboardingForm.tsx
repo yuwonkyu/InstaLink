@@ -119,7 +119,7 @@ export default function OnboardingForm({ defaultName }: Props) {
   const progress = step === 1 ? 33 : step === 2 ? 66 : 100;
 
   const inputCls =
-    "w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none focus:border-gray-400 transition-colors";
+    "w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-colors";
 
   return (
     <div className="w-full max-w-sm mx-auto">

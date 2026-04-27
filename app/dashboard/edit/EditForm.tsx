@@ -142,7 +142,7 @@ function Field({
   multiline?: boolean;
 }) {
   const base =
-    "w-full rounded-xl border border-gray-200 bg-(--secondary) px-3.5 py-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none focus:border-gray-400 transition-colors";
+    "w-full rounded-xl border border-gray-200 bg-(--secondary) px-3.5 py-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-colors";
   return (
     <div className="flex flex-col gap-1">
       <label className="text-xs font-medium text-(--muted)">{label}</label>
@@ -186,7 +186,7 @@ function HintPanel({
         <select
           value={category}
           onChange={(e) => onCategoryChange(e.target.value)}
-          className="flex-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-xs text-foreground outline-none focus:border-gray-400"
+          className="flex-1 rounded-lg border border-gray-200 bg-white px-2.5 py-1 text-xs text-foreground outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
         >
           {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
@@ -482,7 +482,7 @@ export default function EditForm({ profile, plan }: Props) {
               value={tagline}
               onChange={(e) => setTagline(e.target.value)}
               placeholder="다이어트 · 체형교정 · 여성 전문 PT"
-              className="rounded-xl border border-gray-200 bg-(--secondary) px-3.5 py-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none focus:border-gray-400 transition-colors"
+              className="rounded-xl border border-gray-200 bg-(--secondary) px-3.5 py-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-colors"
             />
             {showTaglineHints && (
               <HintPanel
@@ -514,7 +514,7 @@ export default function EditForm({ profile, plan }: Props) {
               value={description}
               onChange={(e) => setDesc(e.target.value)}
               placeholder="✔ 여성 전문 1:1 PT&#10;✔ 식단 + 운동 통합 관리"
-              className="resize-none rounded-xl border border-gray-200 bg-(--secondary) px-3.5 py-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none focus:border-gray-400 transition-colors"
+              className="resize-none rounded-xl border border-gray-200 bg-(--secondary) px-3.5 py-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-colors"
             />
             {showDescHints && (
               <HintPanel
