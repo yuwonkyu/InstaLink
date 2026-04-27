@@ -25,7 +25,7 @@ export default function FreeCtaBanner() {
         <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-[#111] text-sm font-black text-[#FFD600]">
           ⚡
         </span>
-        <span className="text-sm font-bold text-[#111]">
+        <span className="whitespace-nowrap text-sm font-bold text-[#111]">
           나도 무료로 만들러 가기
         </span>
         <span className="rounded-lg bg-[#111]/10 px-2 py-0.5 text-[11px] font-bold text-[#111]">
