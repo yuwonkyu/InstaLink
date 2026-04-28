@@ -32,7 +32,7 @@ export default function DonationSection() {
 
   return (
     <section className="mx-auto w-full max-w-6xl px-4 pb-14 sm:px-6">
-      <div className="mx-auto max-w-lg rounded-3xl bg-(--card) shadow-[0_4px_20px_rgba(17,24,39,0.06)]">
+      <div className="mx-auto max-w-none rounded-3xl bg-(--card) shadow-[0_4px_20px_rgba(17,24,39,0.06)]">
         {/* 모바일: 세로 / PC: 가로 */}
         <div className="flex flex-col items-center gap-5 px-6 py-8 sm:flex-row sm:gap-8 sm:px-10">
           {/* 아이콘 + 텍스트 */}
