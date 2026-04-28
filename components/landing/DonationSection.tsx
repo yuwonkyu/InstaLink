@@ -34,9 +34,9 @@ export default function DonationSection() {
     <section className="mx-auto w-full max-w-6xl px-4 pb-14 sm:px-6">
       <div className="mx-auto max-w-none rounded-3xl bg-(--card) shadow-[0_4px_20px_rgba(17,24,39,0.06)]">
         {/* 모바일: 세로 / PC: 가로 */}
-        <div className="flex flex-col items-center gap-5 px-6 py-8 sm:flex-row sm:gap-8 sm:px-10">
+        <div className="flex flex-col items-center gap-5 px-6 py-8">
           {/* 아이콘 + 텍스트 */}
-          <div className="flex flex-col items-center text-center sm:items-start sm:text-left">
+          <div className="flex flex-col items-center text-center">
             <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#FFD600] text-2xl shadow-[0_4px_16px_rgba(255,214,0,0.4)]">
               ⚡
             </div>
@@ -47,7 +47,7 @@ export default function DonationSection() {
           </div>
 
           {/* 버튼들 */}
-          <div className="flex w-full flex-col gap-2.5 sm:min-w-[220px]">
+          <div className="flex w-full max-w-xs flex-col gap-2.5">
             {hasKakao && (
               <div className="flex flex-col gap-1">
                 <a
