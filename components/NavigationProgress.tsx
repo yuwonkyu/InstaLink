@@ -34,7 +34,7 @@ function ProgressBar() {
   return (
     <div
       aria-hidden="true"
-      className="fixed left-0 top-0 z-[9999] h-[2px] bg-foreground transition-all duration-300 ease-out"
+      className="fixed left-0 top-0 z-9999 h-0.5 bg-foreground transition-all duration-300 ease-out"
       style={{
         width: `${width}%`,
         opacity: visible ? 1 : 0,

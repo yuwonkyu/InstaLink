@@ -203,7 +203,7 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
 
       {/* ── 프로필 헤더 ── */}
       <div className="flex items-center gap-4">
-        <div className="relative h-[72px] w-[72px] shrink-0 overflow-hidden rounded-full ring-2 ring-black/8 sm:h-20 sm:w-20">
+        <div className="relative h-18 w-18 shrink-0 overflow-hidden rounded-full ring-2 ring-black/8 sm:h-20 sm:w-20">
           <Image
             src={profile.image_url || "/user_img.svg"}
             alt={profile.name}
@@ -218,10 +218,10 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
           <p className="profile-brand mb-1 inline-flex px-2 py-0.5 text-[10px] font-bold tracking-[0.12em] text-(--third) uppercase">
             {profile.shop_name}
           </p>
-          <h1 className="profile-name font-display font-bold leading-tight text-foreground break-words">
+          <h1 className="profile-name font-display font-bold leading-tight text-foreground wrap-break-word">
             {profile.name}
           </h1>
-          <p className="profile-role mt-1 font-medium text-(--muted) break-words">
+          <p className="profile-role mt-1 font-medium text-(--muted) wrap-break-word">
             {profile.tagline}
           </p>
         </div>
@@ -243,7 +243,7 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
 
       {/* ── 소개 ── */}
       {profile.description && (
-        <p className="mt-5 rounded-xl bg-black/[0.035] px-4 py-3.5 text-sm leading-6 text-(--muted) whitespace-pre-line break-words">
+        <p className="mt-5 rounded-xl bg-black/[0.035] px-4 py-3.5 text-sm leading-6 text-(--muted) whitespace-pre-line wrap-break-word">
           {profile.description}
         </p>
       )}
@@ -643,7 +643,7 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
                             className={`inline-flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold ${
                               isOpen
                                 ? "bg-foreground text-white"
-                                : "bg-black/[0.05] text-(--muted) opacity-40"
+                                : "bg-black/5 text-(--muted) opacity-40"
                             }`}
                           >
                             {short}

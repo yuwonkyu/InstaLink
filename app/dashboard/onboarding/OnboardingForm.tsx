@@ -211,7 +211,7 @@ export default function OnboardingForm({ defaultName }: Props) {
               type="button"
               onClick={() => setStep(3)}
               disabled={!name.trim()}
-              className="flex-[2] rounded-xl bg-foreground py-2.5 text-sm font-semibold text-white hover:opacity-80 disabled:opacity-40 transition-opacity"
+              className="flex-2 rounded-xl bg-foreground py-2.5 text-sm font-semibold text-white hover:opacity-80 disabled:opacity-40 transition-opacity"
             >
               다음 →
             </button>
@@ -261,7 +261,7 @@ export default function OnboardingForm({ defaultName }: Props) {
               type="button"
               onClick={handleSave}
               disabled={isPending}
-              className="flex-[2] rounded-xl bg-foreground py-2.5 text-sm font-semibold text-white hover:opacity-80 disabled:opacity-60 transition-opacity"
+              className="flex-2 rounded-xl bg-foreground py-2.5 text-sm font-semibold text-white hover:opacity-80 disabled:opacity-60 transition-opacity"
             >
               {isPending ? (
                 <span className="flex items-center justify-center gap-2">

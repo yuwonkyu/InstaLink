@@ -40,8 +40,6 @@ body {
   word-break: break-word;
 }
 
-a {
-}
 
 ::selection {
   background: rgba(17, 24, 39, 0.16);

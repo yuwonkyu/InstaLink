@@ -217,7 +217,7 @@ export default function Page() {
             </div>
 
             {/* 우: 자동 전환 슬라이드 */}
-            <div className="shrink-0 flex justify-center md:w-[240px]">
+            <div className="shrink-0 flex justify-center md:w-60">
               <HeroCarousel />
             </div>
 
@@ -312,7 +312,7 @@ export default function Page() {
         <div className="rounded-3xl bg-(--card) px-6 py-10 shadow-[0_4px_20px_rgba(17,24,39,0.06)] sm:px-10">
           <h2 className="text-xl font-bold sm:text-2xl">바이오 링크, 이렇게 달라요</h2>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <div className="rounded-2xl border border-black/5 bg-black/[0.02] p-5">
+            <div className="rounded-2xl border border-black/5 bg-black/2 p-5">
               <p className="mb-3 text-xs font-bold uppercase tracking-widest text-(--muted)">
                 Before — 링크트리
               </p>
@@ -324,7 +324,7 @@ export default function Page() {
                 <li className="text-xs opacity-60">→ 가격 물어보는 DM 계속 옴</li>
               </ul>
             </div>
-            <div className="rounded-2xl border border-foreground/10 bg-foreground/[0.03] p-5">
+            <div className="rounded-2xl border border-foreground/10 bg-foreground/3 p-5">
               <p className="mb-3 text-xs font-bold uppercase tracking-widest text-foreground">
                 After — InstaLink
               </p>
