@@ -57,6 +57,7 @@ export default async function OgImage({ params }: { params: Promise<{ slug: stri
         {profile?.image_url ? (
           <img
             src={profile.image_url}
+            alt="사무실 책상위에 바이오링크 관련된 요소모음"
             style={{ width: 160, height: 160, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
           />
         ) : (

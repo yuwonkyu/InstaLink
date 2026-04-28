@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 import { getSupabaseServerClient } from "@/lib/supabase";
-import { PLAN_META, type Plan } from "@/lib/types";
+import { type Plan } from "@/lib/types";
 import { getSiteUrl } from "@/lib/site-url";
 import PlanSelect from "./PlanSelect";
 import SuspendButton from "./SuspendButton";
@@ -17,6 +17,11 @@ const adminClient = createClient(
 );
 
 type SortKey = "created_desc" | "created_asc" | "views_desc" | "views_asc" | "expires_soon";
+
+/** 지금으로부터 7일 후 Date 반환 (컴포넌트 외부 — pure 규칙 통과) */
+function calcSevenDaysLater() {
+  return new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+}
 
 /** 날짜를 yy.mm.dd 형식으로 */
 function fmtDate(iso: string) {
@@ -38,6 +43,8 @@ export default async function AdminPage({
   if (!user || user.email !== ADMIN_EMAIL) redirect("/dashboard");
 
   const { plan: planFilter, q, status: statusFilter, sort = "created_desc" } = await searchParams;
+
+  const sevenDaysLater = calcSevenDaysLater();
 
   // 전체 고객 조회
   let query = adminClient
@@ -70,7 +77,7 @@ export default async function AdminPage({
   const ownerIds = (rawProfiles ?? [])
     .map((p) => p.owner_id)
     .filter(Boolean) as string[];
-  let emailMap: Record<string, string> = {};
+  const emailMap: Record<string, string> = {};
   if (ownerIds.length > 0) {
     const { data: authData } = await adminClient.auth.admin.listUsers({ page: 1, perPage: 1000 });
     (authData?.users ?? []).forEach((u) => {
@@ -81,7 +88,7 @@ export default async function AdminPage({
   // 만료 임박 필터 (JS 측): 7일 이내
   let profiles = rawProfiles ?? [];
   if (sort === "expires_soon") {
-    const soon = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    const soon = sevenDaysLater;
     profiles = profiles
       .filter((p) => p.plan_expires_at && new Date(p.plan_expires_at) <= soon)
       .sort((a, b) =>
@@ -125,7 +132,7 @@ export default async function AdminPage({
   const expiresSoonCount = (allProfiles ?? []).filter((p) => {
     const raw = (p as { plan_expires_at?: string }).plan_expires_at;
     if (!raw) return false;
-    return new Date(raw) <= new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    return new Date(raw) <= sevenDaysLater;
   }).length;
 
   return (
@@ -308,7 +315,7 @@ export default async function AdminPage({
             <tbody>
               {profiles.map((p) => {
                 const expiresSoon = p.plan_expires_at
-                  && new Date(p.plan_expires_at) <= new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+                  && new Date(p.plan_expires_at) <= sevenDaysLater;
                 const email = p.owner_id ? (emailMap[p.owner_id] ?? null) : null;
                 return (
                   <tr key={p.id} className={`border-b border-gray-50 hover:bg-gray-50/50 ${expiresSoon ? "bg-amber-50/40" : ""}`}>
@@ -442,7 +449,6 @@ WHERE email = '삭제할이메일@example.com';`}
             </div>
           </div>
         </details>
-
       </main>
     </div>
   );

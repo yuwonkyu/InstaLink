@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useTransition, useEffect, useRef } from "react";
 import Image from "next/image";
 import { CldUploadWidget } from "next-cloudinary";
@@ -274,6 +275,10 @@ export default function EditForm({ profile, plan }: Props) {
   // 업종 (예시/AI 공통)
   const [category, setCategory] = useState("카페");
 
+  // 탭
+  type TabKey = "basic" | "design" | "service" | "content" | "advanced";
+  const [activeTab, setActiveTab] = useState<TabKey>("basic");
+
   // 예시 패널 토글
   const [showTaglineHints, setShowTaglineHints] = useState(false);
   const [showDescHints,    setShowDescHints]    = useState(false);
@@ -299,7 +304,6 @@ export default function EditForm({ profile, plan }: Props) {
   useEffect(() => {
     if (isFirstRender.current) { isFirstRender.current = false; return; }
     setIsDirty(true);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [name, shopName, tagline, description, kakaoUrl, kakaoBookingUrl,
       naverBookingUrl, phoneUrl, instaDmUrl, kakaoChanUrl, instagramId,
       location, hours, imageUrl, theme, services, reviews, customLinks,
@@ -401,12 +405,12 @@ export default function EditForm({ profile, plan }: Props) {
                   완성페이지 보러가기 →
                 </a>
               )}
-              <a
+              <Link
                 href="/dashboard"
                 className="block w-full rounded-xl border border-gray-200 py-2.5 text-center text-sm font-medium text-foreground hover:bg-(--secondary) transition-colors"
               >
                 대시보드로 이동
-              </a>
+              </Link>
               <button
                 type="button"
                 onClick={() => setShowPostSave(false)}
@@ -418,6 +422,35 @@ export default function EditForm({ profile, plan }: Props) {
           </div>
         </div>
       )}
+
+      {/* ── 탭 바 ── */}
+      <div className="sticky top-0 z-30 -mx-1 overflow-x-auto">
+        <div className="flex min-w-max gap-0.5 rounded-2xl bg-(--secondary) p-1 shadow-[0_2px_8px_rgba(17,24,39,0.06)]">
+          {(
+            [
+              { key: "basic",    label: "기본 정보",    icon: "📋" },
+              { key: "design",   label: "디자인",       icon: "🎨" },
+              { key: "service",  label: "서비스 & 링크", icon: "🔗" },
+              { key: "content",  label: "콘텐츠",       icon: "🖼️" },
+              ...(isProPlan ? [{ key: "advanced", label: "고급 설정", icon: "⚙️" }] : []),
+            ] as { key: TabKey; label: string; icon: string }[]
+          ).map(({ key, label, icon }) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setActiveTab(key)}
+              className={`flex flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-xl px-3 py-2 text-xs font-semibold transition-all ${
+                activeTab === key
+                  ? "bg-white text-foreground shadow-sm"
+                  : "text-(--muted) hover:text-foreground"
+              }`}
+            >
+              <span>{icon}</span>
+              <span>{label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
 
       {/* ── 미저장 변경 배너 ── */}
       {isDirty && (
@@ -452,6 +485,9 @@ export default function EditForm({ profile, plan }: Props) {
       {saveError && (
         <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{saveError}</div>
       )}
+
+      {/* ══ TAB: basic ══ */}
+      <div className={activeTab === "basic" ? "" : "hidden"}>
 
       {/* ── 기본 정보 ── */}
       <Section title="기본 정보">
@@ -596,10 +632,20 @@ export default function EditForm({ profile, plan }: Props) {
         </div>
       </Section>
 
+      </div> {/* /TAB basic */}
+
+      {/* ══ TAB: design ══ */}
+      <div className={activeTab === "design" ? "" : "hidden"}>
+
       {/* ── 테마 ── */}
       <Section title="테마">
         <ThemeSelector selected={theme} onChange={setTheme} plan={plan} />
       </Section>
+
+      </div> {/* /TAB design */}
+
+      {/* ══ TAB: service ══ */}
+      <div className={activeTab === "service" ? "" : "hidden"}>
 
       {/* ── 서비스 ── */}
       <Section title="서비스 &amp; 가격">
@@ -629,7 +675,7 @@ export default function EditForm({ profile, plan }: Props) {
             <p className="text-xs font-semibold text-blue-800">💡 TIP</p>
             <p className="mt-0.5 text-xs text-blue-700 leading-relaxed">
               요일 버튼을 눌러 영업일을 설정하면 고객 페이지에 시각적으로 표시됩니다.<br />
-              기존 '운영시간' 텍스트 입력과 함께 사용할 수 있습니다.
+              기존 &apos;운영시간&apos; 텍스트 입력과 함께 사용할 수 있습니다.
             </p>
           </div>
           <BusinessHoursEditor value={businessHours} onChange={setBusinessHours} />
@@ -638,10 +684,15 @@ export default function EditForm({ profile, plan }: Props) {
         <Section title="영업일 & 운영시간">
           <div className="rounded-xl border border-dashed border-gray-200 px-4 py-3 text-center text-xs text-(--muted)">
             🔒 요일별 영업시간 설정은 Basic 이상 플랜에서 사용 가능합니다.{" "}
-            <a href="/billing" className="font-medium underline underline-offset-2 hover:text-foreground">업그레이드</a>
+            <Link href="/billing" className="font-medium underline underline-offset-2 hover:text-foreground">업그레이드</Link>
           </div>
         </Section>
       )}
+
+      </div> {/* /TAB service */}
+
+      {/* ══ TAB: content ══ */}
+      <div className={activeTab === "content" ? "" : "hidden"}>
 
       {/* ── 갤러리 ── */}
       <Section title="포트폴리오 · 갤러리 (선택)">
@@ -661,6 +712,11 @@ export default function EditForm({ profile, plan }: Props) {
           reviewUrl={profile.slug ? `/${profile.slug}/review` : undefined}
         />
       </Section>
+
+      </div> {/* /TAB content */}
+
+      {/* ══ TAB: advanced (Pro only) ══ */}
+      <div className={activeTab === "advanced" ? "" : "hidden"}>
 
       {/* ── Pro: 섹션 순서 ── */}
       {isProPlan && (
@@ -808,6 +864,8 @@ export default function EditForm({ profile, plan }: Props) {
         </Section>
       )}
 
+      </div> {/* /TAB advanced */}
+
       {/* ── 저장 버튼 ── */}
       <div className="flex flex-col gap-2 pb-8">
         <div className="flex gap-3">
@@ -831,10 +889,10 @@ export default function EditForm({ profile, plan }: Props) {
               "저장하고 페이지 공개하기"
             )}
           </button>
-          <a href="/dashboard"
+          <Link href="/dashboard"
             className="rounded-xl border border-gray-200 px-5 py-3 text-sm font-medium text-(--muted) hover:bg-(--secondary) transition-colors">
             취소
-          </a>
+          </Link>
         </div>
         {saveStatus === "saved" && !showPostSave && (
           <div className="flex items-center justify-between">

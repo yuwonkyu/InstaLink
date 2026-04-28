@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useFormStatus } from "react-dom";
 import { signIn } from "@/app/auth/actions";
 import { createBrowserClient } from "@supabase/ssr";
@@ -104,12 +105,12 @@ export default function LoginForm() {
       </div>
       <SubmitButton />
       <div className="text-center">
-        <a
+        <Link
           href="/auth/reset-password"
           className="text-xs text-(--muted) hover:text-foreground transition-colors"
         >
           비밀번호를 잊으셨나요?
-        </a>
+        </Link>
       </div>
     </form>
     </div>

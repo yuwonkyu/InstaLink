@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import AuthCard from "@/components/auth/AuthCard";
@@ -54,9 +55,9 @@ export default function UpdatePasswordPage() {
       error={error || undefined}
       success={success ? "비밀번호가 변경되었습니다. 잠시 후 로그인 페이지로 이동합니다." : undefined}
       footer={
-        <a href="/auth/login" className="font-medium text-foreground hover:underline">
+        <Link href="/auth/login" className="font-medium text-foreground hover:underline">
           ← 로그인으로 돌아가기
-        </a>
+        </Link>
       }
     >
       {!success && (
