@@ -24,9 +24,9 @@ export default async function DashboardLayout({
       {/* 상단 네비게이션 */}
       <header className="sticky top-0 z-10 border-b border-gray-100 bg-white/80 backdrop-blur-sm">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
-          <span className="font-display text-base font-bold tracking-tight text-foreground">
+          <Link href="/" className="font-display text-base font-bold tracking-tight text-foreground hover:opacity-70 transition-opacity">
             InstaLink
-          </span>
+          </Link>
           <div className="flex items-center gap-3">
             {user.email === ADMIN_EMAIL && (
               <Link href="/admin" className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-(--muted) hover:border-gray-300 hover:text-foreground transition-colors">
