@@ -104,12 +104,29 @@ export default async function AdminPage({
 
   const { data: allProfiles } = await adminClient
     .from("profiles")
-    .select("plan, is_active");
+    .select("plan, is_active, created_at");
 
   const planCounts = (allProfiles ?? []).reduce<Record<string, number>>((acc, p) => {
     acc[p.plan] = (acc[p.plan] ?? 0) + 1;
     return acc;
   }, {});
+
+  // 가입 통계
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const startOfWeek = new Date(now);
+  startOfWeek.setDate(now.getDate() - now.getDay());
+  startOfWeek.setHours(0, 0, 0, 0);
+
+  const joinedThisMonth = (allProfiles ?? []).filter(
+    (p) => new Date((p as { created_at: string }).created_at) >= startOfMonth
+  ).length;
+  const joinedThisWeek = (allProfiles ?? []).filter(
+    (p) => new Date((p as { created_at: string }).created_at) >= startOfWeek
+  ).length;
+  const totalCount = allProfiles?.length ?? 0;
+  const paidCount = (planCounts["basic"] ?? 0) + (planCounts["pro"] ?? 0);
+  const conversionRate = totalCount > 0 ? Math.round((paidCount / totalCount) * 100) : 0;
 
   // 탈퇴 통계
   const { data: deletedStats } = await adminClient
@@ -169,30 +186,51 @@ export default async function AdminPage({
           ))}
         </div>
 
-        {/* ── 탈퇴 통계 ── */}
+        {/* ── 회원 통계 (가입 + 탈퇴) ── */}
         <div className="rounded-2xl bg-white p-5 shadow-[0_2px_12px_rgba(17,24,39,0.06)]">
-          <h2 className="mb-3 text-sm font-semibold text-foreground">회원 탈퇴 통계</h2>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {[
-              { label: "누적 탈퇴",         value: totalDeleted,      unit: "명" },
-              { label: "이번 달 탈퇴",       value: deletedThisMonth,  unit: "명" },
-              { label: "유료 경험 후 탈퇴",  value: paidChurnCount,    unit: "명" },
-              { label: "평균 이용 기간",     value: avgDaysActive,     unit: "일" },
-            ].map((card) => (
-              <div key={card.label} className="rounded-xl bg-(--secondary) p-3">
-                <p className="text-xs text-(--muted)">{card.label}</p>
-                <p className="mt-1 text-lg font-bold text-foreground">
-                  {card.value}
-                  <span className="text-xs font-normal text-(--muted) ml-0.5">{card.unit}</span>
-                </p>
+          <div className="grid grid-cols-2 gap-4 sm:gap-6">
+            {/* 가입 통계 */}
+            <div>
+              <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-(--muted)">신규 가입</h2>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { label: "이번 달 가입",  value: joinedThisMonth, unit: "명" },
+                  { label: "이번 주 가입",  value: joinedThisWeek,  unit: "명" },
+                  { label: "유료 전환율",   value: conversionRate,  unit: "%" },
+                  { label: "유료 고객",     value: paidCount,       unit: "명" },
+                ].map((card) => (
+                  <div key={card.label} className="rounded-xl bg-(--secondary) p-3">
+                    <p className="text-xs text-(--muted)">{card.label}</p>
+                    <p className="mt-1 text-base font-bold text-foreground">
+                      {card.value}
+                      <span className="text-xs font-normal text-(--muted) ml-0.5">{card.unit}</span>
+                    </p>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
+
+            {/* 탈퇴 통계 */}
+            <div>
+              <h2 className="mb-3 text-xs font-semibold uppercase tracking-wide text-(--muted)">탈퇴</h2>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { label: "누적 탈퇴",        value: totalDeleted,     unit: "명" },
+                  { label: "이번 달 탈퇴",      value: deletedThisMonth, unit: "명" },
+                  { label: "유료 경험 후 탈퇴", value: paidChurnCount,   unit: "명" },
+                  { label: "평균 이용 기간",    value: avgDaysActive,    unit: "일" },
+                ].map((card) => (
+                  <div key={card.label} className="rounded-xl bg-(--secondary) p-3">
+                    <p className="text-xs text-(--muted)">{card.label}</p>
+                    <p className="mt-1 text-base font-bold text-foreground">
+                      {card.value}
+                      <span className="text-xs font-normal text-(--muted) ml-0.5">{card.unit}</span>
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-          {totalDeleted > 0 && (
-            <p className="mt-3 text-xs text-(--muted)">
-              * 개인정보(이름·이메일·슬러그) 미포함 — 탈퇴 추이 분석용 익명 데이터
-            </p>
-          )}
         </div>
 
         {/* ── 필터 바 ── */}
