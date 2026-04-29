@@ -703,4 +703,4 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
       )}
     </section>
   </>
-  )
+  ) }
