@@ -30,6 +30,12 @@ export default function ServiceTab({
     <>
       {/* ── 서비스 & 가격 ── */}
       <Section title="서비스 &amp; 가격">
+        <div className="mb-3 rounded-xl bg-blue-50 border border-blue-100 px-3.5 py-3">
+          <p className="text-xs font-semibold text-blue-800">💡 TIP</p>
+          <p className="mt-0.5 text-xs text-blue-700 leading-relaxed">
+            가격을 미리 보여주면 고객이 문의 전에 스스로 결정해요. 서비스 이름·가격·한 줄 설명만 채워도 충분해요!
+          </p>
+        </div>
         <ServiceManager
           services={services}
           isPaidPlan={isPaidPlan}
@@ -46,6 +52,12 @@ export default function ServiceTab({
 
       {/* ── 추가 링크 ── */}
       <Section title="추가 링크 (선택)">
+        <div className="mb-3 rounded-xl bg-blue-50 border border-blue-100 px-3.5 py-3">
+          <p className="text-xs font-semibold text-blue-800">💡 TIP</p>
+          <p className="mt-0.5 text-xs text-blue-700 leading-relaxed">
+            네이버 스마트스토어, 유튜브, 블로그 등 고객에게 추가로 보여주고 싶은 링크를 자유롭게 넣을 수 있어요.
+          </p>
+        </div>
         <LinkManager links={customLinks} onChange={setCustomLinks} />
       </Section>
 

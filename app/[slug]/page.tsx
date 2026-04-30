@@ -7,6 +7,7 @@ import type { Profile } from "@/lib/types";
 import { getUserByUsername } from "@/data/users";
 import ShareButton from "./ShareButton";
 import FreeCtaBanner from "./FreeCtaBanner";
+import GuideWidget from "@/components/GuideWidget";
 import { COMPANY_INFO } from "@/lib/company-info";
 
 type PageProps = {
@@ -183,6 +184,7 @@ export default async function SlugPage({ params }: PageProps) {
         </div>
       </div>
       {(!profile.plan || profile.plan === "free") && <FreeCtaBanner />}
+      <GuideWidget />
     </main>
   );
 }

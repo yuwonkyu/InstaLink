@@ -68,8 +68,9 @@ export default function EditForm({ profile, plan }: Props) {
   const [businessHours, setBusinessHours] = useState<BusinessHours>(profile.business_hours ?? {});
 
   // ── UI 상태 ──
-  const [category,   setCategory]   = useState("카페");
-  const [activeTab,  setActiveTab]  = useState<TabKey>("basic");
+  const [category,       setCategory]       = useState("카페");
+  const [activeTab,      setActiveTab]      = useState<TabKey>("basic");
+  const [tabGuideShown,  setTabGuideShown]  = useState(true);
   const [aiLoading,  setAiLoading]  = useState<string | null>(null);
   const [saveError,  setSaveError]  = useState<string | null>(null);
   const [isPending,  startTransition] = useTransition();
@@ -217,6 +218,27 @@ export default function EditForm({ profile, plan }: Props) {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* ── 탭 가이드 배너 ── */}
+      {tabGuideShown && (
+        <div className="flex items-start gap-3 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3">
+          <span className="mt-0.5 text-lg leading-none">💡</span>
+          <div className="flex-1">
+            <p className="text-xs font-semibold text-indigo-800">탭을 하나씩 채워주세요!</p>
+            <p className="mt-0.5 text-xs text-indigo-700 leading-relaxed">
+              <span className="font-semibold">📋 기본 정보</span> → <span className="font-semibold">🎨 디자인</span> → <span className="font-semibold">🔗 서비스 &amp; 링크</span> → <span className="font-semibold">🖼️ 콘텐츠</span> 순서로 진행하면 빠르게 완성할 수 있어요.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setTabGuideShown(false)}
+            className="shrink-0 text-indigo-300 hover:text-indigo-500 text-sm leading-none"
+            aria-label="가이드 닫기"
+          >
+            ✕
+          </button>
         </div>
       )}
 

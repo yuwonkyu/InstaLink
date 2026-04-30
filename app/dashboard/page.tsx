@@ -11,6 +11,7 @@ import ReferralCard         from "@/components/dashboard/ReferralCard";
 import DeleteAccountButton  from "@/components/dashboard/DeleteAccountButton";
 import AvailabilityToggle   from "@/components/dashboard/AvailabilityToggle";
 import ReviewLinkCard       from "@/components/dashboard/ReviewLinkCard";
+import DashboardGuideWidget from "@/components/dashboard/DashboardGuideWidget";
 
 // qrcode 라이브러리·모달은 초기 번들에서 분리해 첫 로드 속도 개선 (lazy chunk)
 const QRCodeCard      = dynamic(() => import("@/components/dashboard/QRCodeCard"));
@@ -168,9 +169,9 @@ export default async function DashboardPage({
             </a>
             <Link
               href="/dashboard/edit"
-              className="rounded-xl border border-gray-200 px-4 py-2 text-sm font-medium text-foreground hover:bg-(--secondary) transition-colors"
+              className="rounded-xl bg-indigo-500 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-600 transition-colors"
             >
-              편집하기
+              ✏️ 편집하기
             </Link>
           </div>
         </div>
@@ -195,7 +196,7 @@ export default async function DashboardPage({
               <CopyLinkButton slug={profile.slug} />
               <p className="mt-3 text-xs text-(--muted)">
                 🔒 주소 커스텀은{" "}
-                <Link href="/billing" className="font-medium text-foreground underline underline-offset-2">
+                <Link href="/billing" className="font-semibold text-amber-500 hover:text-amber-600 underline underline-offset-2 transition-colors">
                   Pro 플랜
                 </Link>
                 에서 사용할 수 있습니다.
@@ -214,11 +215,11 @@ export default async function DashboardPage({
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-sm font-semibold text-foreground">방문자 현황</h2>
             {(!profile.plan || profile.plan === "free") ? (
-              <Link href="/billing" className="text-xs font-medium text-foreground hover:underline">
+              <Link href="/billing" className="text-xs font-semibold text-amber-500 hover:text-amber-600 transition-colors">
                 업그레이드 →
               </Link>
             ) : (
-              <Link href="/dashboard/stats" className="text-xs font-medium text-foreground hover:underline">
+              <Link href="/dashboard/stats" className="text-xs font-semibold text-blue-500 hover:text-blue-600 transition-colors">
                 통계 상세 →
               </Link>
             )}
@@ -249,7 +250,7 @@ export default async function DashboardPage({
                   <p className="text-xs font-semibold text-foreground">주간 방문자 분석</p>
                   <p className="mt-0.5 text-[11px] text-(--muted)">베이직 플랜에서 확인하세요</p>
                   <Link href="/billing"
-                    className="mt-2 rounded-lg bg-foreground px-3 py-1 text-xs font-semibold text-white hover:opacity-80 transition-opacity">
+                    className="mt-2 rounded-lg bg-amber-400 px-3 py-1 text-xs font-semibold text-white hover:bg-amber-500 transition-colors">
                     업그레이드
                   </Link>
                 </div>
@@ -328,7 +329,7 @@ export default async function DashboardPage({
         <div className="rounded-2xl bg-(--card) p-5 shadow-[0_4px_20px_rgba(17,24,39,0.06)]">
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-sm font-semibold text-foreground">구독 플랜</h2>
-            <Link href="/billing" className="text-xs font-medium text-foreground hover:underline">
+            <Link href="/billing" className="text-xs font-semibold text-amber-500 hover:text-amber-600 transition-colors">
               플랜 변경 →
             </Link>
           </div>
@@ -350,9 +351,9 @@ export default async function DashboardPage({
           {(!profile.plan || profile.plan === "free") && (
             <Link
               href="/billing"
-              className="mt-3 inline-block rounded-xl bg-foreground px-4 py-2 text-sm font-semibold text-white hover:opacity-80 transition-opacity"
+              className="mt-3 inline-block rounded-xl bg-amber-400 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-500 transition-colors"
             >
-              업그레이드하기
+              업그레이드하기 →
             </Link>
           )}
         </div>
@@ -373,6 +374,8 @@ export default async function DashboardPage({
         <h2 className="mb-3 text-sm font-semibold text-foreground">계정 관리</h2>
         <DeleteAccountButton />
       </div>
+
+      <DashboardGuideWidget />
     </div>
   );
 }

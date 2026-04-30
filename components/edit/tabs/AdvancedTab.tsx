@@ -26,6 +26,14 @@ export default function AdvancedTab({
 
   return (
     <>
+      {/* ── Pro TIP ── */}
+      <div className="rounded-xl bg-blue-50 border border-blue-100 px-3.5 py-3">
+        <p className="text-xs font-semibold text-blue-800">💡 TIP</p>
+        <p className="mt-0.5 text-xs text-blue-700 leading-relaxed">
+          버튼 컬러로 브랜드 포인트 색상을 적용하고, 섹션 순서를 조정해 가장 보여주고 싶은 내용을 위쪽에 올릴 수 있어요.
+        </p>
+      </div>
+
       {/* ── 섹션 순서 ── */}
       <Section title="섹션 순서 (Pro)">
         <div className="flex flex-col gap-2">
