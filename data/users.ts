@@ -139,8 +139,8 @@ export const users: User[] = [
       },
     ],
     instagramHandle: "@fitwithji",
-    plan: "pro",
-    sectionOrder: ["services", "gallery", "reviews"],
+    plan: "free",
+    sectionOrder: ["services", "reviews"],
     options: {
       showReviews: true,
       showLocation: true,
@@ -188,7 +188,23 @@ export const users: User[] = [
           "1:1 레슨이라 집중 케어가 달라요. 자세 하나하나 봐주셔서 그룹 수업보다 효과가 두 배예요.",
       },
     ],
+    gallery: [
+      {
+        url: "https://res.cloudinary.com/diicetn0t/image/upload/v1776169513/Pilates_woman_ayigqf.png",
+        caption: "프라이빗 레슨 공간",
+      },
+      {
+        url: "https://res.cloudinary.com/diicetn0t/image/upload/v1776169513/Pilates_woman_ayigqf.png",
+        caption: "소도구 필라테스",
+      },
+      {
+        url: "https://res.cloudinary.com/diicetn0t/image/upload/v1776169513/Pilates_woman_ayigqf.png",
+        caption: "재활 케어 프로그램",
+      },
+    ],
     instagramHandle: "@move.pilates",
+    plan: "basic",
+    sectionOrder: ["services", "gallery", "reviews"],
     options: {
       showReviews: true,
       showLocation: true,
@@ -236,7 +252,23 @@ export const users: User[] = [
           "탈색 후 머리가 너무 상해서 포기하고 있었는데, 케어 시술 받고 나서 완전히 다른 머리가 됐어요.",
       },
     ],
+    gallery: [
+      {
+        url: "https://res.cloudinary.com/diicetn0t/image/upload/v1776169513/Pilates_woman_ayigqf.png",
+        caption: "컬러 시술",
+      },
+      {
+        url: "https://res.cloudinary.com/diicetn0t/image/upload/v1776169513/Pilates_woman_ayigqf.png",
+        caption: "탈색 & 컬러",
+      },
+      {
+        url: "https://res.cloudinary.com/diicetn0t/image/upload/v1776169513/Pilates_woman_ayigqf.png",
+        caption: "케어 트리트먼트",
+      },
+    ],
     instagramHandle: "@jian.hair",
+    plan: "pro",
+    sectionOrder: ["services", "gallery", "reviews"],
     options: {
       showReviews: true,
       showLocation: true,
