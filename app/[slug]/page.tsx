@@ -152,7 +152,7 @@ export default async function SlugPage({ params }: PageProps) {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     name: profile.shop_name || profile.name,
-    description: profile.tagline,
+    description: profile.tagline ?? profile.description,
     url: `${SITE}/${slug}`,
     ...(profile.image_url ? { image: profile.image_url } : {}),
     ...(profile.location
@@ -160,15 +160,45 @@ export default async function SlugPage({ params }: PageProps) {
           address: {
             "@type": "PostalAddress",
             addressLocality: profile.location,
+            addressCountry: "KR",
           },
         }
       : {}),
+    // 영업시간 정보
+    ...(profile.hours
+      ? { openingHours: profile.hours }
+      : {}),
+    // 카카오 상담 연결
     ...(profile.kakao_url
       ? {
           contactPoint: {
             "@type": "ContactPoint",
             contactType: "customer service",
             url: profile.kakao_url,
+            availableLanguage: "Korean",
+          },
+        }
+      : {}),
+    // 인스타그램 sameAs
+    ...(profile.instagram_id
+      ? {
+          sameAs: [
+            `https://www.instagram.com/${profile.instagram_id.replace(/^@/, "")}/`,
+          ],
+        }
+      : {}),
+    // 서비스 목록 (최대 5개)
+    ...(profile.services && profile.services.length > 0
+      ? {
+          hasOfferCatalog: {
+            "@type": "OfferCatalog",
+            name: "서비스 목록",
+            itemListElement: profile.services.slice(0, 5).map((s, i) => ({
+              "@type": "Offer",
+              position: i + 1,
+              name: s.name,
+              ...(s.price ? { price: s.price, priceCurrency: "KRW" } : {}),
+            })),
           },
         }
       : {}),

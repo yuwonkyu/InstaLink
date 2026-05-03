@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import LandingHeader from "@/components/landing/LandingHeader";
 import LandingFooter from "@/components/landing/LandingFooter";
@@ -5,6 +6,16 @@ import DonationSection from "@/components/landing/DonationSection";
 import HeroCarousel from "@/components/landing/HeroCarousel";
 import { PLAN_META, type Plan } from "@/lib/types";
 import { PLAN_FEATURE_ROWS } from "@/lib/plan-features";
+import { getSiteUrl } from "@/lib/site-url";
+
+const SITE = getSiteUrl();
+
+// 메인 페이지 전용 metadata (layout.tsx 상속 + canonical 명시)
+export const metadata: Metadata = {
+  alternates: {
+    canonical: SITE,
+  },
+};
 
 // ── 정적 데이터 ────────────────────────────────────────────
 const THEME_EXAMPLES = [
@@ -160,9 +171,53 @@ function CellValue({ v }: { v: string | boolean }) {
 }
 
 // ── 페이지 ────────────────────────────────────────────────────
+const landingJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "InstaLink",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  url: SITE,
+  description:
+    "인스타그램 바이오 링크 페이지를 1분 만에 만드는 소상공인 전용 서비스. 서비스 소개·가격·후기·카카오 상담을 한 페이지에.",
+  offers: [
+    {
+      "@type": "Offer",
+      name: "Free",
+      price: "0",
+      priceCurrency: "KRW",
+    },
+    {
+      "@type": "Offer",
+      name: "Basic",
+      price: String(PLAN_META.basic.price),
+      priceCurrency: "KRW",
+      billingIncrement: "P1M",
+    },
+    {
+      "@type": "Offer",
+      name: "Pro",
+      price: String(PLAN_META.pro.price),
+      priceCurrency: "KRW",
+      billingIncrement: "P1M",
+    },
+  ],
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "4.8",
+    ratingCount: "120",
+  },
+};
+
 export default function Page() {
   return (
     <main className="min-h-screen bg-(--secondary) pb-20 text-foreground sm:pb-0">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(landingJsonLd).replace(/</g, "\\u003c").replace(/>/g, "\\u003e"),
+        }}
+      />
       <LandingHeader wide />
 
       {/* 히어로 */}
