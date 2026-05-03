@@ -71,9 +71,23 @@ export default async function AdminPage({
   const sortCfg = sortMap[sort] ?? sortMap.created_desc;
   query = query.order(sortCfg.column, { ascending: sortCfg.ascending });
 
-  const { data: rawProfiles } = await query;
+  // ── 독립 쿼리 4개를 병렬 실행 (순차 대기 제거) ──────────────
+  const [
+    { data: rawProfiles },
+    { data: subs },
+    { data: allProfiles },
+    { data: deletedStats },
+  ] = await Promise.all([
+    query,
+    adminClient.from("subscriptions").select("plan, amount, status"),
+    adminClient.from("profiles").select("plan, is_active, created_at"),
+    adminClient
+      .from("deleted_accounts")
+      .select("plan, days_active, had_paid, had_reviews, deleted_at")
+      .order("deleted_at", { ascending: false }),
+  ]);
 
-  // 이메일 맵: owner_id → email
+  // 이메일 맵: owner_id → email (rawProfiles 필요하므로 이후 실행)
   const ownerIds = (rawProfiles ?? [])
     .map((p) => p.owner_id)
     .filter(Boolean) as string[];
@@ -97,14 +111,9 @@ export default async function AdminPage({
   }
 
   // 매출 요약
-  const { data: subs } = await adminClient.from("subscriptions").select("plan, amount, status");
   const activeRevenue = (subs ?? [])
     .filter((s) => s.status === "active")
     .reduce((sum, s) => sum + (s.amount ?? 0), 0);
-
-  const { data: allProfiles } = await adminClient
-    .from("profiles")
-    .select("plan, is_active, created_at");
 
   const planCounts = (allProfiles ?? []).reduce<Record<string, number>>((acc, p) => {
     acc[p.plan] = (acc[p.plan] ?? 0) + 1;
@@ -127,12 +136,6 @@ export default async function AdminPage({
   const totalCount = allProfiles?.length ?? 0;
   const paidCount = (planCounts["basic"] ?? 0) + (planCounts["pro"] ?? 0);
   const conversionRate = totalCount > 0 ? Math.round((paidCount / totalCount) * 100) : 0;
-
-  // 탈퇴 통계
-  const { data: deletedStats } = await adminClient
-    .from("deleted_accounts")
-    .select("plan, days_active, had_paid, had_reviews, deleted_at")
-    .order("deleted_at", { ascending: false });
 
   const totalDeleted = deletedStats?.length ?? 0;
   const deletedThisMonth = (deletedStats ?? []).filter((d) => {

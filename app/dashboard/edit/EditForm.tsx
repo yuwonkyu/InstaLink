@@ -2,14 +2,25 @@
 
 import Link from "next/link";
 import { useState, useTransition, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
 import { saveProfile, type SaveProfilePayload } from "./actions";
 import type { Profile, Service, Review, Theme, CustomLink, GalleryImage, BusinessHours, GalleryLayout } from "@/lib/types";
 import { PLAN_LIMITS, toPlanKey } from "@/lib/plan-limits";
-import BasicTab    from "@/components/edit/tabs/BasicTab";
-import DesignTab   from "@/components/edit/tabs/DesignTab";
-import ServiceTab  from "@/components/edit/tabs/ServiceTab";
-import ContentTab  from "@/components/edit/tabs/ContentTab";
-import AdvancedTab from "@/components/edit/tabs/AdvancedTab";
+// BasicTab은 초기 화면에서 즉시 필요 → 정적 임포트 유지
+import BasicTab from "@/components/edit/tabs/BasicTab";
+// 나머지 탭은 클릭 시점에만 필요 → 동적 임포트로 초기 번들에서 분리
+const DesignTab   = dynamic(() => import("@/components/edit/tabs/DesignTab"),   { loading: () => <TabLoading /> });
+const ServiceTab  = dynamic(() => import("@/components/edit/tabs/ServiceTab"),  { loading: () => <TabLoading /> });
+const ContentTab  = dynamic(() => import("@/components/edit/tabs/ContentTab"),  { loading: () => <TabLoading /> });
+const AdvancedTab = dynamic(() => import("@/components/edit/tabs/AdvancedTab"), { loading: () => <TabLoading /> });
+
+function TabLoading() {
+  return (
+    <div className="flex items-center justify-center py-12 text-sm text-(--muted)">
+      불러오는 중...
+    </div>
+  );
+}
 
 // ── 타입 & 상수 ──────────────────────────────────────────
 type TabKey = "basic" | "design" | "service" | "content" | "advanced";

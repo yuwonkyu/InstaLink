@@ -65,13 +65,16 @@ export default async function DashboardPage({
 }: {
   searchParams: Promise<{ onboarded?: string }>;
 }) {
-  const { onboarded } = await searchParams;
+  // searchParams·headers·supabase 클라이언트 초기화를 병렬 실행
+  const [{ onboarded }, headersList, supabase] = await Promise.all([
+    searchParams,
+    headers(),
+    getSupabaseServerClient(),
+  ]);
   // 실제 배포 도메인을 자동 감지 (로컬/배포 모두 정확한 URL 사용)
-  const headersList = await headers();
   const host = headersList.get("host") ?? "instalink.kkustudio.com";
   const proto = host.startsWith("localhost") ? "http" : "https";
   const SITE_URL = `${proto}://${host}`;
-  const supabase = await getSupabaseServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
