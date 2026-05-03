@@ -19,7 +19,7 @@ type PageProps = {
 
 async function getSiteUrl(): Promise<string> {
   const headersList = await headers();
-  const host = headersList.get("host") ?? "kku-ui.vercel.app";
+  const host = headersList.get("host") ?? "instalink.kkustudio.com";
   const proto = host.startsWith("localhost") ? "http" : "https";
   return `${proto}://${host}`;
 }

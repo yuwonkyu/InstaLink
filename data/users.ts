@@ -333,11 +333,11 @@ export const users: User[] = [
     links: [
       {
         label: "샘플페이지 보러가기 (기본형)",
-        url: "https://kku-ui.vercel.app/sample1",
+        url: "https://instalink.kkustudio.com/sample1",
       },
       {
         label: "샘플페이지 보러가기 (다크테마)",
-        url: "https://kku-ui.vercel.app/sample2",
+        url: "https://instalink.kkustudio.com/sample2",
       },
     ],
     imageSrc:
