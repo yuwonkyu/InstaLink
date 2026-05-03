@@ -96,7 +96,11 @@ export const users: User[] = [
       { name: "체험 PT (1회)", price: "50,000원" },
       { name: "PT 10회권", price: "450,000원", note: "45,000원/회" },
       { name: "PT 20회권", price: "800,000원", note: "40,000원/회" },
-      { name: "식단 관리 (1개월)", price: "150,000원", note: "PT 등록 시 50% 할인" },
+      {
+        name: "식단 관리 (1개월)",
+        price: "150,000원",
+        note: "PT 등록 시 50% 할인",
+      },
     ],
     reviews: [
       {
@@ -121,7 +125,8 @@ export const users: User[] = [
       },
       {
         author: "20대 여성",
-        content: "식단 피드백을 카톡으로 매일 해주시는데 이 가격에 이 퀄리티 실화예요?",
+        content:
+          "식단 피드백을 카톡으로 매일 해주시는데 이 가격에 이 퀄리티 실화예요?",
       },
     ],
     gallery: [
@@ -169,7 +174,11 @@ export const users: User[] = [
       { name: "체험 레슨 (1회)", price: "30,000원" },
       { name: "월정기 8회", price: "220,000원", note: "27,500원/회" },
       { name: "월정기 12회", price: "300,000원", note: "25,000원/회" },
-      { name: "듀엣 레슨 (2인)", price: "20,000원/인", note: "월정기 8회 기준" },
+      {
+        name: "듀엣 레슨 (2인)",
+        price: "20,000원/인",
+        note: "월정기 8회 기준",
+      },
     ],
     reviews: [
       {
@@ -230,7 +239,11 @@ export const users: User[] = [
     imageSrc:
       "https://res.cloudinary.com/diicetn0t/image/upload/v1776169513/Pilates_woman_ayigqf.png",
     services: [
-      { name: "컬러 (기본)", price: "80,000원~", note: "길이·손상도에 따라 조정" },
+      {
+        name: "컬러 (기본)",
+        price: "80,000원~",
+        note: "길이·손상도에 따라 조정",
+      },
       { name: "탈색 + 컬러", price: "150,000원~" },
       { name: "매직 · 세팅펌", price: "120,000원~" },
       { name: "케어트리트먼트", price: "50,000원", note: "시술 시 30,000원" },
@@ -412,14 +425,14 @@ export const users: User[] = [
       {
         name: "Pro 플랜",
         price: "₩29,900 / 월",
-        note: "테마 6종 · 방문자 통계 · AI 문구 추천 · 모든 기능",
+        note: "테마 7종 · 방문자 통계 · AI 문구 추천 · 모든 기능",
       },
     ],
     reviews: [
       {
         author: "박○○ PT 트레이너 · 강남",
         content:
-          "링크트리는 그냥 링크 모음인데, InstaLink는 진짜 내 가게 소개 페이지예요. 고객들이 \"홈페이지 있어요?\" 하면 이거 보내줘요.",
+          '링크트리는 그냥 링크 모음인데, InstaLink는 진짜 내 가게 소개 페이지예요. 고객들이 "홈페이지 있어요?" 하면 이거 보내줘요.',
       },
       {
         author: "이○○ 헤어 디자이너 · 홍대",

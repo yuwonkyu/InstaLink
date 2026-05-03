@@ -50,10 +50,14 @@ export default function BusinessHoursEditor({ value, onChange }: Props) {
               onClick={() => toggle(key)}
               className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-colors ${
                 open
-                  ? "bg-foreground text-white"
-                  : "bg-gray-100 text-(--muted) hover:bg-gray-200"
+                  ? "bg-foreground text-background"
+                  : "bg-black/10 text-(--muted) hover:bg-black/20"
               }`}
-              title={open ? `${label}요일 클릭하면 휴무 설정` : `${label}요일 클릭하면 영업 설정`}
+              title={
+                open
+                  ? `${label}요일 클릭하면 휴무 설정`
+                  : `${label}요일 클릭하면 영업 설정`
+              }
             >
               {label}
             </button>
@@ -65,7 +69,9 @@ export default function BusinessHoursEditor({ value, onChange }: Props) {
       <div className="flex flex-col gap-1.5">
         {DAYS.filter(({ key }) => isOpen(key)).map(({ key, label }) => (
           <div key={key} className="flex items-center gap-2">
-            <span className="w-5 text-center text-xs font-bold text-foreground">{label}</span>
+            <span className="w-5 text-center text-xs font-bold text-foreground">
+              {label}
+            </span>
             <input
               type="text"
               value={value[key] ?? ""}

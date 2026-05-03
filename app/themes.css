@@ -23,9 +23,21 @@
   --card: rgba(21, 8, 46, 0.78);
   --third: #ffd60a;
   background:
-    radial-gradient(circle at 8% 12%, rgba(255, 77, 109, 0.45) 0%, rgba(255, 77, 109, 0) 35%),
-    radial-gradient(circle at 92% 10%, rgba(0, 245, 212, 0.42) 0%, rgba(0, 245, 212, 0) 33%),
-    radial-gradient(circle at 22% 86%, rgba(255, 214, 10, 0.32) 0%, rgba(255, 214, 10, 0) 40%),
+    radial-gradient(
+      circle at 8% 12%,
+      rgba(255, 77, 109, 0.45) 0%,
+      rgba(255, 77, 109, 0) 35%
+    ),
+    radial-gradient(
+      circle at 92% 10%,
+      rgba(0, 245, 212, 0.42) 0%,
+      rgba(0, 245, 212, 0) 33%
+    ),
+    radial-gradient(
+      circle at 22% 86%,
+      rgba(255, 214, 10, 0.32) 0%,
+      rgba(255, 214, 10, 0) 40%
+    ),
     linear-gradient(145deg, #0d0221 0%, #1a0b3c 50%, #12042d 100%);
 }
 
@@ -60,8 +72,16 @@
   --card: rgba(248, 252, 249, 0.88);
   --third: #6f9680;
   background:
-    radial-gradient(circle at 14% 12%, rgba(123, 171, 142, 0.2) 0%, rgba(123, 171, 142, 0) 36%),
-    radial-gradient(circle at 88% 18%, rgba(206, 230, 214, 0.45) 0%, rgba(206, 230, 214, 0) 44%),
+    radial-gradient(
+      circle at 14% 12%,
+      rgba(123, 171, 142, 0.2) 0%,
+      rgba(123, 171, 142, 0) 36%
+    ),
+    radial-gradient(
+      circle at 88% 18%,
+      rgba(206, 230, 214, 0.45) 0%,
+      rgba(206, 230, 214, 0) 44%
+    ),
     linear-gradient(160deg, #f4f8f5 0%, #eaf2ec 48%, #f7faf8 100%);
 }
 
@@ -101,8 +121,16 @@
   --card: rgba(255, 249, 240, 0.86);
   --third: #b58458;
   background:
-    radial-gradient(circle at 10% 10%, rgba(206, 162, 116, 0.26) 0%, rgba(206, 162, 116, 0) 34%),
-    radial-gradient(circle at 90% 22%, rgba(236, 215, 189, 0.4) 0%, rgba(236, 215, 189, 0) 42%),
+    radial-gradient(
+      circle at 10% 10%,
+      rgba(206, 162, 116, 0.26) 0%,
+      rgba(206, 162, 116, 0) 34%
+    ),
+    radial-gradient(
+      circle at 90% 22%,
+      rgba(236, 215, 189, 0.4) 0%,
+      rgba(236, 215, 189, 0) 42%
+    ),
     linear-gradient(150deg, #fbf6ef 0%, #efe1cd 52%, #f8f0e4 100%);
 }
 
@@ -142,8 +170,16 @@
   --card: rgba(30, 41, 59, 0.86);
   --third: #a3e635;
   background:
-    radial-gradient(circle at 12% 10%, rgba(163, 230, 53, 0.18) 0%, rgba(163, 230, 53, 0) 34%),
-    radial-gradient(circle at 90% 14%, rgba(59, 130, 246, 0.18) 0%, rgba(59, 130, 246, 0) 36%),
+    radial-gradient(
+      circle at 12% 10%,
+      rgba(163, 230, 53, 0.18) 0%,
+      rgba(163, 230, 53, 0) 34%
+    ),
+    radial-gradient(
+      circle at 90% 14%,
+      rgba(59, 130, 246, 0.18) 0%,
+      rgba(59, 130, 246, 0) 36%
+    ),
     linear-gradient(150deg, #0b1222 0%, #111b31 52%, #0f172a 100%);
 }
 
@@ -173,4 +209,82 @@
 .theme-energysteel ::selection {
   background: rgba(163, 230, 53, 0.45);
   color: #0b1222;
+}
+
+/* ── Instagram ── */
+.theme-instagram {
+  --base: #0a0a0a;
+  --secondary: #111111;
+  --foreground: #ffffff;
+  --muted: rgba(255, 255, 255, 0.65);
+  --card: rgba(20, 20, 20, 0.82);
+  --third: #f56040;
+  background:
+    radial-gradient(
+      circle at 0% 100%,
+      rgba(253, 29, 29, 0.35) 0%,
+      rgba(253, 29, 29, 0) 40%
+    ),
+    radial-gradient(
+      circle at 100% 100%,
+      rgba(245, 96, 64, 0.3) 0%,
+      rgba(245, 96, 64, 0) 40%
+    ),
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(131, 58, 180, 0.5) 0%,
+      rgba(131, 58, 180, 0) 50%
+    ),
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(193, 53, 132, 0.4) 0%,
+      rgba(193, 53, 132, 0) 45%
+    ),
+    linear-gradient(135deg, #1a0030 0%, #0d0015 40%, #1a000a 70%, #1a0800 100%);
+}
+
+.theme-instagram .h-px,
+.theme-instagram .bg-black\/20 {
+  background-color: rgba(255, 255, 255, 0.18);
+}
+
+.theme-instagram .rounded-2xl.bg-\(--card\) {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 16px 44px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(245, 96, 64, 0.15) inset;
+}
+
+.theme-instagram .profile-brand {
+  background: linear-gradient(
+    45deg,
+    #833ab4,
+    #c13584,
+    #e1306c,
+    #fd1d1d,
+    #f56040,
+    #fcaf45
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.theme-instagram .reserve-button {
+  background: linear-gradient(
+    45deg,
+    #833ab4,
+    #c13584,
+    #fd1d1d,
+    #f56040
+  ) !important;
+  box-shadow:
+    0 12px 28px rgba(253, 29, 29, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+  color: #ffffff !important;
+}
+
+.theme-instagram ::selection {
+  background: rgba(245, 96, 64, 0.45);
+  color: #ffffff;
 }

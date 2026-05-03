@@ -64,7 +64,7 @@ const FEATURES = [
   {
     emoji: "📋",
     title: "서비스 목록 + 가격 한눈에",
-    desc: "고객이 제일 먼저 궁금해하는 것, 바로 \"얼마예요?\". 서비스별 가격을 깔끔하게 정리해 물어보기 전에 미리 답합니다.",
+    desc: '고객이 제일 먼저 궁금해하는 것, 바로 "얼마예요?". 서비스별 가격을 깔끔하게 정리해 물어보기 전에 미리 답합니다.',
   },
   {
     emoji: "🖼️",
@@ -79,12 +79,12 @@ const FEATURES = [
   {
     emoji: "⭐",
     title: "실제 후기로 신뢰 쌓기",
-    desc: "\"좋았어요\" 한마디가 열 번의 설명보다 낫습니다. 후기를 한 화면에 모아 처음 오는 고객도 안심하게 만드세요.",
+    desc: '"좋았어요" 한마디가 열 번의 설명보다 낫습니다. 후기를 한 화면에 모아 처음 오는 고객도 안심하게 만드세요.',
   },
   {
     emoji: "🎨",
     title: "UI 커스터마이징 — 내 브랜드 색으로",
-    desc: "라이트·다크·따뜻한 리넨 등 6가지 테마. Pro 플랜은 버튼 색상도 브랜드 컬러로 맞출 수 있어요.",
+    desc: "라이트·다크·따뜻한 리넨 등 7가지 테마. Pro 플랜은 버튼 색상도 브랜드 컬러로 맞출 수 있어요.",
   },
   {
     emoji: "📊",
@@ -95,7 +95,7 @@ const FEATURES = [
 
 const TESTIMONIALS = [
   {
-    text: "링크트리는 그냥 링크 모음인데, InstaLink는 진짜 내 가게 소개 페이지예요. 고객들이 \"홈페이지 있어요?\" 하면 이거 보내줘요.",
+    text: '링크트리는 그냥 링크 모음인데, InstaLink는 진짜 내 가게 소개 페이지예요. 고객들이 "홈페이지 있어요?" 하면 이거 보내줘요.',
     author: "박○○ PT 트레이너",
     location: "강남",
   },
@@ -135,7 +135,11 @@ const PLANS: Plan[] = ["free", "basic", "pro"];
 // ── 서브 컴포넌트 ────────────────────────────────────────────
 function CheckIcon() {
   return (
-    <svg className="mx-auto h-5 w-5 text-foreground" viewBox="0 0 20 20" fill="currentColor">
+    <svg
+      className="mx-auto h-5 w-5 text-foreground"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+    >
       <path
         fillRule="evenodd"
         d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
@@ -150,7 +154,7 @@ function DashIcon() {
 }
 
 function CellValue({ v }: { v: string | boolean }) {
-  if (v === true)  return <CheckIcon />;
+  if (v === true) return <CheckIcon />;
   if (v === false) return <DashIcon />;
   return <span className="text-xs font-medium">{v}</span>;
 }
@@ -165,7 +169,6 @@ export default function Page() {
       <section className="mx-auto w-full max-w-6xl px-4 pb-4 pt-14 sm:px-6">
         <div className="rounded-3xl bg-(--card) px-6 py-12 shadow-[0_4px_20px_rgba(17,24,39,0.06)] sm:px-12 sm:py-16">
           <div className="flex flex-col items-center gap-10 md:flex-row md:items-center md:gap-12">
-
             {/* 좌: 텍스트 영역 */}
             <div className="flex-1 min-w-0">
               <div className="flex flex-wrap items-center gap-2">
@@ -207,8 +210,16 @@ export default function Page() {
                 </Link>
               </div>
               <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1">
-                {["카드 등록 없음", "가입만 하면 바로 사용", "즉시 공유 가능", "영원히 무료 플랜 제공"].map((item) => (
-                  <span key={item} className="flex items-center gap-1.5 text-xs text-(--muted)">
+                {[
+                  "카드 등록 없음",
+                  "가입만 하면 바로 사용",
+                  "즉시 공유 가능",
+                  "영원히 무료 플랜 제공",
+                ].map((item) => (
+                  <span
+                    key={item}
+                    className="flex items-center gap-1.5 text-xs text-(--muted)"
+                  >
                     <span className="text-green-500 font-bold">✔</span>
                     {item}
                   </span>
@@ -220,15 +231,18 @@ export default function Page() {
             <div className="shrink-0 flex justify-center md:w-60">
               <HeroCarousel />
             </div>
-
           </div>
         </div>
       </section>
 
       {/* 테마별 예시 미리보기 */}
       <section className="mx-auto w-full max-w-6xl px-4 pb-12 sm:px-6">
-        <p className="text-center text-sm font-semibold text-(--muted)">테마별 예시 페이지</p>
-        <p className="mt-1 text-center text-xs text-(--muted)">내 업종·분위기에 맞는 테마를 골라보세요</p>
+        <p className="text-center text-sm font-semibold text-(--muted)">
+          테마별 예시 페이지
+        </p>
+        <p className="mt-1 text-center text-xs text-(--muted)">
+          내 업종·분위기에 맞는 테마를 골라보세요
+        </p>
         <div className="mt-4 grid gap-4 sm:grid-cols-3">
           {THEME_EXAMPLES.map((ex) => (
             <a
@@ -249,8 +263,18 @@ export default function Page() {
                     {ex.name[0]}
                   </div>
                   <div>
-                    <p className="text-sm font-bold leading-tight" style={{ color: ex.fg }}>{ex.name}</p>
-                    <p className="mt-0.5 text-[11px] leading-tight" style={{ color: ex.muted }}>{ex.role}</p>
+                    <p
+                      className="text-sm font-bold leading-tight"
+                      style={{ color: ex.fg }}
+                    >
+                      {ex.name}
+                    </p>
+                    <p
+                      className="mt-0.5 text-[11px] leading-tight"
+                      style={{ color: ex.muted }}
+                    >
+                      {ex.role}
+                    </p>
                   </div>
                 </div>
                 {/* 링크 버튼 미리보기 */}
@@ -262,7 +286,11 @@ export default function Page() {
                       style={
                         i === 0
                           ? { background: ex.accent, color: ex.bg }
-                          : { background: ex.card, color: ex.fg, border: `1px solid ${ex.fg}18` }
+                          : {
+                              background: ex.card,
+                              color: ex.fg,
+                              border: `1px solid ${ex.fg}18`,
+                            }
                       }
                     >
                       {label}
@@ -276,8 +304,12 @@ export default function Page() {
                 style={{ borderColor: `${ex.fg}12`, background: ex.card }}
               >
                 <div>
-                  <p className="text-xs font-bold" style={{ color: ex.fg }}>{ex.theme}</p>
-                  <p className="text-[11px]" style={{ color: ex.muted }}>{ex.industry}</p>
+                  <p className="text-xs font-bold" style={{ color: ex.fg }}>
+                    {ex.theme}
+                  </p>
+                  <p className="text-[11px]" style={{ color: ex.muted }}>
+                    {ex.industry}
+                  </p>
                 </div>
                 <span
                   className="text-xs font-semibold opacity-50 transition group-hover:opacity-100"
@@ -293,7 +325,9 @@ export default function Page() {
 
       {/* 타겟 섹션 */}
       <section className="mx-auto w-full max-w-6xl px-4 pb-12 sm:px-6">
-        <p className="text-center text-sm font-semibold text-(--muted)">이런 분들이 쓰고 있어요</p>
+        <p className="text-center text-sm font-semibold text-(--muted)">
+          이런 분들이 쓰고 있어요
+        </p>
         <div className="mt-4 grid grid-cols-4 gap-3 sm:grid-cols-8">
           {TARGETS.map((t) => (
             <div
@@ -301,7 +335,9 @@ export default function Page() {
               className="flex flex-col items-center gap-2 rounded-2xl bg-(--card) p-4 shadow-[0_2px_12px_rgba(17,24,39,0.05)]"
             >
               <span className="text-2xl">{t.emoji}</span>
-              <span className="text-center text-xs font-medium leading-tight">{t.label}</span>
+              <span className="text-center text-xs font-medium leading-tight">
+                {t.label}
+              </span>
             </div>
           ))}
         </div>
@@ -310,7 +346,9 @@ export default function Page() {
       {/* Before / After */}
       <section className="mx-auto w-full max-w-6xl px-4 pb-14 sm:px-6">
         <div className="rounded-3xl bg-(--card) px-6 py-10 shadow-[0_4px_20px_rgba(17,24,39,0.06)] sm:px-10">
-          <h2 className="text-xl font-bold sm:text-2xl">바이오 링크, 이렇게 달라요</h2>
+          <h2 className="text-xl font-bold sm:text-2xl">
+            바이오 링크, 이렇게 달라요
+          </h2>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             <div className="rounded-2xl border border-black/5 bg-black/2 p-5">
               <p className="mb-3 text-xs font-bold uppercase tracking-widest text-(--muted)">
@@ -320,8 +358,12 @@ export default function Page() {
                 <li>🔗 인스타 링크</li>
                 <li>🔗 예약 링크</li>
                 <li>🔗 블로그 링크</li>
-                <li className="pt-2 text-xs opacity-60">→ 고객이 어디를 눌러야 할지 모름</li>
-                <li className="text-xs opacity-60">→ 가격 물어보는 DM 계속 옴</li>
+                <li className="pt-2 text-xs opacity-60">
+                  → 고객이 어디를 눌러야 할지 모름
+                </li>
+                <li className="text-xs opacity-60">
+                  → 가격 물어보는 DM 계속 옴
+                </li>
               </ul>
             </div>
             <div className="rounded-2xl border border-foreground/10 bg-foreground/3 p-5">
@@ -332,8 +374,12 @@ export default function Page() {
                 <li>✅ 서비스 + 가격 한눈에</li>
                 <li>✅ 실제 후기 바로 확인</li>
                 <li>✅ 카카오 상담 버튼 한 번에</li>
-                <li className="pt-2 text-xs text-(--muted)">→ 고객이 보고 바로 상담 신청</li>
-                <li className="text-xs text-(--muted)">→ 가격 DM 대신 예약 DM이 옴</li>
+                <li className="pt-2 text-xs text-(--muted)">
+                  → 고객이 보고 바로 상담 신청
+                </li>
+                <li className="text-xs text-(--muted)">
+                  → 가격 DM 대신 예약 DM이 옴
+                </li>
               </ul>
             </div>
           </div>
@@ -342,7 +388,9 @@ export default function Page() {
 
       {/* 기능 소개 */}
       <section className="mx-auto w-full max-w-6xl px-4 pb-14 sm:px-6">
-        <h2 className="text-xl font-bold sm:text-2xl">꼭 필요한 것만 담았어요</h2>
+        <h2 className="text-xl font-bold sm:text-2xl">
+          꼭 필요한 것만 담았어요
+        </h2>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           {FEATURES.map((f) => (
             <article
@@ -360,14 +408,16 @@ export default function Page() {
       {/* 요금제 */}
       <section className="mx-auto w-full max-w-6xl px-4 pb-14 sm:px-6">
         <h2 className="text-xl font-bold sm:text-2xl">요금제</h2>
-        <p className="mt-1 text-sm text-(--muted)">처음엔 무료로, 성장하면 그때 올리세요.</p>
+        <p className="mt-1 text-sm text-(--muted)">
+          처음엔 무료로, 성장하면 그때 올리세요.
+        </p>
 
         {/* 플랜 카드 */}
         <div className="mt-6 grid gap-3 sm:grid-cols-3">
           {PLANS.map((plan) => {
             const meta = PLAN_META[plan];
             const isHighlight = plan === "basic";
-            const isFree      = plan === "free";
+            const isFree = plan === "free";
             return (
               <div
                 key={plan}
@@ -383,16 +433,28 @@ export default function Page() {
                   </span>
                 )}
                 {/* 플랜명 */}
-                <p className={`text-xs font-bold uppercase tracking-widest ${isHighlight ? "opacity-60" : "text-(--muted)"}`}>
+                <p
+                  className={`text-xs font-bold uppercase tracking-widest ${isHighlight ? "opacity-60" : "text-(--muted)"}`}
+                >
                   {meta.label}
                 </p>
                 {/* 가격 */}
                 <p className="mt-1.5 text-2xl font-extrabold">
                   {meta.price === 0 ? "₩0" : `₩${meta.price.toLocaleString()}`}
-                  {meta.price > 0 && <span className={`ml-1 text-sm font-normal ${isHighlight ? "opacity-60" : "text-(--muted)"}`}>/월</span>}
+                  {meta.price > 0 && (
+                    <span
+                      className={`ml-1 text-sm font-normal ${isHighlight ? "opacity-60" : "text-(--muted)"}`}
+                    >
+                      /월
+                    </span>
+                  )}
                 </p>
-                <p className={`mt-0.5 text-xs ${isHighlight ? "opacity-60" : "text-(--muted)"}`}>
-                  {meta.price === 0 ? "영원히 무료 · 카드 등록 없음" : "언제든 해지 가능"}
+                <p
+                  className={`mt-0.5 text-xs ${isHighlight ? "opacity-60" : "text-(--muted)"}`}
+                >
+                  {meta.price === 0
+                    ? "영원히 무료 · 카드 등록 없음"
+                    : "언제든 해지 가능"}
                 </p>
                 {/* CTA */}
                 <Link
@@ -405,7 +467,11 @@ export default function Page() {
                         : "border border-black/10 hover:bg-black/5"
                   }`}
                 >
-                  {isFree ? "무료로 시작하기" : isHighlight ? "이 플랜으로 시작하기" : "Pro 시작하기"}
+                  {isFree
+                    ? "무료로 시작하기"
+                    : isHighlight
+                      ? "이 플랜으로 시작하기"
+                      : "Pro 시작하기"}
                 </Link>
               </div>
             );
@@ -417,9 +483,14 @@ export default function Page() {
           <table className="w-full border-collapse text-sm">
             <thead>
               <tr className="border-b border-black/5">
-                <th className="px-4 py-3 text-left font-semibold text-(--muted)">기능</th>
+                <th className="px-4 py-3 text-left font-semibold text-(--muted)">
+                  기능
+                </th>
                 {PLANS.map((plan) => (
-                  <th key={plan} className={`px-4 py-3 text-center font-semibold ${plan === "basic" ? "text-foreground" : "text-(--muted)"}`}>
+                  <th
+                    key={plan}
+                    className={`px-4 py-3 text-center font-semibold ${plan === "basic" ? "text-foreground" : "text-(--muted)"}`}
+                  >
                     {PLAN_META[plan].label}
                   </th>
                 ))}
@@ -428,10 +499,18 @@ export default function Page() {
             <tbody>
               {PLAN_FEATURE_ROWS.map((row) => (
                 <tr key={row.label} className="border-t border-black/5">
-                  <td className="px-4 py-2.5 text-left text-(--muted)">{row.label}</td>
-                  <td className="px-4 py-2.5 text-center"><CellValue v={row.free} /></td>
-                  <td className="px-4 py-2.5 text-center"><CellValue v={row.basic} /></td>
-                  <td className="px-4 py-2.5 text-center"><CellValue v={row.pro} /></td>
+                  <td className="px-4 py-2.5 text-left text-(--muted)">
+                    {row.label}
+                  </td>
+                  <td className="px-4 py-2.5 text-center">
+                    <CellValue v={row.free} />
+                  </td>
+                  <td className="px-4 py-2.5 text-center">
+                    <CellValue v={row.basic} />
+                  </td>
+                  <td className="px-4 py-2.5 text-center">
+                    <CellValue v={row.pro} />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -448,7 +527,9 @@ export default function Page() {
               key={t.author}
               className="rounded-2xl bg-(--card) p-5 shadow-[0_4px_20px_rgba(17,24,39,0.06)]"
             >
-              <p className="text-sm leading-6 text-(--muted)">&#8220;{t.text}&#8221;</p>
+              <p className="text-sm leading-6 text-(--muted)">
+                &#8220;{t.text}&#8221;
+              </p>
               <footer className="mt-3 text-xs font-semibold">
                 {t.author} · {t.location}
               </footer>
@@ -465,7 +546,9 @@ export default function Page() {
             <details key={faq.q} className="group px-6 py-4">
               <summary className="flex cursor-pointer select-none list-none items-center justify-between gap-4 text-sm font-semibold">
                 {faq.q}
-                <span className="shrink-0 text-(--muted) transition-transform group-open:rotate-180">▾</span>
+                <span className="shrink-0 text-(--muted) transition-transform group-open:rotate-180">
+                  ▾
+                </span>
               </summary>
               <p className="mt-3 text-sm leading-6 text-(--muted)">{faq.a}</p>
             </details>
@@ -503,7 +586,9 @@ export default function Page() {
               예시 페이지 먼저 보기
             </Link>
           </div>
-          <p className="mt-4 text-xs opacity-50">회원가입 없이 예시 페이지를 바로 확인할 수 있어요.</p>
+          <p className="mt-4 text-xs opacity-50">
+            회원가입 없이 예시 페이지를 바로 확인할 수 있어요.
+          </p>
         </div>
       </section>
 
