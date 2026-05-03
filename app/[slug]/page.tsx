@@ -7,6 +7,7 @@ import type { Profile } from "@/lib/types";
 import { getUserByUsername } from "@/data/users";
 import ShareButton from "./ShareButton";
 import FreeCtaBanner from "./FreeCtaBanner";
+import SampleBanner from "./SampleBanner";
 import { COMPANY_INFO } from "@/lib/company-info";
 
 type PageProps = {
@@ -187,6 +188,11 @@ export default async function SlugPage({ params }: PageProps) {
         }}
       />
       <div className="w-full max-w-md">
+        {/^sample\d*$/.test(slug) && (
+          <div className="mb-3">
+            <SampleBanner />
+          </div>
+        )}
         <div className="rounded-2xl bg-(--card) p-2 shadow-[0_4px_20px_rgba(17,24,39,0.06)] backdrop-blur-sm">
           <ProfilePage profile={profile} />
         </div>
