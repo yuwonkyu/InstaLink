@@ -48,6 +48,9 @@ export const metadata: Metadata = {
   authors: [{ name: "InstaLink" }],
   verification: {
     google: "XdM9zh2wbDIGWYZDlaBjiPCaU7CL4jx4QaVIceeAQZ0",
+    other: {
+      "naver-site-verification": "5c196548a376539e03ab4d1a31ca6e90f5d00454",
+    },
   },
   metadataBase: new URL(SITE),
   alternates: {
