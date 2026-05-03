@@ -139,8 +139,8 @@ export const users: User[] = [
       },
     ],
     instagramHandle: "@fitwithji",
-    plan: "pro",
-    sectionOrder: ["services", "gallery", "reviews"],
+    plan: "free",
+    sectionOrder: ["services", "reviews"],
     options: {
       showReviews: true,
       showLocation: true,
@@ -188,7 +188,23 @@ export const users: User[] = [
           "1:1 레슨이라 집중 케어가 달라요. 자세 하나하나 봐주셔서 그룹 수업보다 효과가 두 배예요.",
       },
     ],
+    gallery: [
+      {
+        url: "https://res.cloudinary.com/diicetn0t/image/upload/v1776169513/Pilates_woman_ayigqf.png",
+        caption: "프라이빗 레슨 공간",
+      },
+      {
+        url: "https://res.cloudinary.com/diicetn0t/image/upload/v1776169513/Pilates_woman_ayigqf.png",
+        caption: "소도구 필라테스",
+      },
+      {
+        url: "https://res.cloudinary.com/diicetn0t/image/upload/v1776169513/Pilates_woman_ayigqf.png",
+        caption: "재활 케어 프로그램",
+      },
+    ],
     instagramHandle: "@move.pilates",
+    plan: "basic",
+    sectionOrder: ["services", "gallery", "reviews"],
     options: {
       showReviews: true,
       showLocation: true,
@@ -236,7 +252,23 @@ export const users: User[] = [
           "탈색 후 머리가 너무 상해서 포기하고 있었는데, 케어 시술 받고 나서 완전히 다른 머리가 됐어요.",
       },
     ],
+    gallery: [
+      {
+        url: "https://res.cloudinary.com/diicetn0t/image/upload/v1776169513/Pilates_woman_ayigqf.png",
+        caption: "컬러 시술",
+      },
+      {
+        url: "https://res.cloudinary.com/diicetn0t/image/upload/v1776169513/Pilates_woman_ayigqf.png",
+        caption: "탈색 & 컬러",
+      },
+      {
+        url: "https://res.cloudinary.com/diicetn0t/image/upload/v1776169513/Pilates_woman_ayigqf.png",
+        caption: "케어 트리트먼트",
+      },
+    ],
     instagramHandle: "@jian.hair",
+    plan: "pro",
+    sectionOrder: ["services", "gallery", "reviews"],
     options: {
       showReviews: true,
       showLocation: true,
@@ -244,6 +276,96 @@ export const users: User[] = [
       serviceFooterLabel: false,
       theme: "warmlinen",
       highlightColor: "#b58458",
+    },
+  },
+  {
+    username: "jhj",
+    name: "조형진",
+    brandName: "OMGN",
+    role: "Film · Brand · AD · Event · AI",
+    intro: "Work that makes clients say, \u201cOh my goodness!\u201d",
+    location: "제주특별자치도 제주시 구좌읍 월정1길 70-1",
+    availability: "",
+    ctaLabel: "",
+    instagramUrl: "https://www.instagram.com/whdkd2/",
+    instagramUrls: [
+      "https://www.instagram.com/whdkd2/",
+      "https://www.instagram.com/_studiomgn/",
+      "https://www.instagram.com/yoonseul.house",
+    ],
+    imageSrc:
+      "https://res.cloudinary.com/diicetn0t/image/upload/v1776317609/JHJ_scrgqn.png",
+    ogImageSrc:
+      "https://res.cloudinary.com/diicetn0t/image/upload/v1776317475/JHJ-OP_ejmccq.jpg",
+    services: [],
+    reviews: [
+      {
+        author: "30대 남자",
+        content: "사람이 좋아요, 자칭 테토남",
+      },
+    ],
+    instagramHandle: "@whdkd2",
+    options: {
+      theme: "warmlinen",
+      showReviews: true,
+      showLocation: true,
+      showEditableFrame: false,
+      highlightColor: "#0012ab",
+      serviceFooterLabel: false,
+    },
+  },
+  {
+    username: "kku",
+    name: "원뀨",
+    brandName: "Kku UI Studio",
+    role: "고객 문의를 만드는 1페이지 사이트 제작",
+    intro: `링크트리 대신
+서비스 소개 + 후기 + 문의까지 한 번에 정리되는
+프로필 랜딩페이지를 제작합니다.`,
+    location: "서울 양천구",
+    availability: "10:00~18:00",
+    ctaLabel: "무료 샘플 받아보기",
+    instagramUrl: "https://www.instagram.com/kku._.ui/",
+    instagramUrls: [
+      "https://www.instagram.com/kku._.ui/",
+      "https://www.threads.com/@kku._.ui",
+    ],
+    links: [
+      {
+        label: "샘플페이지 보러가기 (기본형)",
+        url: "https://instalink.kkustudio.com/sample1",
+      },
+      {
+        label: "샘플페이지 보러가기 (다크테마)",
+        url: "https://instalink.kkustudio.com/sample2",
+      },
+    ],
+    imageSrc:
+      "https://res.cloudinary.com/diicetn0t/image/upload/v1776352551/%EB%80%A8_vtat3u.png",
+    ogImageSrc:
+      "https://res.cloudinary.com/diicetn0t/image/upload/v1776352588/%EB%80%A83D_x4iaii.png",
+    services: [
+      {
+        name: "브랜드 사이트(1페이지)",
+        price: "50,000원",
+        note: "수정 2회 / 3주 내",
+      },
+      {
+        name: "커스텀사이트(1페이지)",
+        price: "100,000원~",
+        note: "추가 페이지 별도",
+      },
+    ],
+    kakaoUrl: "https://open.kakao.com/o/sU3EIJqi",
+    reviews: [],
+    instagramHandle: "@kku._.ui",
+    options: {
+      showCTA: true,
+      showReviews: true,
+      showEditableFrame: false,
+      serviceFooterLabel: false,
+      theme: "softsage",
+      highlightColor: "#FEE500",
     },
   },
   {

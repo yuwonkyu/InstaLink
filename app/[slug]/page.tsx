@@ -7,7 +7,8 @@ import type { Profile } from "@/lib/types";
 import { getUserByUsername } from "@/data/users";
 import ShareButton from "./ShareButton";
 import FreeCtaBanner from "./FreeCtaBanner";
-import SampleBanner from "./SampleBanner";
+import SamplePlanBanner from "./SamplePlanBanner";
+import { toPlanKey } from "@/lib/plan-limits";
 import { COMPANY_INFO } from "@/lib/company-info";
 
 type PageProps = {
@@ -18,7 +19,7 @@ type PageProps = {
 
 async function getSiteUrl(): Promise<string> {
   const headersList = await headers();
-  const host = headersList.get("host") ?? "kku-ui.vercel.app";
+  const host = headersList.get("host") ?? "instalink.kkustudio.com";
   const proto = host.startsWith("localhost") ? "http" : "https";
   return `${proto}://${host}`;
 }
@@ -188,10 +189,8 @@ export default async function SlugPage({ params }: PageProps) {
         }}
       />
       <div className="w-full max-w-md">
-        {/^sample\d*$/.test(slug) && (
-          <div className="mb-3">
-            <SampleBanner />
-          </div>
+        {/^sample[123]$/.test(slug) && (
+          <SamplePlanBanner plan={toPlanKey(profile.plan)} />
         )}
         <div className="rounded-2xl bg-(--card) p-2 shadow-[0_4px_20px_rgba(17,24,39,0.06)] backdrop-blur-sm">
           <ProfilePage profile={profile} />

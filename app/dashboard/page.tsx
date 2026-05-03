@@ -68,7 +68,7 @@ export default async function DashboardPage({
   const { onboarded } = await searchParams;
   // 실제 배포 도메인을 자동 감지 (로컬/배포 모두 정확한 URL 사용)
   const headersList = await headers();
-  const host = headersList.get("host") ?? "kku-ui.vercel.app";
+  const host = headersList.get("host") ?? "instalink.kkustudio.com";
   const proto = host.startsWith("localhost") ? "http" : "https";
   const SITE_URL = `${proto}://${host}`;
   const supabase = await getSupabaseServerClient();
