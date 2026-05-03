@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import ProfilePage from "@/components/ProfilePage";
 import { getSupabaseServerClient } from "@/lib/supabase";
@@ -10,6 +9,7 @@ import FreeCtaBanner from "./FreeCtaBanner";
 import SamplePlanBanner from "./SamplePlanBanner";
 import { toPlanKey } from "@/lib/plan-limits";
 import { COMPANY_INFO } from "@/lib/company-info";
+import { getSiteUrl as getCanonicalSiteUrl } from "@/lib/site-url";
 
 type PageProps = {
   params: Promise<{
@@ -17,11 +17,9 @@ type PageProps = {
   }>;
 };
 
-async function getSiteUrl(): Promise<string> {
-  const headersList = await headers();
-  const host = headersList.get("host") ?? "instalink.kkustudio.com";
-  const proto = host.startsWith("localhost") ? "http" : "https";
-  return `${proto}://${host}`;
+// 항상 canonical 도메인 반환 — kku-ui.vercel.app 으로 접속해도 OG/canonical 은 instalink 도메인
+function getSiteUrl(): string {
+  return getCanonicalSiteUrl();
 }
 
 async function getProfileBySlug(slug: string): Promise<Profile | null> {
@@ -90,7 +88,7 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const profile = await getProfileBySlug(slug);
-  const SITE = await getSiteUrl();
+  const SITE = getSiteUrl();
 
   const title = profile ? `${profile.name} — ${profile.shop_name}` : slug;
   const description = profile?.tagline ?? "인스타 프로필 링크 페이지";
@@ -122,7 +120,7 @@ export async function generateMetadata({
 export default async function SlugPage({ params }: PageProps) {
   const { slug } = await params;
   const profile = await getProfileBySlug(slug);
-  const SITE = await getSiteUrl();
+  const SITE = getSiteUrl();
 
   // 조회수 증가 (서버리스 환경에서 fire-and-forget은 완료 보장 안 됨 → await 사용)
   if (profile?.is_active) {

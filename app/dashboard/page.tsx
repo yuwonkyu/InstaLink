@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { headers } from "next/headers";
 import { getSupabaseServerClient } from "@/lib/supabase";
+import { getSiteUrl } from "@/lib/site-url";
 import type { Profile } from "@/lib/types";
 import { PLAN_META } from "@/lib/types";
 import dynamic from "next/dynamic";
@@ -65,16 +65,13 @@ export default async function DashboardPage({
 }: {
   searchParams: Promise<{ onboarded?: string }>;
 }) {
-  // searchParams·headers·supabase 클라이언트 초기화를 병렬 실행
-  const [{ onboarded }, headersList, supabase] = await Promise.all([
+  // searchParams·supabase 클라이언트 초기화를 병렬 실행
+  const [{ onboarded }, supabase] = await Promise.all([
     searchParams,
-    headers(),
     getSupabaseServerClient(),
   ]);
-  // 실제 배포 도메인을 자동 감지 (로컬/배포 모두 정확한 URL 사용)
-  const host = headersList.get("host") ?? "instalink.kkustudio.com";
-  const proto = host.startsWith("localhost") ? "http" : "https";
-  const SITE_URL = `${proto}://${host}`;
+  // 항상 canonical 도메인 사용 — 어떤 URL로 접속해도 링크가 일관되게 생성됨
+  const SITE_URL = getSiteUrl();
   const {
     data: { user },
   } = await supabase.auth.getUser();

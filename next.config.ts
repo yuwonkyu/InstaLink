@@ -25,6 +25,19 @@ const nextConfig: NextConfig = {
     ],
   },
 
+  async redirects() {
+    return [
+      // kku-ui.vercel.app 으로 들어온 모든 요청을 instalink 도메인으로 301 리다이렉트
+      // SEO 중복 색인 방지 + 사용자 혼동 제거
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "kku-ui.vercel.app" }],
+        destination: "https://instalink.kkustudio.com/:path*",
+        permanent: true,
+      },
+    ];
+  },
+
   async headers() {
     return [
       // Next.js 빌드 해시가 붙은 정적 자산 — 내용이 바뀌면 URL도 바뀌므로 1년 캐시 안전
