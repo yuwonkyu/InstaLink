@@ -85,7 +85,9 @@ async function getProfileBySlug(slug: string): Promise<Profile | null> {
   } as Profile;
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const profile = await getProfileBySlug(slug);
   const SITE = await getSiteUrl();
@@ -145,7 +147,8 @@ export default async function SlugPage({ params }: PageProps) {
     );
   }
 
-  const themeClass = profile.theme && profile.theme !== "light" ? `theme-${profile.theme}` : "";
+  const themeClass =
+    profile.theme && profile.theme !== "light" ? `theme-${profile.theme}` : "";
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -154,8 +157,23 @@ export default async function SlugPage({ params }: PageProps) {
     description: profile.tagline,
     url: `${SITE}/${slug}`,
     ...(profile.image_url ? { image: profile.image_url } : {}),
-    ...(profile.location ? { address: { "@type": "PostalAddress", addressLocality: profile.location } } : {}),
-    ...(profile.kakao_url ? { contactPoint: { "@type": "ContactPoint", contactType: "customer service", url: profile.kakao_url } } : {}),
+    ...(profile.location
+      ? {
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: profile.location,
+          },
+        }
+      : {}),
+    ...(profile.kakao_url
+      ? {
+          contactPoint: {
+            "@type": "ContactPoint",
+            contactType: "customer service",
+            url: profile.kakao_url,
+          },
+        }
+      : {}),
   };
 
   return (
@@ -165,7 +183,9 @@ export default async function SlugPage({ params }: PageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c").replace(/>/g, "\\u003e"),
+          __html: JSON.stringify(jsonLd)
+            .replace(/</g, "\\u003c")
+            .replace(/>/g, "\\u003e"),
         }}
       />
       <div className="w-full max-w-md">
