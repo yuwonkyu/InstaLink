@@ -13,7 +13,7 @@ export const PLAN_LIMITS = {
   free: {
     services: 3,    // 편집 & 공개 3개
     reviews:  3,    // 편집 & 공개 3개
-    gallery:  0,    // 갤러리 전체 숨김 (공개 & 편집 신규 추가 불가)
+    gallery:  3,    // 무료 3장 (첫 가치 경험 제공)
     themes:   ["light"] as const,
   },
   basic: {

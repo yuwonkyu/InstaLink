@@ -13,7 +13,7 @@ export default async function OnboardingPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("name, kakao_url, services")
+    .select("name, slug, kakao_url, services")
     .eq("owner_id", user.id)
     .maybeSingle();
 
@@ -24,6 +24,7 @@ export default async function OnboardingPage() {
   }
 
   const defaultName = profile?.name || user.email?.split("@")[0] || "";
+  const slug = profile?.slug ?? "";
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-(--secondary) px-4 py-10">
@@ -31,11 +32,11 @@ export default async function OnboardingPage() {
         <span className="font-display text-xl font-bold tracking-tight text-foreground">
           InstaLink
         </span>
-        <p className="mt-1 text-sm text-(--muted)">내 페이지를 5분 만에 완성해보세요</p>
+        <p className="mt-1 text-sm text-(--muted)">3분 안에 내 링크 완성하기</p>
       </div>
 
       <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-[0_4px_20px_rgba(17,24,39,0.08)]">
-        <OnboardingForm defaultName={defaultName} />
+        <OnboardingForm defaultName={defaultName} slug={slug} />
       </div>
 
       <p className="mt-4 text-xs text-(--muted)">
