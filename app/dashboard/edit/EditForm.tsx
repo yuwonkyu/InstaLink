@@ -166,6 +166,7 @@ export default function EditForm({ profile, plan }: Props) {
         setIsDirty(false);
         setSaveStatus("saved");
         setShowPostSave(true);
+        window.dispatchEvent(new CustomEvent("profile-saved"));
         setAiNotice(false);
         if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
         saveTimerRef.current = setTimeout(() => setSaveStatus("idle"), 3000);

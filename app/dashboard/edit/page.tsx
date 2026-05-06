@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getSupabaseServerClient } from "@/lib/supabase";
 import type { Profile } from "@/lib/types";
 import EditForm from "./EditForm";
+import PreviewPanel from "@/components/dashboard/PreviewPanel";
 
 async function getMyProfile(ownerId: string): Promise<Profile | null> {
   const supabase = await getSupabaseServerClient();
@@ -58,7 +59,13 @@ export default async function EditPage() {
         </Link>
       </div>
 
-      <EditForm profile={profile} plan={profile.plan} />
+      {/* lg 이상: 2컬럼 (편집 | 미리보기), 미만: 단일 컬럼 */}
+      <div className="lg:grid lg:grid-cols-[1fr_360px] lg:items-start lg:gap-8">
+        <EditForm profile={profile} plan={profile.plan} />
+        <div className="lg:sticky lg:top-6">
+          <PreviewPanel slug={profile.slug} />
+        </div>
+      </div>
     </div>
   );
 }

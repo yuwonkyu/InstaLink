@@ -256,12 +256,10 @@ export default function Page() {
                   지금 무료로 시작하기 →
                 </Link>
                 <Link
-                  href="/sample1"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/demo"
                   className="rounded-xl border border-black/10 bg-white px-6 py-3 text-sm font-semibold transition hover:bg-black/5"
                 >
-                  예시 페이지 보기
+                  👁 내 페이지 미리 만들어보기
                 </Link>
               </div>
               <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1">
