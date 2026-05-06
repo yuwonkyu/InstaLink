@@ -75,8 +75,8 @@ export default function BasicTab({
           </p>
         </div>
         <div className="flex flex-col gap-3">
-          <Field label="이름 (고객에게 표시됨)" value={name} onChange={setName} placeholder="김지수 트레이너" />
-          <Field label="브랜드명 / 상호" value={shopName} onChange={setShopName} placeholder="FIT WITH JI" />
+          <Field label="이름 (고객에게 표시됨)" value={name} onChange={setName} placeholder="김지수 트레이너" maxLength={30} />
+          <Field label="브랜드명 / 상호" value={shopName} onChange={setShopName} placeholder="FIT WITH JI" maxLength={30} />
 
           {/* 태그라인 + 예시 */}
           <div className="flex flex-col gap-1">
@@ -92,17 +92,25 @@ export default function BasicTab({
                 {showTaglineHints ? "닫기" : "📝 예시 보기"}
               </button>
             </div>
-            <input
-              type="text"
-              value={tagline}
-              onChange={(e) => setTagline(e.target.value)}
-              placeholder="다이어트 · 체형교정 · 여성 전문 PT"
-              className={`rounded-xl border bg-(--secondary) px-3.5 py-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 ${
-                showTaglineHints
-                  ? "border-blue-500 ring-2 ring-blue-500/15"
-                  : "border-gray-200"
-              }`}
-            />
+            <div className="relative">
+              <input
+                type="text"
+                value={tagline}
+                onChange={(e) => setTagline(e.target.value)}
+                placeholder="다이어트 · 체형교정 · 여성 전문 PT"
+                maxLength={45}
+                className={`w-full pr-14 rounded-xl border bg-(--secondary) px-3.5 py-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 ${
+                  showTaglineHints
+                    ? "border-blue-500 ring-2 ring-blue-500/15"
+                    : "border-gray-200"
+                }`}
+              />
+              <span className={`pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] ${
+                tagline.length / 45 >= 1 ? "text-red-500" : tagline.length / 45 >= 0.8 ? "text-orange-400" : "text-(--muted)"
+              }`}>
+                {tagline.length}/45
+              </span>
+            </div>
             {showTaglineHints && (
               <HintPanel
                 type="taglines"
@@ -128,17 +136,25 @@ export default function BasicTab({
                 {showDescHints ? "닫기" : "📝 예시 보기"}
               </button>
             </div>
-            <textarea
-              rows={3}
-              value={description}
-              onChange={(e) => setDesc(e.target.value)}
-              placeholder={"✔ 여성 전문 1:1 PT\n✔ 식단 + 운동 통합 관리"}
-              className={`resize-none rounded-xl border bg-(--secondary) px-3.5 py-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 ${
-                showDescHints
-                  ? "border-blue-500 ring-2 ring-blue-500/15"
-                  : "border-gray-200"
-              }`}
-            />
+            <div className="relative">
+              <textarea
+                rows={3}
+                value={description}
+                onChange={(e) => setDesc(e.target.value)}
+                placeholder={"✔ 여성 전문 1:1 PT\n✔ 식단 + 운동 통합 관리"}
+                maxLength={200}
+                className={`w-full resize-none rounded-xl border bg-(--secondary) px-3.5 pb-6 pt-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 ${
+                  showDescHints
+                    ? "border-blue-500 ring-2 ring-blue-500/15"
+                    : "border-gray-200"
+                }`}
+              />
+              <span className={`pointer-events-none absolute bottom-2 right-3 text-[10px] ${
+                description.length / 200 >= 1 ? "text-red-500" : description.length / 200 >= 0.8 ? "text-orange-400" : "text-(--muted)"
+              }`}>
+                {description.length}/200
+              </span>
+            </div>
             {showDescHints && (
               <HintPanel
                 type="descriptions"
@@ -152,10 +168,10 @@ export default function BasicTab({
             )}
           </div>
 
-          <Field label="위치"            value={location}    onChange={setLocation}    placeholder="서울 서초구 방배동" />
-          <Field label="운영시간"         value={hours}       onChange={setHours}       placeholder="평일 07:00 ~ 21:00" />
-          <Field label="주차 안내 (선택)" value={parkingInfo} onChange={setParkingInfo}  placeholder="건물 내 무료 주차 2시간 · 발레파킹 가능" />
-          <Field label="인스타그램 ID"    value={instagramId} onChange={setInstaId}     placeholder="fitwithji" />
+          <Field label="위치"            value={location}    onChange={setLocation}    placeholder="서울 서초구 방배동" maxLength={50} />
+          <Field label="운영시간"         value={hours}       onChange={setHours}       placeholder="평일 07:00 ~ 21:00" maxLength={50} />
+          <Field label="주차 안내 (선택)" value={parkingInfo} onChange={setParkingInfo}  placeholder="건물 내 무료 주차 2시간 · 발레파킹 가능" maxLength={80} />
+          <Field label="인스타그램 ID"    value={instagramId} onChange={setInstaId}     placeholder="fitwithji" maxLength={30} />
           <Field label="카카오 오픈채팅 URL"     value={kakaoUrl}        onChange={setKakaoUrl} placeholder="https://open.kakao.com/o/..." />
           <Field label="카카오 예약 URL (선택)" value={kakaoBookingUrl} onChange={setKakaoBk}  placeholder="https://pf.kakao.com/..." />
           <Field label="네이버 예약 URL (선택)" value={naverBookingUrl} onChange={setNaverBk}  placeholder="https://booking.naver.com/..." />

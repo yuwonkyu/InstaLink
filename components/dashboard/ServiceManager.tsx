@@ -63,6 +63,18 @@ export default function ServiceManager({
   const editPriceError = editForm.formState.errors.price?.message;
   const editNoteError = editForm.formState.errors.note?.message;
 
+  const [addName, addPrice, addNote] = addForm.watch(["name", "price", "note"]);
+  const [editName, editPrice, editNote] = editForm.watch(["name", "price", "note"]);
+  const safeAddNote = addNote ?? "";
+  const safeEditNote = editNote ?? "";
+
+  function cntColor(len: number, max: number) {
+    const r = len / max;
+    if (r >= 1) return "text-red-500";
+    if (r >= 0.8) return "text-orange-400";
+    return "text-(--muted)";
+  }
+
   function add(values: ServiceFormInput) {
     const next = serviceFormSchema.parse(values);
     onChange([...services, next]);
@@ -169,25 +181,40 @@ export default function ServiceManager({
                   onSubmit={editForm.handleSubmit(saveEdit)}
                 >
                   <div className="flex gap-2">
-                    <input
-                      {...editForm.register("name")}
-                      maxLength={SERVICE_LIMITS.name}
-                      placeholder="서비스명"
-                      className={`flex-1 ${inputCls}`}
-                    />
-                    <input
-                      {...editForm.register("price")}
-                      maxLength={SERVICE_LIMITS.price}
-                      placeholder="가격"
-                      className={`w-28 ${inputCls}`}
-                    />
+                    <div className="relative flex-1">
+                      <input
+                        {...editForm.register("name")}
+                        maxLength={SERVICE_LIMITS.name}
+                        placeholder="서비스명"
+                        className={`w-full pr-12 ${inputCls}`}
+                      />
+                      <span className={`pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] ${cntColor(editName.length, SERVICE_LIMITS.name)}`}>
+                        {editName.length}/{SERVICE_LIMITS.name}
+                      </span>
+                    </div>
+                    <div className="relative w-28 shrink-0">
+                      <input
+                        {...editForm.register("price")}
+                        maxLength={SERVICE_LIMITS.price}
+                        placeholder="가격"
+                        className={`w-full pr-10 ${inputCls}`}
+                      />
+                      <span className={`pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] ${cntColor(editPrice.length, SERVICE_LIMITS.price)}`}>
+                        {editPrice.length}/{SERVICE_LIMITS.price}
+                      </span>
+                    </div>
                   </div>
-                  <input
-                    {...editForm.register("note")}
-                    maxLength={SERVICE_LIMITS.note}
-                    placeholder="메모 (선택)"
-                    className={`w-full ${inputCls}`}
-                  />
+                  <div className="relative">
+                    <input
+                      {...editForm.register("note")}
+                      maxLength={SERVICE_LIMITS.note}
+                      placeholder="메모 (선택)"
+                      className={`w-full pr-12 ${inputCls}`}
+                    />
+                    <span className={`pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] ${cntColor(safeEditNote.length, SERVICE_LIMITS.note)}`}>
+                      {safeEditNote.length}/{SERVICE_LIMITS.note}
+                    </span>
+                  </div>
                   {(editNameError || editPriceError || editNoteError) && (
                     <p className="text-xs text-red-500">
                       {editNameError ?? editPriceError ?? editNoteError}
@@ -251,17 +278,29 @@ export default function ServiceManager({
               <span className="ml-1 text-gray-400">({services.length}/{limit})</span>
             )}
           </p>
-          <p className="text-[11px] text-(--muted)">
-            서비스명 {SERVICE_LIMITS.name}자 · 가격 {SERVICE_LIMITS.price}자 · 메모 {SERVICE_LIMITS.note}자까지 입력할 수 있어요.
-          </p>
           <div className="flex min-w-0 gap-2">
-            <input type="text" {...addForm.register("name")} maxLength={SERVICE_LIMITS.name} placeholder="서비스명 (예: PT 1회)"
-              className="min-w-0 flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15" />
-            <input type="text" {...addForm.register("price")} maxLength={SERVICE_LIMITS.price} placeholder="50,000원"
-              className="w-24 shrink-0 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15" />
+            <div className="relative min-w-0 flex-1">
+              <input type="text" {...addForm.register("name")} maxLength={SERVICE_LIMITS.name} placeholder="서비스명 (예: PT 1회)"
+                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 pr-12 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15" />
+              <span className={`pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] ${cntColor(addName.length, SERVICE_LIMITS.name)}`}>
+                {addName.length}/{SERVICE_LIMITS.name}
+              </span>
+            </div>
+            <div className="relative w-24 shrink-0">
+              <input type="text" {...addForm.register("price")} maxLength={SERVICE_LIMITS.price} placeholder="50,000원"
+                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 pr-10 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15" />
+              <span className={`pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] ${cntColor(addPrice.length, SERVICE_LIMITS.price)}`}>
+                {addPrice.length}/{SERVICE_LIMITS.price}
+              </span>
+            </div>
           </div>
-          <input type="text" {...addForm.register("note")} maxLength={SERVICE_LIMITS.note} placeholder="메모 (선택)"
-            className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15" />
+          <div className="relative">
+            <input type="text" {...addForm.register("note")} maxLength={SERVICE_LIMITS.note} placeholder="메모 (선택)"
+              className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 pr-12 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15" />
+            <span className={`pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] ${cntColor(safeAddNote.length, SERVICE_LIMITS.note)}`}>
+              {safeAddNote.length}/{SERVICE_LIMITS.note}
+            </span>
+          </div>
           {(addNameError || addPriceError || addNoteError) && (
             <p className="text-xs text-red-500">
               {addNameError ?? addPriceError ?? addNoteError}
