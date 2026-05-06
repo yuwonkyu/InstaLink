@@ -3,21 +3,41 @@
 import { useState } from "react";
 import Link from "next/link";
 import type { Service } from "@/lib/types";
-import { useForm, useWatch } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   SERVICE_LIMITS,
   serviceFormSchema,
-  type ServiceFormInput,
   sanitizeServices,
 } from "@/lib/service-validation";
+
+type ServiceDraft = { name: string; price: string; note: string };
+type FieldErrors = Partial<Record<keyof ServiceDraft, string>>;
+
+const EMPTY: ServiceDraft = { name: "", price: "", note: "" };
+
+function validate(draft: ServiceDraft): FieldErrors {
+  const result = serviceFormSchema.safeParse(draft);
+  if (result.success) return {};
+  const errors: FieldErrors = {};
+  for (const issue of result.error.issues) {
+    const key = issue.path[0] as keyof ServiceDraft;
+    if (!errors[key]) errors[key] = issue.message;
+  }
+  return errors;
+}
+
+function cntColor(len: number, max: number) {
+  const r = len / max;
+  if (r >= 1) return "text-red-500";
+  if (r >= 0.8) return "text-orange-400";
+  return "text-(--muted)";
+}
 
 type Props = {
   services: Service[];
   invalidServiceIndex?: number | null;
-  isPaidPlan: boolean;   // Basic 이상 — AI 버튼 표시용 (현재 미사용, isProPlan으로 이전 중)
-  isProPlan?: boolean;   // Pro 전용 AI 버튼
-  limit?: number;        // 추가 가능한 최대 개수 (undefined = 무제한)
+  isPaidPlan: boolean;
+  isProPlan?: boolean;
+  limit?: number;
   aiLoading: string | null;
   onAISuggest: () => void;
   onChange: (services: Service[]) => void;
@@ -42,51 +62,32 @@ export default function ServiceManager({
 }: Props) {
   const atLimit = limit !== undefined && services.length >= limit;
 
-  const [editIdx,   setEditIdx]   = useState<number | null>(null);
-
+  const [addDraft,   setAddDraft]   = useState<ServiceDraft>(EMPTY);
+  const [addErrors,  setAddErrors]  = useState<FieldErrors>({});
+  const [editIdx,    setEditIdx]    = useState<number | null>(null);
+  const [editDraft,  setEditDraft]  = useState<ServiceDraft>(EMPTY);
+  const [editErrors, setEditErrors] = useState<FieldErrors>({});
   const [showTemplates, setShowTemplates] = useState(true);
 
-  const addForm = useForm<ServiceFormInput>({
-    resolver: zodResolver(serviceFormSchema),
-    mode: "onChange",
-    defaultValues: { name: "", price: "", note: "" },
-  });
-
-  const editForm = useForm<ServiceFormInput>({
-    resolver: zodResolver(serviceFormSchema),
-    mode: "onChange",
-    defaultValues: { name: "", price: "", note: "" },
-  });
-
-  const addNameError = addForm.formState.errors.name?.message;
-  const addPriceError = addForm.formState.errors.price?.message;
-  const addNoteError = addForm.formState.errors.note?.message;
-  const editNameError = editForm.formState.errors.name?.message;
-  const editPriceError = editForm.formState.errors.price?.message;
-  const editNoteError = editForm.formState.errors.note?.message;
-
-  const [addName, addPrice, addNote] = useWatch({
-    control: addForm.control,
-    name: ["name", "price", "note"],
-  });
-  const [editName, editPrice, editNote] = useWatch({
-    control: editForm.control,
-    name: ["name", "price", "note"],
-  });
-  const safeAddNote = addNote ?? "";
-  const safeEditNote = editNote ?? "";
-
-  function cntColor(len: number, max: number) {
-    const r = len / max;
-    if (r >= 1) return "text-red-500";
-    if (r >= 0.8) return "text-orange-400";
-    return "text-(--muted)";
+  function updateAdd(field: keyof ServiceDraft, value: string) {
+    const next = { ...addDraft, [field]: value };
+    setAddDraft(next);
+    setAddErrors(validate(next));
   }
 
-  function add(values: ServiceFormInput) {
-    const next = serviceFormSchema.parse(values);
-    onChange([...services, next]);
-    addForm.reset({ name: "", price: "", note: "" });
+  function updateEdit(field: keyof ServiceDraft, value: string) {
+    const next = { ...editDraft, [field]: value };
+    setEditDraft(next);
+    setEditErrors(validate(next));
+  }
+
+  function add() {
+    const errors = validate(addDraft);
+    if (Object.keys(errors).length) { setAddErrors(errors); return; }
+    const parsed = serviceFormSchema.parse(addDraft);
+    onChange([...services, parsed]);
+    setAddDraft(EMPTY);
+    setAddErrors({});
   }
 
   function remove(idx: number) {
@@ -96,22 +97,34 @@ export default function ServiceManager({
   function startEdit(idx: number) {
     const s = services[idx];
     setEditIdx(idx);
-    editForm.reset({ name: s.name, price: s.price, note: s.note ?? "" });
+    setEditDraft({ name: s.name, price: s.price, note: s.note ?? "" });
+    setEditErrors({});
   }
 
-  function saveEdit(values: ServiceFormInput) {
+  function saveEdit() {
     if (editIdx === null) return;
-    const next = serviceFormSchema.parse(values);
-    if (!next) return;
-    onChange(services.map((s, i) => (i === editIdx ? next : s)));
+    const errors = validate(editDraft);
+    if (Object.keys(errors).length) { setEditErrors(errors); return; }
+    const parsed = serviceFormSchema.parse(editDraft);
+    onChange(services.map((s, i) => (i === editIdx ? parsed : s)));
     setEditIdx(null);
-    editForm.reset({ name: "", price: "", note: "" });
+    setEditDraft(EMPTY);
+    setEditErrors({});
+  }
+
+  function cancelEdit() {
+    setEditIdx(null);
+    setEditDraft(EMPTY);
+    setEditErrors({});
   }
 
   function applyTemplates() {
     onChange(sanitizeServices(templateServices));
     setShowTemplates(false);
   }
+
+  const addValid  = Object.keys(validate(addDraft)).length === 0 && addDraft.name.trim() && addDraft.price.trim();
+  const editValid = Object.keys(validate(editDraft)).length === 0 && editDraft.name.trim() && editDraft.price.trim();
 
   const inputCls = "rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15";
 
@@ -167,7 +180,6 @@ export default function ServiceManager({
         </div>
       )}
 
-      {/* 패널 닫혀있을 때 열기 버튼 */}
       {!showTemplates && (
         <button
           type="button"
@@ -194,70 +206,66 @@ export default function ServiceManager({
                 </p>
               )}
               {editIdx === idx ? (
-                <form
-                  className="flex flex-col gap-2"
-                  onSubmit={editForm.handleSubmit(saveEdit)}
-                >
+                <div className="flex flex-col gap-2">
                   <div className="flex gap-2">
                     <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                       <input
-                        {...editForm.register("name")}
+                        value={editDraft.name}
+                        onChange={(e) => updateEdit("name", e.target.value)}
                         maxLength={SERVICE_LIMITS.name}
                         placeholder="서비스명"
                         className={`w-full ${inputCls}`}
                       />
-                      <span className={`self-end whitespace-nowrap text-[10px] ${cntColor(editName.length, SERVICE_LIMITS.name)}`}>
-                        {editName.length}/{SERVICE_LIMITS.name}
+                      <span className={`self-end whitespace-nowrap text-[10px] ${cntColor(editDraft.name.length, SERVICE_LIMITS.name)}`}>
+                        {editDraft.name.length}/{SERVICE_LIMITS.name}
                       </span>
                     </div>
                     <div className="flex w-28 shrink-0 flex-col gap-0.5">
                       <input
-                        {...editForm.register("price")}
+                        value={editDraft.price}
+                        onChange={(e) => updateEdit("price", e.target.value)}
                         maxLength={SERVICE_LIMITS.price}
                         placeholder="가격"
                         className={`w-full ${inputCls}`}
                       />
-                      <span className={`self-end whitespace-nowrap text-[10px] ${cntColor(editPrice.length, SERVICE_LIMITS.price)}`}>
-                        {editPrice.length}/{SERVICE_LIMITS.price}
+                      <span className={`self-end whitespace-nowrap text-[10px] ${cntColor(editDraft.price.length, SERVICE_LIMITS.price)}`}>
+                        {editDraft.price.length}/{SERVICE_LIMITS.price}
                       </span>
                     </div>
                   </div>
                   <div className="flex flex-col gap-0.5">
                     <input
-                      {...editForm.register("note")}
+                      value={editDraft.note}
+                      onChange={(e) => updateEdit("note", e.target.value)}
                       maxLength={SERVICE_LIMITS.note}
                       placeholder="메모 (선택)"
                       className={`w-full ${inputCls}`}
                     />
-                    <span className={`self-end whitespace-nowrap text-[10px] ${cntColor(safeEditNote.length, SERVICE_LIMITS.note)}`}>
-                      {safeEditNote.length}/{SERVICE_LIMITS.note}
+                    <span className={`self-end whitespace-nowrap text-[10px] ${cntColor(editDraft.note.length, SERVICE_LIMITS.note)}`}>
+                      {editDraft.note.length}/{SERVICE_LIMITS.note}
                     </span>
                   </div>
-                  {(editNameError || editPriceError || editNoteError) && (
-                    <p className="text-xs text-red-500">
-                      {editNameError ?? editPriceError ?? editNoteError}
-                    </p>
+                  {Object.values(editErrors)[0] && (
+                    <p className="text-xs text-red-500">{Object.values(editErrors)[0]}</p>
                   )}
                   <div className="flex gap-2">
                     <button
-                      type="submit"
-                      disabled={!editForm.formState.isValid}
+                      type="button"
+                      onClick={saveEdit}
+                      disabled={!editValid}
                       className="rounded-lg bg-foreground px-3 py-1 text-xs font-medium text-white disabled:opacity-40"
                     >
                       저장
                     </button>
                     <button
                       type="button"
-                      onClick={() => {
-                        setEditIdx(null);
-                        editForm.reset({ name: "", price: "", note: "" });
-                      }}
+                      onClick={cancelEdit}
                       className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-medium text-(--muted)"
                     >
                       취소
                     </button>
                   </div>
-                </form>
+                </div>
               ) : (
                 <div className="flex items-center justify-between">
                   <div className="flex flex-col">
@@ -286,10 +294,7 @@ export default function ServiceManager({
           하면 더 추가할 수 있습니다.
         </p>
       ) : (
-        <form
-          className="flex flex-col gap-2 rounded-xl border border-dashed border-gray-200 p-3"
-          onSubmit={addForm.handleSubmit(add)}
-        >
+        <div className="flex flex-col gap-2 rounded-xl border border-dashed border-gray-200 p-3">
           <p className="text-xs font-medium text-(--muted)">
             직접 추가
             {limit !== undefined && (
@@ -298,37 +303,60 @@ export default function ServiceManager({
           </p>
           <div className="flex min-w-0 gap-2">
             <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-              <input type="text" {...addForm.register("name")} maxLength={SERVICE_LIMITS.name} placeholder="서비스명 (예: PT 1회)"
-                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15" />
-              <span className={`self-end whitespace-nowrap text-[10px] ${cntColor(addName.length, SERVICE_LIMITS.name)}`}>
-                {addName.length}/{SERVICE_LIMITS.name}
+              <input
+                type="text"
+                value={addDraft.name}
+                onChange={(e) => updateAdd("name", e.target.value)}
+                maxLength={SERVICE_LIMITS.name}
+                placeholder="서비스명 (예: PT 1회)"
+                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
+                onKeyDown={(e) => e.key === "Enter" && add()}
+              />
+              <span className={`self-end whitespace-nowrap text-[10px] ${cntColor(addDraft.name.length, SERVICE_LIMITS.name)}`}>
+                {addDraft.name.length}/{SERVICE_LIMITS.name}
               </span>
             </div>
             <div className="flex w-24 shrink-0 flex-col gap-0.5">
-              <input type="text" {...addForm.register("price")} maxLength={SERVICE_LIMITS.price} placeholder="50,000원"
-                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15" />
-              <span className={`self-end whitespace-nowrap text-[10px] ${cntColor(addPrice.length, SERVICE_LIMITS.price)}`}>
-                {addPrice.length}/{SERVICE_LIMITS.price}
+              <input
+                type="text"
+                value={addDraft.price}
+                onChange={(e) => updateAdd("price", e.target.value)}
+                maxLength={SERVICE_LIMITS.price}
+                placeholder="50,000원"
+                className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
+                onKeyDown={(e) => e.key === "Enter" && add()}
+              />
+              <span className={`self-end whitespace-nowrap text-[10px] ${cntColor(addDraft.price.length, SERVICE_LIMITS.price)}`}>
+                {addDraft.price.length}/{SERVICE_LIMITS.price}
               </span>
             </div>
           </div>
           <div className="flex flex-col gap-0.5">
-            <input type="text" {...addForm.register("note")} maxLength={SERVICE_LIMITS.note} placeholder="메모 (선택)"
-              className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15" />
-            <span className={`self-end whitespace-nowrap text-[10px] ${cntColor(safeAddNote.length, SERVICE_LIMITS.note)}`}>
-              {safeAddNote.length}/{SERVICE_LIMITS.note}
+            <input
+              type="text"
+              value={addDraft.note}
+              onChange={(e) => updateAdd("note", e.target.value)}
+              maxLength={SERVICE_LIMITS.note}
+              placeholder="메모 (선택)"
+              className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
+              onKeyDown={(e) => e.key === "Enter" && add()}
+            />
+            <span className={`self-end whitespace-nowrap text-[10px] ${cntColor(addDraft.note.length, SERVICE_LIMITS.note)}`}>
+              {addDraft.note.length}/{SERVICE_LIMITS.note}
             </span>
           </div>
-          {(addNameError || addPriceError || addNoteError) && (
-            <p className="text-xs text-red-500">
-              {addNameError ?? addPriceError ?? addNoteError}
-            </p>
+          {Object.values(addErrors)[0] && (
+            <p className="text-xs text-red-500">{Object.values(addErrors)[0]}</p>
           )}
-          <button type="submit" disabled={!addForm.formState.isValid}
-            className="self-start rounded-lg bg-foreground px-4 py-1.5 text-sm font-medium text-white disabled:opacity-40">
+          <button
+            type="button"
+            onClick={add}
+            disabled={!addValid}
+            className="self-start rounded-lg bg-foreground px-4 py-1.5 text-sm font-medium text-white disabled:opacity-40"
+          >
             + 추가
           </button>
-        </form>
+        </div>
       )}
     </div>
   );
