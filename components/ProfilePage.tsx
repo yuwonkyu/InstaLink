@@ -359,13 +359,8 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
               href: kakaoUrl,
               onClick: () => trackClick(profile.id, "kakao"),
               style: { backgroundColor: "#FEE500", color: "#000" },
-              icon: (
-                <span className="flex items-center gap-1.5">
-                  <Image src="/kakaosimbol.svg" alt="" width={18} height={18} className="h-4.5 w-4.5 shrink-0" />
-                  <Image src="/kakaoText.svg" alt="Kakao" width={74} height={18} className="h-4.5 w-auto shrink-0" style={{ width: "auto" }} />
-                </span>
-              ),
-              label: <span className="whitespace-nowrap">무료 상담 받기 (카카오톡)</span>,
+              icon: <Image src="/kakaosimbol.svg" alt="" width={20} height={20} className="h-5 w-5 shrink-0" />,
+              label: <span className="whitespace-nowrap">카카오톡으로 무료 상담 받기</span>,
             },
             kakaoBookingUrl && {
               key: "kakao_booking",
