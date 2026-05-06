@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { saveOnboarding } from "./actions";
+import { getSiteUrl } from "@/lib/site-url";
 
 type Props = {
   defaultName: string;
@@ -13,6 +14,9 @@ export default function OnboardingForm({ defaultName, slug }: Props) {
   const [kakaoUrl, setKakaoUrl]   = useState("");
   const [isPending, startTransition] = useTransition();
   const [error, setError]         = useState<string | null>(null);
+
+  const origin =
+    typeof window !== "undefined" ? window.location.origin : getSiteUrl();
 
   const inputCls =
     "w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-colors";
@@ -43,7 +47,7 @@ export default function OnboardingForm({ defaultName, slug }: Props) {
         <div className="rounded-xl border border-blue-100 bg-blue-50 px-4 py-3">
           <p className="text-xs font-medium text-blue-500 mb-0.5">내 링크 주소</p>
           <p className="text-sm font-semibold text-blue-700 break-all">
-            instalink.kr/<span className="text-blue-900">{slug}</span>
+            {origin}/<span className="text-blue-900">{slug}</span>
           </p>
           <p className="mt-1 text-xs text-(--muted)">주소는 대시보드에서 변경할 수 있어요.</p>
         </div>
