@@ -333,9 +333,8 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
               href: profile.kakao_url,
               onClick: () => trackClick(profile.id, "kakao"),
               style: { backgroundColor: "#FEE500", color: "#000" },
-              extraClass: "reserve-button",
               icon: (
-                <span className="reserve-button__content">
+                <span>
                   <Image src="/kakaosimbol.svg" alt="" width={18} height={18} className="h-4.5 w-4.5 shrink-0" />
                   <Image src="/kakaoText.svg" alt="Kakao" width={74} height={18} className="h-4.5 w-auto shrink-0" style={{ width: "auto" }} />
                   <span className="whitespace-nowrap">무료 상담 받기 (카카오톡)</span>

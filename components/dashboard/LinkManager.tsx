@@ -94,7 +94,7 @@ export default function LinkManager({ links, onChange }: Props) {
                 </div>
               ) : (
                 <div className="flex items-center justify-between gap-3">
-                  <div className="min-w-0 flex-1">
+                  <div className="min-w-0 flex-1 overflow-hidden">
                     <p className="truncate text-sm font-medium text-foreground">{link.label}</p>
                     <p className="truncate text-xs text-(--muted)">{link.url}</p>
                   </div>
@@ -122,21 +122,21 @@ export default function LinkManager({ links, onChange }: Props) {
       )}
 
       {/* 추가 폼 */}
-      <div className="flex flex-col gap-2 rounded-xl border border-dashed border-gray-200 p-3 overflow-hidden">
+      <div className="flex flex-col gap-2 rounded-xl border border-dashed border-gray-200 p-3">
         <p className="text-xs font-medium text-(--muted)">링크 추가</p>
         <input
           type="text"
           value={label}
           onChange={(e) => setLabel(e.target.value)}
           placeholder="버튼 이름 (예: 네이버 스토어 바로가기)"
-          className="min-w-0 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
+          className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
         />
         <input
           type="url"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           placeholder="https://..."
-          className="min-w-0 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
+          className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
           onKeyDown={(e) => e.key === "Enter" && add()}
         />
         <button
