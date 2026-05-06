@@ -45,6 +45,36 @@ async function getClickStats(profileId: string): Promise<{ total: ClickStats; we
   return { total: sumClicks(totalRes.data), week: sumClicks(weekRes.data) };
 }
 
+type DailyBar = { label: string; total: number };
+
+async function getDailyClicksMini(profileId: string): Promise<DailyBar[]> {
+  const supabase = await getSupabaseServerClient();
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+  sevenDaysAgo.setHours(0, 0, 0, 0);
+
+  const { data } = await supabase
+    .from("link_clicks")
+    .select("created_at")
+    .eq("profile_id", profileId)
+    .gte("created_at", sevenDaysAgo.toISOString());
+
+  const byDate: Record<string, number> = {};
+  for (const row of data ?? []) {
+    const date = new Date(row.created_at).toISOString().split("T")[0];
+    byDate[date] = (byDate[date] ?? 0) + 1;
+  }
+
+  const DAYS_KO = ["일", "월", "화", "수", "목", "금", "토"];
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (6 - i));
+    const date = d.toISOString().split("T")[0];
+    const label = i === 6 ? "오늘" : DAYS_KO[d.getDay()];
+    return { label, total: byDate[date] ?? 0 };
+  });
+}
+
 async function getMyProfile(ownerId: string): Promise<Profile | null> {
   const supabase = await getSupabaseServerClient();
   const { data, error } = await supabase
@@ -81,7 +111,7 @@ export default async function DashboardPage({
   // 프로필 먼저 조회 후, 파생 데이터를 병렬로 조회
   const profile = await getMyProfile(user.id);
 
-  const [clickStats, referralCount] = profile
+  const [clickStats, referralCount, dailyMini] = profile
     ? await Promise.all([
         getClickStats(profile.id),
         getSupabaseServerClient().then((sb) =>
@@ -91,8 +121,9 @@ export default async function DashboardPage({
             .eq("referrer_id", profile.id)
             .then(({ count }) => count ?? 0)
         ),
+        getDailyClicksMini(profile.id),
       ])
-    : [null, 0];
+    : [null, 0, null];
 
   // eslint-disable-next-line react-hooks/purity
   const now = Date.now();
@@ -255,20 +286,65 @@ export default async function DashboardPage({
                   </Link>
                 </div>
               </div>
-            ) : statsInTrial ? (
-              <div className="rounded-xl bg-blue-50 border border-blue-100 px-4 py-3">
-                <p className="text-xs font-semibold text-blue-800">
-                  🎁 무료 체험 중 ({14 - statsDaysSince}일 남음)
-                </p>
-                <p className="mt-0.5 text-xs text-blue-700">
-                  가입 후 14일간 상세 통계를 무료로 이용할 수 있어요.
-                </p>
-              </div>
-            ) : (
-              <p className="text-xs text-(--muted) rounded-xl bg-(--secondary) px-4 py-3">
-                📊 일별 방문자 그래프는 곧 제공될 예정입니다.
-              </p>
-            )}
+            ) : (() => {
+              const bars = dailyMini as DailyBar[] | null;
+              const maxVal = Math.max(...(bars ?? []).map((b) => b.total), 1);
+              const hasClicks = (bars ?? []).some((b) => b.total > 0);
+              return (
+                <div className="flex flex-col gap-3">
+                  {statsInTrial && (
+                    <div className="rounded-xl bg-blue-50 border border-blue-100 px-3 py-2">
+                      <p className="text-xs font-semibold text-blue-800">
+                        🎁 무료 체험 중 ({14 - statsDaysSince}일 남음)
+                      </p>
+                    </div>
+                  )}
+                  {/* 7일 바 차트 */}
+                  <div>
+                    <p className="mb-2 text-xs text-(--muted)">최근 7일 링크 클릭</p>
+                    {hasClicks ? (
+                      <>
+                        <div className="flex items-end gap-1 h-16" aria-hidden="true">
+                          {(bars ?? []).map((b, i) => (
+                            <div
+                              key={i}
+                              className="group relative flex-1 flex flex-col justify-end h-full"
+                            >
+                              <div
+                                className="w-full rounded-t bg-foreground opacity-60 group-hover:opacity-100 transition-opacity"
+                                style={{ height: `${Math.max((b.total / maxVal) * 100, b.total > 0 ? 8 : 0)}%` }}
+                              />
+                              {b.total > 0 && (
+                                <div className="pointer-events-none absolute bottom-full left-1/2 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded bg-foreground px-1.5 py-0.5 text-[10px] font-semibold text-white group-hover:block z-10">
+                                  {b.total}회
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                        <div className="flex mt-1">
+                          {(bars ?? []).map((b, i) => (
+                            <div key={i} className="flex-1 text-center text-[10px] text-(--muted)">
+                              {b.label}
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    ) : (
+                      <p className="py-4 text-center text-xs text-(--muted)">
+                        아직 링크 클릭 데이터가 없어요.
+                      </p>
+                    )}
+                  </div>
+                  <Link
+                    href="/dashboard/stats"
+                    className="text-right text-xs font-medium text-blue-500 hover:text-blue-600 transition-colors"
+                  >
+                    30일 상세 통계 →
+                  </Link>
+                </div>
+              );
+            })()}
         </div>
       )}
 
