@@ -13,13 +13,12 @@ export default async function OnboardingPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("name, slug, kakao_url, services")
+    .select("name, slug, is_active")
     .eq("owner_id", user.id)
     .maybeSingle();
 
-  // 이미 온보딩 완료된 사용자 (카카오 링크가 있거나 서비스가 1개 이상) → 대시보드로
-  const services = Array.isArray(profile?.services) ? profile.services : [];
-  if (profile?.kakao_url || services.length > 0) {
+  // 이미 온보딩 완료된 사용자 (is_active === true) → 대시보드로
+  if (profile?.is_active) {
     redirect("/dashboard");
   }
 
