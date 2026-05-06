@@ -8,9 +8,7 @@ type Props = { slug: string };
 export default function PreviewPanel({ slug }: Props) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [previewOrigin, setPreviewOrigin] = useState(() =>
-    typeof window !== "undefined" ? window.location.origin : getSiteUrl()
-  );
+  const [previewOrigin, setPreviewOrigin] = useState(getSiteUrl);
   const previewUrl = `${previewOrigin}/${slug}`;
 
   useEffect(() => {

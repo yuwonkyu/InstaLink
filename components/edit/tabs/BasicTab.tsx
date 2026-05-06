@@ -92,25 +92,23 @@ export default function BasicTab({
                 {showTaglineHints ? "닫기" : "📝 예시 보기"}
               </button>
             </div>
-            <div className="relative">
-              <input
+            <input
                 type="text"
                 value={tagline}
                 onChange={(e) => setTagline(e.target.value)}
                 placeholder="다이어트 · 체형교정 · 여성 전문 PT"
                 maxLength={45}
-                className={`w-full pr-14 rounded-xl border bg-(--secondary) px-3.5 py-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 ${
+                className={`w-full rounded-xl border bg-(--secondary) px-3.5 py-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 ${
                   showTaglineHints
                     ? "border-blue-500 ring-2 ring-blue-500/15"
                     : "border-gray-200"
                 }`}
               />
-              <span className={`pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] ${
+              <span className={`self-end whitespace-nowrap text-[10px] ${
                 tagline.length / 45 >= 1 ? "text-red-500" : tagline.length / 45 >= 0.8 ? "text-orange-400" : "text-(--muted)"
               }`}>
                 {tagline.length}/45
               </span>
-            </div>
             {showTaglineHints && (
               <HintPanel
                 type="taglines"
@@ -136,25 +134,23 @@ export default function BasicTab({
                 {showDescHints ? "닫기" : "📝 예시 보기"}
               </button>
             </div>
-            <div className="relative">
-              <textarea
+            <textarea
                 rows={3}
                 value={description}
                 onChange={(e) => setDesc(e.target.value)}
                 placeholder={"✔ 여성 전문 1:1 PT\n✔ 식단 + 운동 통합 관리"}
-                maxLength={200}
-                className={`w-full resize-none rounded-xl border bg-(--secondary) px-3.5 pb-6 pt-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 ${
+                maxLength={500}
+                className={`w-full resize-none rounded-xl border bg-(--secondary) px-3.5 py-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 ${
                   showDescHints
                     ? "border-blue-500 ring-2 ring-blue-500/15"
                     : "border-gray-200"
                 }`}
               />
-              <span className={`pointer-events-none absolute bottom-2 right-3 text-[10px] ${
-                description.length / 200 >= 1 ? "text-red-500" : description.length / 200 >= 0.8 ? "text-orange-400" : "text-(--muted)"
+              <span className={`self-end whitespace-nowrap text-[10px] ${
+                description.length / 500 >= 1 ? "text-red-500" : description.length / 500 >= 0.8 ? "text-orange-400" : "text-(--muted)"
               }`}>
-                {description.length}/200
+                {description.length}/500
               </span>
-            </div>
             {showDescHints && (
               <HintPanel
                 type="descriptions"

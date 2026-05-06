@@ -27,37 +27,37 @@ export default function Field({
     <div className="flex flex-col gap-1">
       <label className="text-xs font-medium text-(--muted)">{label}</label>
       {multiline ? (
-        <div className="relative">
+        <>
           <textarea
             rows={3}
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}
             maxLength={maxLength}
-            className={`${BASE_CLS} resize-none${maxLength ? " pb-5" : ""}`}
+            className={`${BASE_CLS} resize-none`}
           />
           {maxLength && (
-            <span className={`pointer-events-none absolute bottom-2 right-3 text-[10px] ${cntColor(value.length, maxLength)}`}>
+            <span className={`self-end whitespace-nowrap text-[10px] ${cntColor(value.length, maxLength)}`}>
               {value.length}/{maxLength}
             </span>
           )}
-        </div>
+        </>
       ) : (
-        <div className="relative">
+        <>
           <input
             type="text"
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder={placeholder}
             maxLength={maxLength}
-            className={`${BASE_CLS}${maxLength ? " pr-12" : ""}`}
+            className={BASE_CLS}
           />
           {maxLength && (
-            <span className={`pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[10px] ${cntColor(value.length, maxLength)}`}>
+            <span className={`self-end whitespace-nowrap text-[10px] ${cntColor(value.length, maxLength)}`}>
               {value.length}/{maxLength}
             </span>
           )}
-        </div>
+        </>
       )}
     </div>
   );

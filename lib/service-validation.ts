@@ -2,7 +2,7 @@ import type { Service } from "@/lib/types";
 import { z } from "zod";
 
 export const SERVICE_LIMITS = {
-  name: 28,
+  name: 15,
   price: 14,
   note: 32,
 } as const;
