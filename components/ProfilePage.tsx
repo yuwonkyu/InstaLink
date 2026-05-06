@@ -18,6 +18,7 @@ function trackClick(
   profileId: string,
   linkType: "kakao" | "instagram" | "phone",
 ) {
+  if (!profileId) return; // 데모/미리보기 — DB 없는 임시 프로필은 추적 생략
   fetch("/api/track/click", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
