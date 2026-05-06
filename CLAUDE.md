@@ -1,4 +1,6 @@
 @AGENTS.md
+@docs/PRODUCT_ANALYSIS.md
+@docs/ROADMAP.md
 
 # InstaLink — 프로젝트 규칙 (에이전트 필독)
 
@@ -78,3 +80,21 @@ TOSS_SECRET_KEY=
 - 기존 디자인·폰트·색상 변경
 - `pages/` 디렉토리 방식으로 롤백
 - 불필요한 패키지 추가 (현재 스택으로 해결 가능한 것은 추가 패키지 사용 금지)
+
+## 작업 우선순위 원칙 (docs/PRODUCT_ANALYSIS.md 근거)
+
+작업 요청이 올 때 아래 순서로 우선순위를 판단한다:
+
+1. **Phase A 먼저** — 가입→활성 전환율에 영향 주는 것 (바이럴 배지, 무료 갤러리 3장, CTA 위계, 온보딩 단순화)
+2. **Phase B** — Pro 결제 유지에 영향 주는 것 (일별 방문자 차트, 편집 미리보기)
+3. **Phase C** — 안정성 (에러 바운더리, 입력 검증, 결제 재시도)
+4. **기능 추가 요청**은 Phase A~C 완료 후 검토
+
+Phase A가 완전히 끝나기 전에 Phase B 작업 시작 금지.  
+기능 추가보다 **기존 기능의 전환율 개선**이 항상 우선이다.
+
+## 현재 알려진 버그 / 미완성
+- `app/dashboard/page.tsx:269` — 일별 방문자 차트 플레이스홀더 (Phase B-1)
+- `lib/plan-limits.ts` — Free 플랜 갤러리 0장 → 3장으로 수정 필요 (Phase A-1)
+- 에러 바운더리 (`error.tsx`) 대부분 라우트에 없음 (Phase C-1)
+- 공개 페이지 푸터에 바이럴 배지 없음 (Phase A-2)

@@ -15,6 +15,23 @@ function isSafeUrl(url: string): boolean {
   }
 }
 
+const KAKAO_DOMAINS = ["open.kakao.com", "pf.kakao.com"];
+function isKakaoUrl(url: string): boolean {
+  if (!url) return true;
+  try {
+    const u = new URL(url);
+    return KAKAO_DOMAINS.includes(u.hostname);
+  } catch {
+    return false;
+  }
+}
+
+const INSTAGRAM_ID_REGEX = /^[a-zA-Z0-9_.]{1,30}$/;
+function isValidInstagramId(id: string): boolean {
+  if (!id) return true;
+  return INSTAGRAM_ID_REGEX.test(id);
+}
+
 // ──────────────────────────────────────────────
 // 슬러그 커스텀 (Pro 전용)
 // ──────────────────────────────────────────────
@@ -115,6 +132,19 @@ export async function saveProfile(payload: SaveProfilePayload) {
   }
   for (const link of payload.custom_links ?? []) {
     if (link.url && !isSafeUrl(link.url)) throw new Error("커스텀 링크에 허용되지 않는 URL이 포함되어 있습니다.");
+  }
+
+  // 카카오 URL: open.kakao.com 또는 pf.kakao.com 도메인만 허용
+  const kakaoFields = [payload.kakao_url, payload.kakao_booking_url, payload.kakao_channel_url];
+  for (const u of kakaoFields) {
+    if (u && !isKakaoUrl(u)) {
+      throw new Error("카카오 URL은 open.kakao.com 또는 pf.kakao.com 주소만 사용할 수 있습니다.");
+    }
+  }
+
+  // 인스타그램 아이디: 영문·숫자·밑줄·점만 허용 (1~30자)
+  if (payload.instagram_id && !isValidInstagramId(payload.instagram_id)) {
+    throw new Error("인스타그램 아이디는 영문, 숫자, 밑줄(_), 점(.)만 사용 가능합니다.");
   }
 
   const { error } = await supabase

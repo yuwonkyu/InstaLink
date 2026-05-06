@@ -9,6 +9,14 @@
       "schedule": "0 2 4 * *"
     },
     {
+      "path": "/api/billing/retry-final",
+      "schedule": "0 2 8 * *"
+    },
+    {
+      "path": "/api/billing/downgrade",
+      "schedule": "0 2 15 * *"
+    },
+    {
       "path": "/api/satisfaction",
       "schedule": "0 9 * * *"
     },

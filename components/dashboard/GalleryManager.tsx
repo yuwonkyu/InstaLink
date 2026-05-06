@@ -14,7 +14,7 @@ const UPLOAD_SOURCES = ["local" as const, "camera" as const];
 type Props = {
   images: GalleryImage[];
   onChange: (images: GalleryImage[]) => void;
-  limit?: number; // undefined = DEFAULT_MAX_GALLERY(9), 0 = 업로드 불가 (Free), Infinity = 무제한
+  limit?: number; // undefined = DEFAULT_MAX_GALLERY(15), 숫자 = 해당 장수까지, Infinity = 무제한
 };
 
 export default function GalleryManager({ images, onChange, limit }: Props) {
