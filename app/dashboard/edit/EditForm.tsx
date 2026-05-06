@@ -23,16 +23,14 @@ function TabLoading() {
 }
 
 // ── 타입 & 상수 ──────────────────────────────────────────
-type TabKey = "basic" | "design" | "service" | "content" | "advanced";
+type TabKey = "page" | "service" | "content" | "settings";
 
 const TAB_LIST = [
-  { key: "basic",    label: "기본 정보",    icon: "📋" },
-  { key: "design",   label: "디자인",       icon: "🎨" },
-  { key: "service",  label: "서비스 & 링크", icon: "🔗" },
-  { key: "content",  label: "콘텐츠",       icon: "🖼️" },
+  { key: "page",     label: "내 페이지",   icon: "🏠" },
+  { key: "service",  label: "서비스·메뉴", icon: "🔗" },
+  { key: "content",  label: "사진·후기",   icon: "🖼️" },
+  { key: "settings", label: "설정",        icon: "⚙️" },
 ] as const;
-
-const ADVANCED_TAB = { key: "advanced", label: "고급 설정", icon: "⚙️" } as const;
 
 const DEFAULT_SECTION_ORDER = ["services", "gallery", "reviews"];
 
@@ -80,7 +78,7 @@ export default function EditForm({ profile, plan }: Props) {
 
   // ── UI 상태 ──
   const [category,       setCategory]       = useState("카페");
-  const [activeTab,      setActiveTab]      = useState<TabKey>("basic");
+  const [activeTab,      setActiveTab]      = useState<TabKey>("page");
   const [tabGuideShown,  setTabGuideShown]  = useState(true);
   const [aiLoading,  setAiLoading]  = useState<string | null>(null);
   const [saveError,  setSaveError]  = useState<string | null>(null);
@@ -181,9 +179,7 @@ export default function EditForm({ profile, plan }: Props) {
   }
 
   // ── 렌더 ──────────────────────────────────────────────────
-  const allTabs = isProPlan
-    ? [...TAB_LIST, ADVANCED_TAB] as { key: TabKey; label: string; icon: string }[]
-    : [...TAB_LIST]               as { key: TabKey; label: string; icon: string }[];
+  const allTabs = TAB_LIST as readonly { key: TabKey; label: string; icon: string }[];
 
   return (
     <div className="flex flex-col gap-5">
@@ -239,7 +235,7 @@ export default function EditForm({ profile, plan }: Props) {
           <div className="flex-1">
             <p className="text-xs font-semibold text-indigo-800">탭을 하나씩 채워주세요!</p>
             <p className="mt-0.5 text-xs text-indigo-700 leading-relaxed">
-              <span className="font-semibold">📋 기본 정보</span> → <span className="font-semibold">🎨 디자인</span> → <span className="font-semibold">🔗 서비스 &amp; 링크</span> → <span className="font-semibold">🖼️ 콘텐츠</span> 순서로 진행하면 빠르게 완성할 수 있어요.
+              <span className="font-semibold">🏠 내 페이지</span> → <span className="font-semibold">🔗 서비스·메뉴</span> → <span className="font-semibold">🖼️ 사진·후기</span> 순서로 진행하면 빠르게 완성할 수 있어요.
             </p>
           </div>
           <button
@@ -311,7 +307,9 @@ export default function EditForm({ profile, plan }: Props) {
       )}
 
       {/* ══ 탭 콘텐츠 ══ */}
-      <div className={activeTab === "basic" ? "flex flex-col gap-4" : "hidden"}>
+
+      {/* 🏠 내 페이지 — 기본 정보 + 디자인 합침 */}
+      <div className={activeTab === "page" ? "flex flex-col gap-4" : "hidden"}>
         <BasicTab
           name={name} setName={setName}
           shopName={shopName} setShopName={setShopName}
@@ -333,12 +331,10 @@ export default function EditForm({ profile, plan }: Props) {
           aiLoading={aiLoading}
           onAISuggest={aiSuggest}
         />
-      </div>
-
-      <div className={activeTab === "design" ? "flex flex-col gap-4" : "hidden"}>
         <DesignTab theme={theme} setTheme={setTheme} plan={plan} />
       </div>
 
+      {/* 🔗 서비스·메뉴 */}
       <div className={activeTab === "service" ? "flex flex-col gap-4" : "hidden"}>
         <ServiceTab
           services={services} setServices={setServices}
@@ -351,6 +347,7 @@ export default function EditForm({ profile, plan }: Props) {
         />
       </div>
 
+      {/* 🖼️ 사진·후기 */}
       <div className={activeTab === "content" ? "flex flex-col gap-4" : "hidden"}>
         <ContentTab
           gallery={gallery} setGallery={setGallery}
@@ -361,7 +358,8 @@ export default function EditForm({ profile, plan }: Props) {
         />
       </div>
 
-      <div className={activeTab === "advanced" ? "flex flex-col gap-4" : "hidden"}>
+      {/* ⚙️ 설정 — 모든 플랜, Pro 전용 기능만 내부 게이트 */}
+      <div className={activeTab === "settings" ? "flex flex-col gap-4" : "hidden"}>
         <AdvancedTab
           isProPlan={isProPlan}
           sectionOrder={sectionOrder} setSectionOrder={setSectionOrder}
