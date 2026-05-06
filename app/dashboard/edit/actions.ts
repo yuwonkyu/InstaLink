@@ -135,9 +135,9 @@ export async function saveProfile(payload: SaveProfilePayload) {
   }
 
   // 카카오 URL: open.kakao.com 또는 pf.kakao.com 도메인만 허용
-  const kakaoFields = [payload.kakao_url, payload.kakao_booking_url, payload.kakao_channel_url, payload.instagram_dm_url];
+  const kakaoFields = [payload.kakao_url, payload.kakao_booking_url, payload.kakao_channel_url];
   for (const u of kakaoFields) {
-    if (u && u.includes("kakao") && !isKakaoUrl(u)) {
+    if (u && !isKakaoUrl(u)) {
       throw new Error("카카오 URL은 open.kakao.com 또는 pf.kakao.com 주소만 사용할 수 있습니다.");
     }
   }

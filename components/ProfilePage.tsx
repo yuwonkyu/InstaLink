@@ -327,14 +327,6 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
             : { backgroundColor: "#fff", color: "#111827", border: "1px solid rgba(0,0,0,0.1)" };
 
           const allCtas: CtaItem[] = [
-            profile.kakao_booking_url && {
-              key: "kakao_booking",
-              href: profile.kakao_booking_url,
-              onClick: () => trackClick(profile.id, "kakao"),
-              style: { backgroundColor: "#FEE500", color: "#000" },
-              icon: <Image src="/kakaosimbol.svg" alt="" width={18} height={18} className="h-4.5 w-4.5 shrink-0" />,
-              label: <span className="whitespace-nowrap">카카오로 예약하기</span>,
-            },
             profile.kakao_url && {
               key: "kakao",
               href: profile.kakao_url,
@@ -349,6 +341,14 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
                 </span>
               ),
               label: null,
+            },
+            profile.kakao_booking_url && {
+              key: "kakao_booking",
+              href: profile.kakao_booking_url,
+              onClick: () => trackClick(profile.id, "kakao"),
+              style: { backgroundColor: "#FEE500", color: "#000" },
+              icon: <Image src="/kakaosimbol.svg" alt="" width={18} height={18} className="h-4.5 w-4.5 shrink-0" />,
+              label: <span className="whitespace-nowrap">카카오로 예약하기</span>,
             },
             profile.kakao_channel_url && {
               key: "kakao_channel",

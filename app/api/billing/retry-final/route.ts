@@ -46,8 +46,13 @@ export async function POST(req: NextRequest) {
 
       const orderId = `retry2-${sub.id.slice(0, 8)}-${Date.now()}`;
       const now = new Date();
-      const nextMonth = new Date(now);
-      nextMonth.setMonth(nextMonth.getMonth() + 1);
+      const nextBillingAt = new Date(now);
+      const isAnnual = sub.billing_period === "annual";
+      if (isAnnual) {
+        nextBillingAt.setFullYear(nextBillingAt.getFullYear() + 1);
+      } else {
+        nextBillingAt.setMonth(nextBillingAt.getMonth() + 1);
+      }
 
       const res = await fetch(
         `https://api.tosspayments.com/v1/billing/${profile.billing_key}`,
@@ -77,7 +82,7 @@ export async function POST(req: NextRequest) {
             .from("subscriptions")
             .update({
               status: "active",
-              next_billing_at: nextMonth.toISOString(),
+              next_billing_at: nextBillingAt.toISOString(),
               toss_order_id: orderId,
             })
             .eq("id", sub.id),
@@ -85,7 +90,7 @@ export async function POST(req: NextRequest) {
             .from("profiles")
             .update({
               plan: sub.plan,
-              plan_expires_at: nextMonth.toISOString(),
+              plan_expires_at: nextBillingAt.toISOString(),
             })
             .eq("id", profile.id),
         ]);
