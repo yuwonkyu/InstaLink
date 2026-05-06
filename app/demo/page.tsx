@@ -66,9 +66,9 @@ function buildProfile(name: string, kakaoUrl: string, categoryId: string): Profi
   const tmpl = TEMPLATES[categoryId] ?? TEMPLATES["PT/헬스"];
   const displayName = name.trim() || "내 이름";
   return {
-    id: "demo",
+    id: "",
     slug: "demo",
-    owner_id: "demo",
+    owner_id: "",
     name: displayName,
     shop_name: displayName,
     tagline: tmpl.tagline,
