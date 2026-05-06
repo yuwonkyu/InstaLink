@@ -98,7 +98,7 @@ export default function BasicTab({
                 onChange={(e) => setTagline(e.target.value)}
                 placeholder="다이어트 · 체형교정 · 여성 전문 PT"
                 maxLength={45}
-                className={`w-full rounded-xl border bg-(--secondary) px-3.5 py-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 ${
+                className={`w-full rounded-xl border bg-(--secondary) px-3.5 py-2.5 text-sm text-foreground placeholder:text-gray-400 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 ${
                   showTaglineHints
                     ? "border-blue-500 ring-2 ring-blue-500/15"
                     : "border-gray-200"
@@ -140,7 +140,7 @@ export default function BasicTab({
                 onChange={(e) => setDesc(e.target.value)}
                 placeholder={"✔ 여성 전문 1:1 PT\n✔ 식단 + 운동 통합 관리"}
                 maxLength={500}
-                className={`w-full resize-none rounded-xl border bg-(--secondary) px-3.5 py-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 ${
+                className={`w-full resize-none rounded-xl border bg-(--secondary) px-3.5 py-2.5 text-sm text-foreground placeholder:text-gray-400 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 ${
                   showDescHints
                     ? "border-blue-500 ring-2 ring-blue-500/15"
                     : "border-gray-200"

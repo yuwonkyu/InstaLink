@@ -74,7 +74,7 @@ export default function UpdatePasswordPage() {
               placeholder="8자 이상"
               required
               minLength={8}
-              className="w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none focus:border-gray-400 transition-colors"
+              className="w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-foreground placeholder:text-gray-400 outline-none focus:border-gray-400 transition-colors"
             />
           </div>
           <div className="flex flex-col gap-1">
@@ -88,7 +88,7 @@ export default function UpdatePasswordPage() {
               onChange={(e) => setConfirm(e.target.value)}
               placeholder="비밀번호 재입력"
               required
-              className="w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none focus:border-gray-400 transition-colors"
+              className="w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-foreground placeholder:text-gray-400 outline-none focus:border-gray-400 transition-colors"
             />
           </div>
           <button

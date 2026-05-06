@@ -125,7 +125,7 @@ export default function SignUpForm({ refCode }: Props) {
   };
 
   const inputBase =
-    "w-full rounded-xl border bg-white px-3.5 py-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none focus:border-gray-400 transition-colors";
+    "w-full rounded-xl border bg-white px-3.5 py-2.5 text-sm text-foreground placeholder:text-gray-400 outline-none focus:border-gray-400 transition-colors";
 
   return (
     <div className="flex flex-col gap-4">
