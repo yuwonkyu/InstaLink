@@ -68,16 +68,18 @@ export default function LinkManager({ links, onChange }: Props) {
               {editIdx === idx ? (
                 <div className="flex flex-col gap-2">
                   <div className="flex flex-col gap-0.5">
-                    <input
-                      value={editLabel}
-                      onChange={(e) => setEditLabel(e.target.value)}
-                      placeholder="버튼 이름 (예: 네이버 스토어 바로가기)"
-                      maxLength={LABEL_MAX}
-                      className={`w-full ${inputCls}`}
-                    />
-                    <span className={`self-end whitespace-nowrap text-[10px] ${
-                      editLabel.length >= LABEL_MAX ? "text-red-500" : editLabel.length / LABEL_MAX >= 0.8 ? "text-orange-400" : "text-(--muted)"
-                    }`}>{editLabel.length}/{LABEL_MAX}</span>
+                    <div className="relative">
+                      <input
+                        value={editLabel}
+                        onChange={(e) => setEditLabel(e.target.value)}
+                        placeholder="버튼 이름 (예: 네이버 스토어 바로가기)"
+                        maxLength={LABEL_MAX}
+                        className={`w-full pr-12 ${inputCls}`}
+                      />
+                      <span className={`pointer-events-none absolute right-2 bottom-1.5 whitespace-nowrap text-[10px] ${
+                        editLabel.length >= LABEL_MAX ? "text-red-500" : editLabel.length / LABEL_MAX >= 0.8 ? "text-orange-400" : "text-(--muted)"
+                      }`}>{editLabel.length}/{LABEL_MAX}</span>
+                    </div>
                   </div>
                   <input
                     value={editUrl}
@@ -137,17 +139,19 @@ export default function LinkManager({ links, onChange }: Props) {
       <div className="flex flex-col gap-2 rounded-xl border border-dashed border-gray-200 p-3">
         <p className="text-xs font-medium text-(--muted)">링크 추가</p>
         <div className="flex flex-col gap-0.5">
-          <input
-            type="text"
-            value={label}
-            onChange={(e) => setLabel(e.target.value)}
-            placeholder="버튼 이름 (예: 네이버 스토어 바로가기)"
-            maxLength={LABEL_MAX}
-            className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
-          />
-          <span className={`self-end whitespace-nowrap text-[10px] ${
-            label.length >= LABEL_MAX ? "text-red-500" : label.length / LABEL_MAX >= 0.8 ? "text-orange-400" : "text-(--muted)"
-          }`}>{label.length}/{LABEL_MAX}</span>
+          <div className="relative">
+            <input
+              type="text"
+              value={label}
+              onChange={(e) => setLabel(e.target.value)}
+              placeholder="버튼 이름 (예: 네이버 스토어 바로가기)"
+              maxLength={LABEL_MAX}
+              className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 pr-12 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15"
+            />
+            <span className={`pointer-events-none absolute right-2 bottom-1.5 whitespace-nowrap text-[10px] ${
+              label.length >= LABEL_MAX ? "text-red-500" : label.length / LABEL_MAX >= 0.8 ? "text-orange-400" : "text-(--muted)"
+            }`}>{label.length}/{LABEL_MAX}</span>
+          </div>
         </div>
         <input
           type="url"

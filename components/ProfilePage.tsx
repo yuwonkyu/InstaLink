@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import type { Profile, BusinessHours } from "@/lib/types";
 import { PLAN_LIMITS, toPlanKey } from "@/lib/plan-limits";
 
@@ -12,6 +13,25 @@ type ProfilePageProps = {
 function toInstagramUrl(instagramId: string) {
   const cleaned = instagramId.replace(/^@/, "").trim();
   return `https://instagram.com/${cleaned}`;
+}
+
+function normalizeExternalHref(raw?: string | null): string | null {
+  const trimmed = raw?.trim();
+  if (!trimmed) return null;
+
+  const withProtocol = /^https?:\/\//i.test(trimmed)
+    ? trimmed
+    : `https://${trimmed}`;
+
+  try {
+    const parsed = new URL(withProtocol);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+      return null;
+    }
+    return parsed.toString();
+  } catch {
+    return null;
+  }
 }
 
 function trackClick(
@@ -253,13 +273,19 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
     : `@${profile.instagram_id}`;
   const instagramUrl = toInstagramUrl(profile.instagram_id);
 
+  const kakaoUrl = normalizeExternalHref(profile.kakao_url);
+  const kakaoBookingUrl = normalizeExternalHref(profile.kakao_booking_url);
+  const kakaoChannelUrl = normalizeExternalHref(profile.kakao_channel_url);
+  const naverBookingUrl = normalizeExternalHref(profile.naver_booking_url);
+  const instagramDmUrl = normalizeExternalHref(profile.instagram_dm_url);
+
   const hasCta =
-    profile.kakao_url ||
-    profile.kakao_booking_url ||
-    profile.naver_booking_url ||
+    kakaoUrl ||
+    kakaoBookingUrl ||
+    naverBookingUrl ||
     profile.phone_url ||
-    profile.instagram_dm_url ||
-    profile.kakao_channel_url;
+    instagramDmUrl ||
+    kakaoChannelUrl;
 
   return (
     <>
@@ -328,9 +354,9 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
             : { backgroundColor: "#fff", color: "#111827", border: "1px solid rgba(0,0,0,0.1)" };
 
           const allCtas: CtaItem[] = [
-            profile.kakao_url && {
+            kakaoUrl && {
               key: "kakao",
-              href: profile.kakao_url,
+              href: kakaoUrl,
               onClick: () => trackClick(profile.id, "kakao"),
               style: { backgroundColor: "#FEE500", color: "#000" },
               icon: (
@@ -341,24 +367,24 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
               ),
               label: <span className="whitespace-nowrap">무료 상담 받기 (카카오톡)</span>,
             },
-            profile.kakao_booking_url && {
+            kakaoBookingUrl && {
               key: "kakao_booking",
-              href: profile.kakao_booking_url,
+              href: kakaoBookingUrl,
               onClick: () => trackClick(profile.id, "kakao"),
               style: { backgroundColor: "#FEE500", color: "#000" },
               icon: <Image src="/kakaosimbol.svg" alt="" width={18} height={18} className="h-4.5 w-4.5 shrink-0" />,
               label: <span className="whitespace-nowrap">카카오로 예약하기</span>,
             },
-            profile.kakao_channel_url && {
+            kakaoChannelUrl && {
               key: "kakao_channel",
-              href: profile.kakao_channel_url,
+              href: kakaoChannelUrl,
               style: { backgroundColor: "#FEE500", color: "#000" },
               icon: <Image src="/kakaosimbol.svg" alt="" width={18} height={18} className="h-4.5 w-4.5 shrink-0" />,
               label: <span className="whitespace-nowrap">카카오채널 문의</span>,
             },
-            profile.naver_booking_url && {
+            naverBookingUrl && {
               key: "naver",
-              href: profile.naver_booking_url,
+              href: naverBookingUrl,
               style: { backgroundColor: "#03C75A", color: "#fff" },
               icon: (
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -367,9 +393,9 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
               ),
               label: <span className="whitespace-nowrap">네이버로 예약하기</span>,
             },
-            profile.instagram_dm_url && {
+            instagramDmUrl && {
               key: "instagram_dm",
-              href: profile.instagram_dm_url,
+              href: instagramDmUrl,
               style: { background: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", color: "#fff" },
               icon: <IconInstagram />,
               label: <span className="whitespace-nowrap">인스타그램 DM 보내기</span>,
@@ -398,7 +424,7 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={primary.onClick}
-                className={`flex min-h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-xl px-3 text-base font-bold shadow-[0_4px_18px_rgba(17,24,39,0.18)] active:translate-y-px ${primary.extraClass ?? ""}`}
+                className={`flex min-h-14 w-full items-center justify-center gap-2 overflow-hidden rounded-xl px-3 text-[14.5px] font-bold shadow-[0_4px_18px_rgba(17,24,39,0.18)] active:translate-y-px ${primary.extraClass ?? ""}`}
                 style={primary.style}
               >
                 {primary.icon}
@@ -415,7 +441,7 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
                       target="_blank"
                       rel="noopener noreferrer"
                       onClick={cta.onClick}
-                      className={`flex min-h-11 w-full items-center justify-center gap-1.5 overflow-hidden rounded-xl px-2 text-sm font-semibold shadow-[0_2px_8px_rgba(17,24,39,0.10)] active:translate-y-px ${cta.extraClass ?? ""}`}
+                      className={`flex min-h-11 w-full items-center justify-center gap-1.5 overflow-hidden rounded-xl px-2 text-[13px] font-semibold shadow-[0_2px_8px_rgba(17,24,39,0.10)] active:translate-y-px ${cta.extraClass ?? ""}`}
                       style={cta.style}
                     >
                       {cta.icon}
@@ -434,9 +460,16 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
           (() => {
             const FREE_LINK_LIMIT = 2;
             const isFree = !profile.plan || profile.plan === "free";
-            const visibleLinks = isFree
+            const visibleLinksRaw = isFree
               ? profile.custom_links!.slice(0, FREE_LINK_LIMIT)
               : profile.custom_links!;
+            const visibleLinks = visibleLinksRaw
+              .map((link) => {
+                const href = normalizeExternalHref(link.url);
+                if (!href) return null;
+                return { ...link, url: href };
+              })
+              .filter((link): link is { label: string; url: string } => link !== null);
             const hiddenCount = isFree
               ? Math.max(0, profile.custom_links!.length - FREE_LINK_LIMIT)
               : 0;
@@ -838,7 +871,7 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
 
       {/* ── 바이럴 배지: Pro 플랜만 숨길 수 있음 ── */}
       {profile.plan !== "pro" && (
-        <a
+        <Link
           href="/"
           className="mt-6 flex items-center justify-center gap-1.5 text-xs text-black/30 transition-opacity hover:text-black/50 dark:text-white/25 dark:hover:text-white/40"
           aria-label="인스타링크로 무료 링크페이지 만들기"
@@ -858,7 +891,7 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
             <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
           </svg>
           인스타링크로 무료 링크페이지 만들기
-        </a>
+        </Link>
       )}
     </>
   );

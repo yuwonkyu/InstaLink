@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import type { Service } from "@/lib/types";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   SERVICE_LIMITS,
@@ -14,6 +14,7 @@ import {
 
 type Props = {
   services: Service[];
+  invalidServiceIndex?: number | null;
   isPaidPlan: boolean;   // Basic 이상 — AI 버튼 표시용 (현재 미사용, isProPlan으로 이전 중)
   isProPlan?: boolean;   // Pro 전용 AI 버튼
   limit?: number;        // 추가 가능한 최대 개수 (undefined = 무제한)
@@ -29,6 +30,7 @@ const CATEGORIES = ["PT/헬스", "필라테스/요가", "미용실/네일", "카
 
 export default function ServiceManager({
   services,
+  invalidServiceIndex,
   isProPlan = false,
   limit,
   aiLoading,
@@ -63,8 +65,14 @@ export default function ServiceManager({
   const editPriceError = editForm.formState.errors.price?.message;
   const editNoteError = editForm.formState.errors.note?.message;
 
-  const [addName, addPrice, addNote] = addForm.watch(["name", "price", "note"]);
-  const [editName, editPrice, editNote] = editForm.watch(["name", "price", "note"]);
+  const [addName, addPrice, addNote] = useWatch({
+    control: addForm.control,
+    name: ["name", "price", "note"],
+  });
+  const [editName, editPrice, editNote] = useWatch({
+    control: editForm.control,
+    name: ["name", "price", "note"],
+  });
   const safeAddNote = addNote ?? "";
   const safeEditNote = editNote ?? "";
 
@@ -174,7 +182,17 @@ export default function ServiceManager({
       {services.length > 0 && (
         <ul className="mb-4 flex flex-col gap-2">
           {services.map((svc, idx) => (
-            <li key={idx} className="rounded-xl bg-(--secondary) px-3.5 py-2.5">
+            <li
+              key={idx}
+              className={`rounded-xl bg-(--secondary) px-3.5 py-2.5 ${
+                invalidServiceIndex === idx + 1 ? "border border-red-300 ring-1 ring-red-200" : ""
+              }`}
+            >
+              {invalidServiceIndex === idx + 1 && (
+                <p className="mb-2 text-[11px] font-semibold text-red-500">
+                  저장 불가 항목: 이 카드 내용을 먼저 수정해주세요.
+                </p>
+              )}
               {editIdx === idx ? (
                 <form
                   className="flex flex-col gap-2"

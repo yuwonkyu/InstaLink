@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import { saveProfile, type SaveProfilePayload } from "./actions";
 import type { Profile, Service, Review, Theme, CustomLink, GalleryImage, BusinessHours, GalleryLayout } from "@/lib/types";
 import { PLAN_LIMITS, toPlanKey } from "@/lib/plan-limits";
+import { getFirstServiceValidationIssue, getServiceValidationMessage } from "@/lib/service-validation";
 // BasicTab은 초기 화면에서 즉시 필요 → 정적 임포트 유지
 import BasicTab from "@/components/edit/tabs/BasicTab";
 // 나머지 탭은 클릭 시점에만 필요 → 동적 임포트로 초기 번들에서 분리
@@ -82,6 +83,7 @@ export default function EditForm({ profile, plan }: Props) {
   const [tabGuideShown,  setTabGuideShown]  = useState(true);
   const [aiLoading,  setAiLoading]  = useState<string | null>(null);
   const [saveError,  setSaveError]  = useState<string | null>(null);
+  const [invalidServiceIndex, setInvalidServiceIndex] = useState<number | null>(null);
   const [isPending,  startTransition] = useTransition();
 
   const isFirstRender = useRef(true);
@@ -102,6 +104,10 @@ export default function EditForm({ profile, plan }: Props) {
     gallery, parkingInfo, sectionOrder, buttonColor, buttonTextColor,
     galleryLayout, businessHours,
   ]);
+
+  useEffect(() => {
+    setInvalidServiceIndex(null);
+  }, [services]);
 
   // ── AI 추천 ──────────────────────────────────────────────
   async function aiSuggest(type: "tagline" | "description" | "services") {
@@ -144,6 +150,19 @@ export default function EditForm({ profile, plan }: Props) {
   function handleSave() {
     setSaveError(null);
     setSaveStatus("saving");
+    setInvalidServiceIndex(null);
+
+    const serviceIssue = getFirstServiceValidationIssue(services);
+    const serviceValidationMessage = getServiceValidationMessage(services);
+    if (serviceValidationMessage) {
+      setActiveTab("service");
+      setSaveError(serviceValidationMessage);
+      setSaveStatus("error");
+      setInvalidServiceIndex(serviceIssue?.index ?? null);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+
     const payload: SaveProfilePayload = {
       name, shop_name: shopName, tagline, description,
       kakao_url: kakaoUrl, kakao_booking_url: kakaoBookingUrl,
@@ -340,6 +359,7 @@ export default function EditForm({ profile, plan }: Props) {
         <ServiceTab
           services={services} setServices={setServices}
           servicesLimit={limits.services === Infinity ? undefined : limits.services}
+          invalidServiceIndex={invalidServiceIndex}
           customLinks={customLinks} setCustomLinks={setCustomLinks}
           businessHours={businessHours} setBusinessHours={setBusinessHours}
           isPaidPlan={isPaidPlan} isProPlan={isProPlan}

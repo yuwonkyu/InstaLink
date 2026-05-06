@@ -9,6 +9,7 @@ import type { Service, CustomLink, BusinessHours } from "@/lib/types";
 export type ServiceTabProps = {
   services: Service[];          setServices: (v: Service[]) => void;
   servicesLimit?: number;
+  invalidServiceIndex?: number | null;
   customLinks: CustomLink[];    setCustomLinks: (v: CustomLink[]) => void;
   businessHours: BusinessHours; setBusinessHours: (v: BusinessHours) => void;
   isPaidPlan: boolean;
@@ -20,6 +21,7 @@ export type ServiceTabProps = {
 
 export default function ServiceTab({
   services, setServices, servicesLimit,
+  invalidServiceIndex,
   customLinks, setCustomLinks,
   businessHours, setBusinessHours,
   isPaidPlan, isProPlan,
@@ -38,6 +40,7 @@ export default function ServiceTab({
         </div>
         <ServiceManager
           services={services}
+          invalidServiceIndex={invalidServiceIndex}
           isPaidPlan={isPaidPlan}
           isProPlan={isProPlan}
           limit={servicesLimit}
