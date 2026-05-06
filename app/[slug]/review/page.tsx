@@ -38,7 +38,7 @@ export default function ReviewPage({ params }: Props) {
   }
 
   const inputCls =
-    "w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none focus:border-gray-400 transition-colors";
+    "w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-foreground placeholder:text-gray-400 outline-none focus:border-gray-400 transition-colors";
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-(--secondary) px-4 py-10">
@@ -81,7 +81,7 @@ export default function ReviewPage({ params }: Props) {
                     placeholder="서비스 이용 후 느낀 점을 솔직하게 작성해주세요."
                     maxLength={300}
                     required
-                    className="w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-foreground placeholder:text-(--muted) outline-none focus:border-gray-400 transition-colors resize-none"
+                    className="w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-foreground placeholder:text-gray-400 outline-none focus:border-gray-400 transition-colors resize-none"
                   />
                   <p className="text-right text-[11px] text-(--muted)">{text.length} / 300</p>
                 </div>

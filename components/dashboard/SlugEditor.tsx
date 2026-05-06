@@ -127,7 +127,7 @@ export default function SlugEditor({ currentSlug, siteUrl }: Props) {
             onChange={(e) => setSlug(e.target.value.toLowerCase())}
             placeholder={currentSlug}
             maxLength={30}
-            className="min-w-0 flex-1 bg-transparent outline-none placeholder:text-(--muted)"
+            className="min-w-0 flex-1 bg-transparent outline-none placeholder:text-gray-400"
           />
         </div>
 
