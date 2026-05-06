@@ -117,7 +117,7 @@ export async function saveProfile(payload: SaveProfilePayload) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/auth/login");
+    throw new Error("로그인이 만료되었습니다. 다시 로그인 후 저장해주세요.");
   }
 
   // URL 필드 화이트리스트 검증 (javascript:, data: 등 차단)

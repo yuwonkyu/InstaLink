@@ -90,6 +90,7 @@ export default function EditForm({ profile, plan }: Props) {
   const [isDirty,      setIsDirty]      = useState(false);
   const [saveStatus,   setSaveStatus]   = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [showPostSave, setShowPostSave] = useState(false);
+  const [showSaveErrorModal, setShowSaveErrorModal] = useState(false);
   const [aiNotice,     setAiNotice]     = useState(false);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -108,6 +109,29 @@ export default function EditForm({ profile, plan }: Props) {
   useEffect(() => {
     setInvalidServiceIndex(null);
   }, [services]);
+
+  function focusTabByErrorMessage(message: string) {
+    if (message.includes("서비스")) {
+      setActiveTab("service");
+      return;
+    }
+    if (
+      message.includes("URL") ||
+      message.includes("카카오") ||
+      message.includes("인스타그램") ||
+      message.includes("로그인")
+    ) {
+      setActiveTab("page");
+    }
+  }
+
+  function openSaveError(message: string) {
+    setSaveError(message);
+    setSaveStatus("error");
+    setShowSaveErrorModal(true);
+    focusTabByErrorMessage(message);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
   // ── AI 추천 ──────────────────────────────────────────────
   async function aiSuggest(type: "tagline" | "description" | "services") {
@@ -151,15 +175,13 @@ export default function EditForm({ profile, plan }: Props) {
     setSaveError(null);
     setSaveStatus("saving");
     setInvalidServiceIndex(null);
+    setShowSaveErrorModal(false);
 
     const serviceIssue = getFirstServiceValidationIssue(services);
     const serviceValidationMessage = getServiceValidationMessage(services);
     if (serviceValidationMessage) {
-      setActiveTab("service");
-      setSaveError(serviceValidationMessage);
-      setSaveStatus("error");
       setInvalidServiceIndex(serviceIssue?.index ?? null);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      openSaveError(serviceValidationMessage);
       return;
     }
 
@@ -190,10 +212,21 @@ export default function EditForm({ profile, plan }: Props) {
         if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
         saveTimerRef.current = setTimeout(() => setSaveStatus("idle"), 3000);
       } catch (e) {
-        if (typeof e === "object" && e !== null && "digest" in e) throw e;
+        const digestMessage =
+          typeof e === "object" &&
+          e !== null &&
+          "digest" in e &&
+          typeof e.digest === "string"
+            ? e.digest
+            : null;
+
+        if (digestMessage?.includes("NEXT_REDIRECT")) {
+          openSaveError("로그인이 만료되었거나 권한이 없습니다. 다시 로그인 후 저장해주세요.");
+          return;
+        }
+
         const msg = e instanceof Error ? e.message : "저장 중 오류가 발생했습니다.";
-        setSaveError(msg);
-        setSaveStatus("error");
+        openSaveError(msg);
       }
     });
   }
@@ -242,6 +275,34 @@ export default function EditForm({ profile, plan }: Props) {
                 className="w-full py-2 text-xs text-(--muted) hover:text-foreground transition-colors"
               >
                 계속 편집하기
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── 저장 실패 모달 ── */}
+      {showSaveErrorModal && saveError && (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4 sm:items-center"
+          onClick={() => setShowSaveErrorModal(false)}
+        >
+          <div
+            className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-1 flex items-center gap-2">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-red-100 text-xl">⚠️</span>
+              <p className="text-base font-bold text-foreground">저장 실패</p>
+            </div>
+            <p className="ml-11 text-sm text-(--muted)">{saveError}</p>
+            <div className="mt-5 flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={() => setShowSaveErrorModal(false)}
+                className="w-full rounded-xl bg-foreground py-2.5 text-sm font-semibold text-white transition hover:opacity-85"
+              >
+                확인
               </button>
             </div>
           </div>
