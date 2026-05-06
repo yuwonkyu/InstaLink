@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getSupabaseServerClient } from "@/lib/supabase";
 import type { Service, Review, Theme, CustomLink, GalleryImage, GalleryLayout, BusinessHours } from "@/lib/types";
+import { validateServicesOrThrow } from "@/lib/service-validation";
 
 function isSafeUrl(url: string): boolean {
   if (!url) return true; // 빈 값은 저장 허용
@@ -147,6 +148,8 @@ export async function saveProfile(payload: SaveProfilePayload) {
     throw new Error("인스타그램 아이디는 영문, 숫자, 밑줄(_), 점(.)만 사용 가능합니다.");
   }
 
+  const safeServices = validateServicesOrThrow(payload.services ?? []);
+
   const { error } = await supabase
     .from("profiles")
     .update({
@@ -165,7 +168,7 @@ export async function saveProfile(payload: SaveProfilePayload) {
       hours: payload.hours.trim(),
       image_url: payload.image_url.trim(),
       theme: payload.theme,
-      services: payload.services,
+      services: safeServices,
       reviews: payload.reviews,
       custom_links: payload.custom_links,
       gallery: payload.gallery,

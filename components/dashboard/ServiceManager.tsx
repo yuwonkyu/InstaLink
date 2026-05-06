@@ -3,6 +3,14 @@
 import { useState } from "react";
 import Link from "next/link";
 import type { Service } from "@/lib/types";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  SERVICE_LIMITS,
+  serviceFormSchema,
+  type ServiceFormInput,
+  sanitizeServices,
+} from "@/lib/service-validation";
 
 type Props = {
   services: Service[];
@@ -31,21 +39,34 @@ export default function ServiceManager({
   templateServices,
 }: Props) {
   const atLimit = limit !== undefined && services.length >= limit;
-  const [name,  setName]  = useState("");
-  const [price, setPrice] = useState("");
-  const [note,  setNote]  = useState("");
 
   const [editIdx,   setEditIdx]   = useState<number | null>(null);
-  const [editName,  setEditName]  = useState("");
-  const [editPrice, setEditPrice] = useState("");
-  const [editNote,  setEditNote]  = useState("");
 
   const [showTemplates, setShowTemplates] = useState(true);
 
-  function add() {
-    if (!name.trim() || !price.trim()) return;
-    onChange([...services, { name: name.trim(), price: price.trim(), note: note.trim() || undefined }]);
-    setName(""); setPrice(""); setNote("");
+  const addForm = useForm<ServiceFormInput>({
+    resolver: zodResolver(serviceFormSchema),
+    mode: "onChange",
+    defaultValues: { name: "", price: "", note: "" },
+  });
+
+  const editForm = useForm<ServiceFormInput>({
+    resolver: zodResolver(serviceFormSchema),
+    mode: "onChange",
+    defaultValues: { name: "", price: "", note: "" },
+  });
+
+  const addNameError = addForm.formState.errors.name?.message;
+  const addPriceError = addForm.formState.errors.price?.message;
+  const addNoteError = addForm.formState.errors.note?.message;
+  const editNameError = editForm.formState.errors.name?.message;
+  const editPriceError = editForm.formState.errors.price?.message;
+  const editNoteError = editForm.formState.errors.note?.message;
+
+  function add(values: ServiceFormInput) {
+    const next = serviceFormSchema.parse(values);
+    onChange([...services, next]);
+    addForm.reset({ name: "", price: "", note: "" });
   }
 
   function remove(idx: number) {
@@ -55,23 +76,20 @@ export default function ServiceManager({
   function startEdit(idx: number) {
     const s = services[idx];
     setEditIdx(idx);
-    setEditName(s.name);
-    setEditPrice(s.price);
-    setEditNote(s.note ?? "");
+    editForm.reset({ name: s.name, price: s.price, note: s.note ?? "" });
   }
 
-  function saveEdit() {
-    if (editIdx === null || !editName.trim() || !editPrice.trim()) return;
-    onChange(services.map((s, i) =>
-      i === editIdx
-        ? { name: editName.trim(), price: editPrice.trim(), note: editNote.trim() || undefined }
-        : s
-    ));
+  function saveEdit(values: ServiceFormInput) {
+    if (editIdx === null) return;
+    const next = serviceFormSchema.parse(values);
+    if (!next) return;
+    onChange(services.map((s, i) => (i === editIdx ? next : s)));
     setEditIdx(null);
+    editForm.reset({ name: "", price: "", note: "" });
   }
 
   function applyTemplates() {
-    onChange(templateServices);
+    onChange(sanitizeServices(templateServices));
     setShowTemplates(false);
   }
 
@@ -146,19 +164,55 @@ export default function ServiceManager({
           {services.map((svc, idx) => (
             <li key={idx} className="rounded-xl bg-(--secondary) px-3.5 py-2.5">
               {editIdx === idx ? (
-                <div className="flex flex-col gap-2">
+                <form
+                  className="flex flex-col gap-2"
+                  onSubmit={editForm.handleSubmit(saveEdit)}
+                >
                   <div className="flex gap-2">
-                    <input value={editName}  onChange={(e) => setEditName(e.target.value)}  placeholder="서비스명" className={`flex-1 ${inputCls}`} />
-                    <input value={editPrice} onChange={(e) => setEditPrice(e.target.value)} placeholder="가격"    className={`w-28 ${inputCls}`} />
+                    <input
+                      {...editForm.register("name")}
+                      maxLength={SERVICE_LIMITS.name}
+                      placeholder="서비스명"
+                      className={`flex-1 ${inputCls}`}
+                    />
+                    <input
+                      {...editForm.register("price")}
+                      maxLength={SERVICE_LIMITS.price}
+                      placeholder="가격"
+                      className={`w-28 ${inputCls}`}
+                    />
                   </div>
-                  <input value={editNote} onChange={(e) => setEditNote(e.target.value)} placeholder="메모 (선택)" className={`w-full ${inputCls}`} />
+                  <input
+                    {...editForm.register("note")}
+                    maxLength={SERVICE_LIMITS.note}
+                    placeholder="메모 (선택)"
+                    className={`w-full ${inputCls}`}
+                  />
+                  {(editNameError || editPriceError || editNoteError) && (
+                    <p className="text-xs text-red-500">
+                      {editNameError ?? editPriceError ?? editNoteError}
+                    </p>
+                  )}
                   <div className="flex gap-2">
-                    <button type="button" onClick={saveEdit} disabled={!editName.trim() || !editPrice.trim()}
-                      className="rounded-lg bg-foreground px-3 py-1 text-xs font-medium text-white disabled:opacity-40">저장</button>
-                    <button type="button" onClick={() => setEditIdx(null)}
-                      className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-medium text-(--muted)">취소</button>
+                    <button
+                      type="submit"
+                      disabled={!editForm.formState.isValid}
+                      className="rounded-lg bg-foreground px-3 py-1 text-xs font-medium text-white disabled:opacity-40"
+                    >
+                      저장
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditIdx(null);
+                        editForm.reset({ name: "", price: "", note: "" });
+                      }}
+                      className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-medium text-(--muted)"
+                    >
+                      취소
+                    </button>
                   </div>
-                </div>
+                </form>
               ) : (
                 <div className="flex items-center justify-between">
                   <div className="flex flex-col">
@@ -187,26 +241,37 @@ export default function ServiceManager({
           하면 더 추가할 수 있습니다.
         </p>
       ) : (
-        <div className="flex flex-col gap-2 rounded-xl border border-dashed border-gray-200 p-3">
+        <form
+          className="flex flex-col gap-2 rounded-xl border border-dashed border-gray-200 p-3"
+          onSubmit={addForm.handleSubmit(add)}
+        >
           <p className="text-xs font-medium text-(--muted)">
             직접 추가
             {limit !== undefined && (
               <span className="ml-1 text-gray-400">({services.length}/{limit})</span>
             )}
           </p>
+          <p className="text-[11px] text-(--muted)">
+            서비스명 {SERVICE_LIMITS.name}자 · 가격 {SERVICE_LIMITS.price}자 · 메모 {SERVICE_LIMITS.note}자까지 입력할 수 있어요.
+          </p>
           <div className="flex min-w-0 gap-2">
-            <input type="text" value={name}  onChange={(e) => setName(e.target.value)}  placeholder="서비스명 (예: PT 1회)"
+            <input type="text" {...addForm.register("name")} maxLength={SERVICE_LIMITS.name} placeholder="서비스명 (예: PT 1회)"
               className="min-w-0 flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15" />
-            <input type="text" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="50,000원"
+            <input type="text" {...addForm.register("price")} maxLength={SERVICE_LIMITS.price} placeholder="50,000원"
               className="w-24 shrink-0 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15" />
           </div>
-          <input type="text" value={note} onChange={(e) => setNote(e.target.value)} placeholder="메모 (선택)"
+          <input type="text" {...addForm.register("note")} maxLength={SERVICE_LIMITS.note} placeholder="메모 (선택)"
             className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15" />
-          <button type="button" onClick={add} disabled={!name.trim() || !price.trim()}
+          {(addNameError || addPriceError || addNoteError) && (
+            <p className="text-xs text-red-500">
+              {addNameError ?? addPriceError ?? addNoteError}
+            </p>
+          )}
+          <button type="submit" disabled={!addForm.formState.isValid}
             className="self-start rounded-lg bg-foreground px-4 py-1.5 text-sm font-medium text-white disabled:opacity-40">
             + 추가
           </button>
-        </div>
+        </form>
       )}
     </div>
   );
