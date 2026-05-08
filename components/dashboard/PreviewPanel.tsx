@@ -8,12 +8,10 @@ type Props = { slug: string };
 export default function PreviewPanel({ slug }: Props) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [previewOrigin, setPreviewOrigin] = useState(getSiteUrl);
+  const [previewOrigin] = useState(() =>
+    typeof window !== "undefined" ? window.location.origin : getSiteUrl()
+  );
   const previewUrl = `${previewOrigin}/${slug}`;
-
-  useEffect(() => {
-    setPreviewOrigin(window.location.origin);
-  }, []);
 
   // 저장 완료 이벤트 → iframe 새로고침
   useEffect(() => {

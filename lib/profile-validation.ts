@@ -1,14 +1,5 @@
 import { z } from "zod";
-import type {
-  Service,
-  CustomLink,
-  GalleryImage,
-  Review,
-  Theme,
-  BusinessHours,
-  GalleryLayout,
-} from "@/lib/types";
-import { serviceFormSchema, type ServiceFormInput } from "@/lib/service-validation";
+import { serviceFormSchema } from "@/lib/service-validation";
 
 // ────────────────────────────────────────────────
 // 필드별 길이 제한
