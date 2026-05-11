@@ -58,6 +58,8 @@ export default function LandingFooter() {
               {COMPANY_INFO.reportNo && (
                 <p>통신판매업 {COMPANY_INFO.reportNo}</p>
               )}
+              <p>{COMPANY_INFO.address}</p>
+              <p>Tel. {COMPANY_INFO.phone}</p>
               <a
                 href={`mailto:${COMPANY_INFO.email}`}
                 className="transition hover:text-foreground"
