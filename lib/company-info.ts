@@ -4,6 +4,8 @@ export const COMPANY_INFO = {
   brand:      "InstaLink",
   ceo:        "유원규",
   bizNo:      "492-13-02963",
+  address:    "서울특별시 양천구 목동중앙본로26길 25, 202호(목동, DH프라임)",
+  phone:      "010-4748-2543",
   email:      "duck01777@gmail.com",
   reportNo:   "", // 통신판매업 신고 후 입력
   // 후원 계좌
