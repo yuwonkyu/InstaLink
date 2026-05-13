@@ -1,177 +1,214 @@
-// 토스페이먼츠 심사용 플랜 페이지
-// 경로: app/pricing/page.tsx
-// 심사 완료 후 실제 결제 연동으로 업데이트 예정
-
 import Link from "next/link";
+import type { Metadata } from "next";
+import { COMPANY_INFO } from "@/lib/company-info";
 
-export const metadata = {
-  title: "요금제 | InstaLink",
-  description: "InstaLink 월간·연간 구독 요금제를 확인해보세요.",
+export const metadata: Metadata = {
+  title: "요금제 — InstaLink",
+  description: "InstaLink 플랜별 요금 안내. 무료로 시작하고 필요할 때 업그레이드하세요.",
 };
 
 const PLANS = [
   {
-    name: "Free",
-    price: "0",
-    period: "영원히 무료",
-    description: "처음 시작하는 소상공인을 위한 플랜",
+    key: "free",
+    label: "Free",
+    monthly: 0,
+    annual: 0,
+    desc: "처음 시작하는 소상공인을 위한 플랜",
     features: [
       "링크인바이오 페이지 1개",
-      "갤러리 이미지 3장",
+      "라이트 테마 1종",
+      "서비스·후기 3개",
+      "갤러리 사진 3장",
       "카카오 문의 버튼",
-      "InstaLink 배지 표시",
     ],
-    cta: "무료로 시작하기",
-    highlighted: false,
+    limits: [
+      "InstaLink 배지 표시 (숨기기 불가)",
+      "방문자 통계 없음",
+    ],
+    highlight: false,
   },
   {
-    name: "Pro",
-    price: "9,900",
-    period: "월 / 월간 구독",
-    description: "본격적으로 고객을 모으고 싶은 사장님을 위한 플랜",
+    key: "basic",
+    label: "Basic",
+    monthly: 19900,
+    annual: 199000,
+    desc: "본격적으로 고객을 모으고 싶은 사장님을 위한 플랜",
     features: [
-      "Free 플랜의 모든 기능",
-      "갤러리 이미지 무제한",
-      "방문자 통계 (일별 차트)",
-      "InstaLink 배지 제거",
-      "맞춤 도메인 연결",
-      "우선 고객지원",
+      "테마 3종 (라이트·다크·UCC)",
+      "서비스·후기 6개",
+      "갤러리 사진 6장",
+      "카카오 문의 버튼",
+      "Free 모든 기능 포함",
     ],
-    cta: "Pro 시작하기",
-    highlighted: true,
-    annualPrice: "99,000",
+    limits: [],
+    highlight: true,
   },
-];
+  {
+    key: "pro",
+    label: "Pro",
+    monthly: 29900,
+    annual: 299000,
+    desc: "데이터로 성장을 확인하고 싶은 사장님을 위한 플랜",
+    features: [
+      "Basic 모든 기능 + 테마 7종",
+      "방문자 통계 + 주간 리포트",
+      "AI 문구 추천",
+      "섹션 순서·버튼 색상 커스텀",
+      "InstaLink 배지 숨기기 가능",
+    ],
+    limits: [],
+    highlight: false,
+  },
+] as const;
 
 export default function PricingPage() {
   return (
-    <main className="min-h-screen bg-white">
-      <div className="max-w-4xl mx-auto px-6 py-20">
-        {/* 헤더 */}
-        <div className="text-center mb-14">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            심플한 요금제
-          </h1>
-          <p className="text-gray-500 text-lg">
-            복잡한 거 없이, 필요한 만큼만 쓰세요.
+    <main className="min-h-screen bg-(--secondary) px-4 py-10">
+      <div className="mx-auto max-w-4xl">
+
+        <div className="mb-8 text-center">
+          <Link href="/" className="text-sm text-(--muted) hover:text-foreground">← 홈으로</Link>
+          <h1 className="mt-4 text-2xl font-bold text-foreground">심플한 요금제</h1>
+          <p className="mt-2 text-sm text-(--muted)">
+            복잡한 거 없어, 필요한 만큼만 쓰세요.
           </p>
         </div>
 
-        {/* 플랜 카드 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* 플랜 카드 3열 */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {PLANS.map((plan) => (
             <div
-              key={plan.name}
-              className={`rounded-2xl p-8 border ${
-                plan.highlighted
-                  ? "border-indigo-500 bg-indigo-50 shadow-lg"
-                  : "border-gray-200 bg-white"
+              key={plan.key}
+              className={`relative flex flex-col rounded-2xl p-6 shadow-[0_4px_20px_rgba(17,24,39,0.06)] ${
+                plan.highlight
+                  ? "bg-foreground text-white"
+                  : "bg-white text-foreground"
               }`}
             >
-              {plan.highlighted && (
-                <span className="inline-block mb-3 text-xs font-semibold text-indigo-600 bg-indigo-100 px-3 py-1 rounded-full">
+              {plan.highlight && (
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-amber-400 px-3 py-0.5 text-xs font-bold text-white">
                   추천
                 </span>
               )}
 
-              <h2 className="text-xl font-bold text-gray-900 mb-1">
-                {plan.name}
-              </h2>
-              <p className="text-sm text-gray-500 mb-5">{plan.description}</p>
-
-              <div className="mb-2">
-                <span className="text-4xl font-bold text-gray-900">
-                  ₩{plan.price}
-                </span>
-                <span className="text-gray-500 text-sm ml-2">
-                  {plan.period}
-                </span>
+              <div className="mb-4">
+                <p className={`text-xs font-semibold uppercase tracking-widest ${plan.highlight ? "text-white/60" : "text-(--muted)"}`}>
+                  {plan.label}
+                </p>
+                <p className={`mt-0.5 text-xs ${plan.highlight ? "text-white/70" : "text-(--muted)"}`}>
+                  {plan.desc}
+                </p>
+                <div className="mt-3">
+                  {plan.monthly === 0 ? (
+                    <p className="text-3xl font-bold">₩0</p>
+                  ) : (
+                    <>
+                      <p className="text-3xl font-bold">
+                        ₩{plan.monthly.toLocaleString()}
+                        <span className={`text-sm font-normal ${plan.highlight ? "text-white/60" : "text-(--muted)"}`}> / 월간 구독</span>
+                      </p>
+                      <p className={`mt-0.5 text-xs ${plan.highlight ? "text-amber-300" : "text-amber-600"}`}>
+                        연간 결제 시 ₩{plan.annual.toLocaleString()}/년 (2개월 무료)
+                      </p>
+                    </>
+                  )}
+                </div>
               </div>
 
-              {plan.annualPrice && (
-                <p className="text-sm text-indigo-600 mb-6">
-                  연간 결제 시 ₩{plan.annualPrice}/년 (17% 할인)
-                </p>
-              )}
-
-              <ul className="space-y-3 mb-8">
-                {plan.features.map((feature) => (
-                  <li
-                    key={feature}
-                    className="flex items-start gap-2 text-sm text-gray-700"
-                  >
-                    <span className="text-indigo-500 mt-0.5">✓</span>
-                    {feature}
+              <ul className="flex flex-1 flex-col gap-2 text-sm">
+                {plan.features.map((f) => (
+                  <li key={f} className={`flex items-start gap-2 ${plan.highlight ? "text-white/90" : "text-foreground"}`}>
+                    <span className={`mt-0.5 shrink-0 ${plan.highlight ? "text-amber-300" : "text-green-500"}`}>✓</span>
+                    <span>{f}</span>
+                  </li>
+                ))}
+                {plan.limits.map((f) => (
+                  <li key={f} className={`flex items-start gap-2 ${plan.highlight ? "text-white/40" : "text-(--muted)"}`}>
+                    <span className="mt-0.5 shrink-0">–</span>
+                    <span>{f}</span>
                   </li>
                 ))}
               </ul>
 
               <Link
-                href="/dashboard"
-                className={`block w-full text-center py-3 rounded-xl font-medium transition ${
-                  plan.highlighted
-                    ? "bg-indigo-600 text-white hover:bg-indigo-700"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                href="/auth/signup"
+                className={`mt-6 block w-full rounded-xl py-2.5 text-center text-sm font-semibold transition ${
+                  plan.highlight
+                    ? "bg-white text-foreground hover:brightness-95"
+                    : "border border-gray-200 text-foreground hover:bg-(--secondary)"
                 }`}
               >
-                {plan.cta}
+                {plan.monthly === 0 ? "무료로 시작하기" : `${plan.label} 시작하기`}
               </Link>
             </div>
           ))}
         </div>
 
-        {/* FAQ 간단 */}
-        <div className="mt-16 pt-12 border-t border-gray-100">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6 text-center">
-            자주 묻는 질문
-          </h2>
-          <div className="space-y-5 max-w-2xl mx-auto">
-            <div>
-              <p className="font-medium text-gray-800">
-                언제든 해지할 수 있나요?
-              </p>
-              <p className="text-gray-500 text-sm mt-1">
-                네, 언제든 해지하실 수 있습니다. 해지 후에도 현재 결제 기간이
-                끝날 때까지 서비스를 이용하실 수 있어요.
-              </p>
-            </div>
-            <div>
-              <p className="font-medium text-gray-800">
-                환불 정책이 어떻게 되나요?
-              </p>
-              <p className="text-gray-500 text-sm mt-1">
-                결제 후 15일 이내 환불 요청 시 잔여 일수 기준으로 일할 계산
-                환불해드립니다. 자세한 내용은{" "}
-                <Link href="/refund" className="text-indigo-600 underline">
-                  환불정책 페이지
-                </Link>
-                를 확인해주세요.
-              </p>
-            </div>
-            <div>
-              <p className="font-medium text-gray-800">
-                월간에서 연간으로 변경할 수 있나요?
-              </p>
-              <p className="text-gray-500 text-sm mt-1">
-                대시보드 → 구독 관리에서 언제든 플랜을 변경하실 수 있습니다.
-              </p>
-            </div>
+        {/* 자주 묻는 질문 */}
+        <div className="mt-8 rounded-2xl bg-white p-6 shadow-[0_4px_20px_rgba(17,24,39,0.06)]">
+          <h2 className="mb-4 text-base font-semibold text-foreground">자주 묻는 질문</h2>
+          <div className="flex flex-col gap-4 text-sm">
+            <FaqItem
+              q="언제든지 해지할 수 있나요?"
+              a="네. 대시보드에서 즉시 해지할 수 있습니다. 해지 후에도 현재 결제한 기간 만료일까지 기능을 이용할 수 있습니다."
+            />
+            <FaqItem
+              q="환불 정책은 어떻게 되나요?"
+              a="결제일로부터 7일 이내 미사용 시 전액 환불이 가능합니다. 7일 초과 시 환불이 되지 않습니다."
+            />
+            <FaqItem
+              q="결제 수단은 무엇인가요?"
+              a="토스페이먼츠를 통한 신용카드·체크카드 결제를 지원합니다."
+            />
+            <FaqItem
+              q="월간과 연간 구독의 차이는 무엇인가요?"
+              a="월간 구독은 매월 자동결제, 연간 구독은 연 1회 일괄결제로 2개월 요금이 할인됩니다."
+            />
           </div>
         </div>
 
+        {/* 환불 정책 링크 */}
+        <p className="mt-4 text-center text-xs text-(--muted)">
+          자세한 환불 규정은{" "}
+          <Link href="/refund" className="underline hover:text-foreground">환불 정책</Link>
+          을 확인해 주세요.
+        </p>
+
         {/* 사업자 정보 */}
-        <div className="mt-16 pt-8 border-t border-gray-100 text-xs text-gray-400 text-center space-y-1">
-          <p>
-            뀨스튜디오(KKU Studio) | 대표: 유원규 | 사업자등록번호: 492-13-02963
-          </p>
-          <p>서울특별시 양천구 목동중앙본로26길 25, 202호 | 010-4748-2543</p>
-          <p>
-            <Link href="/refund" className="underline hover:text-gray-600">
-              환불정책
-            </Link>
-          </p>
+        <div className="mt-6 rounded-2xl border border-black/5 bg-white p-5 text-xs text-(--muted)">
+          <p className="font-semibold text-foreground mb-2">사업자 정보</p>
+          <div className="flex flex-col gap-1">
+            <p>상호: {COMPANY_INFO.name}({COMPANY_INFO.nameEn}) · 대표자: {COMPANY_INFO.ceo}</p>
+            <p>사업자등록번호: {COMPANY_INFO.bizNo}</p>
+            <p>통신판매업 신고번호: {COMPANY_INFO.reportNo}</p>
+            <p>주소: {COMPANY_INFO.address}</p>
+            <p>전화: {COMPANY_INFO.phone}</p>
+            <a href={`mailto:${COMPANY_INFO.email}`} className="hover:text-foreground transition">{COMPANY_INFO.email}</a>
+          </div>
         </div>
+
+        <nav className="mt-6 flex flex-wrap justify-center gap-4 text-xs text-(--muted)">
+          {[
+            { href: "/terms", label: "이용약관" },
+            { href: "/refund", label: "환불 정책" },
+            { href: "/privacy", label: "개인정보처리방침" },
+          ].map(({ href, label }) => (
+            <Link key={href} href={href} className="hover:text-foreground">
+              {label}
+            </Link>
+          ))}
+        </nav>
+
       </div>
     </main>
+  );
+}
+
+function FaqItem({ q, a }: { q: string; a: string }) {
+  return (
+    <div>
+      <p className="font-medium text-foreground">{q}</p>
+      <p className="mt-1 text-(--muted)">{a}</p>
+    </div>
   );
 }

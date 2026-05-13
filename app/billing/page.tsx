@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getSupabaseServerClient } from "@/lib/supabase";
 import type { Plan } from "@/lib/types";
 import { getSiteUrl } from "@/lib/site-url";
+import { COMPANY_INFO } from "@/lib/company-info";
 import BillingClient from "./BillingClient";
 
 const SITE_URL = getSiteUrl();
@@ -87,7 +88,7 @@ export default async function BillingPage() {
               <Link href="/refund" className="underline hover:text-foreground">환불 정책 보기</Link>
             </p>
             <a
-              href={`mailto:duck01777@gmail.com?subject=${encodeURIComponent(`[환불 신청] ${user.email ?? ""}`)}&body=${encodeURIComponent(`가입 이메일: ${user.email ?? ""}\n현재 플랜: ${currentPlan}\n\n결제일:\n\n환불 사유:\n\n(자세히 작성해주세요)`)}`}
+              href={`mailto:${COMPANY_INFO.email}?subject=${encodeURIComponent(`[환불 신청] ${user.email ?? ""}`)}&body=${encodeURIComponent(`가입 이메일: ${user.email ?? ""}\n현재 플랜: ${currentPlan}\n\n결제일:\n\n환불 사유:\n\n(자세히 작성해주세요)`)}`}
               className="inline-block rounded-xl border border-gray-200 px-4 py-2 text-sm font-medium text-foreground hover:bg-(--secondary) transition-colors"
             >
               이메일로 환불 신청하기

@@ -36,6 +36,9 @@ export default function LandingFooter() {
               <Link href="/content-policy" className="text-sm text-(--muted) transition hover:text-foreground">
                 콘텐츠 정책
               </Link>
+              <Link href="/pricing" className="text-sm text-(--muted) transition hover:text-foreground">
+                요금제
+              </Link>
               <Link href="/refund" className="text-sm text-(--muted) transition hover:text-foreground">
                 환불 정책
               </Link>
