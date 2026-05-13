@@ -9,15 +9,14 @@ import { PLAN_FEATURE_ROWS } from "@/lib/plan-features";
 declare global {
   interface Window {
     TossPayments: (clientKey: string) => {
-      billing: (opts: { customerKey: string }) => {
-        requestBillingAuth: (opts: {
-          method: string;
-          successUrl: string;
-          failUrl: string;
-          customerEmail?: string;
-          customerName?: string;
-        }) => Promise<void>;
-      };
+      requestBillingAuth: (opts: {
+        method: string;
+        customerKey: string;
+        successUrl: string;
+        failUrl: string;
+        customerEmail?: string;
+        customerName?: string;
+      }) => Promise<void>;
     };
   }
 }
@@ -86,9 +85,9 @@ export default function BillingClient({
     setLoading(plan);
     try {
       const tossPayments = window.TossPayments(clientKey);
-      const billing = tossPayments.billing({ customerKey: userId });
-      await billing.requestBillingAuth({
-        method: "카드",
+      await tossPayments.requestBillingAuth({
+        method: "CARD",
+        customerKey: userId,
         successUrl: `${siteUrl}/billing/success?plan=${plan}&period=${period}`,
         failUrl: `${siteUrl}/billing/fail`,
         customerEmail: userEmail,
@@ -96,6 +95,7 @@ export default function BillingClient({
       });
     } catch (err) {
       console.error(err);
+      alert("결제창 실행에 실패했습니다. 잠시 후 다시 시도해주세요.");
       setLoading(null);
     }
   }
