@@ -58,30 +58,16 @@ export default function RefundPage() {
           <Section title="제3조 (환불 기준)">
             <div className="flex flex-col gap-3">
               <div className="rounded-xl bg-(--secondary) p-4">
-                <p className="font-medium">결제 후 24시간 이내 — 전액 환불</p>
+                <p className="font-medium">결제 후 7일 이내 — 전액 환불</p>
                 <p className="mt-1 text-xs text-(--muted)">
-                  결제 후 24시간 이내이고 서비스 이용 기록이 없는 경우 전액 환불이 가능합니다.
-                </p>
-              </div>
-              <div className="rounded-xl bg-(--secondary) p-4">
-                <p className="font-medium">월간 구독 — 24시간 초과 ~ 15일 이내: 일할 계산 환불</p>
-                <p className="mt-1 text-xs text-(--muted)">
-                  잔여 이용 일수에 대해 일할 계산으로 환불합니다.<br />
-                  <span className="font-medium text-foreground">환불액 = 월 이용료 ÷ 30 × 잔여 일수</span>
-                </p>
-              </div>
-              <div className="rounded-xl bg-(--secondary) p-4">
-                <p className="font-medium">연간 구독 — 24시간 초과 ~ 15일 이내: 월 단위 환불</p>
-                <p className="mt-1 text-xs text-(--muted)">
-                  잔여 이용 개월 수에 대해 월 단위로 환불합니다.<br />
-                  <span className="font-medium text-foreground">환불액 = 연간 요금 ÷ 12 × 잔여 개월 수</span>
+                  유료 플랜 결제 후 7일 이내에 서비스를 실질적으로 이용하지 않은 경우 전액 환불이 가능합니다.
                 </p>
               </div>
               <div className="rounded-xl bg-red-50 p-4">
                 <p className="font-medium text-red-700">환불 불가 사유</p>
                 <ul className="mt-1.5 flex list-disc flex-col gap-1 pl-5 text-xs text-red-600">
-                  <li>결제 후 15일이 경과한 경우</li>
-                  <li>해당 구독 기간의 50%를 초과하여 이용한 경우</li>
+                  <li>결제 후 7일이 경과한 경우</li>
+                  <li>서비스를 실질적으로 이용한 경우 (페이지 편집, AI 기능 사용 등)</li>
                   <li>이용약관 또는 콘텐츠 정책 위반으로 계정이 정지된 경우</li>
                 </ul>
               </div>

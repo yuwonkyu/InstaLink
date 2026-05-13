@@ -84,7 +84,7 @@ export default async function BillingPage() {
           <div className="mt-6 rounded-2xl border border-gray-100 bg-white p-5">
             <h2 className="mb-1 text-sm font-semibold text-foreground">환불 신청</h2>
             <p className="mb-3 text-xs text-(--muted)">
-              결제 후 24시간 이내 이용 기록이 없으면 전액 환불 가능합니다.{" "}
+              결제일로부터 7일 이내 미사용 시 전액 환불 가능합니다.{" "}
               <Link href="/refund" className="underline hover:text-foreground">환불 정책 보기</Link>
             </p>
             <a
