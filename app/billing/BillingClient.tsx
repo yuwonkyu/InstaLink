@@ -9,14 +9,15 @@ import { PLAN_FEATURE_ROWS } from "@/lib/plan-features";
 declare global {
   interface Window {
     TossPayments: (clientKey: string) => {
-      requestBillingAuth: (opts: {
-        method: string;
-        customerKey: string;
-        successUrl: string;
-        failUrl: string;
-        customerEmail?: string;
-        customerName?: string;
-      }) => Promise<void>;
+      payment: (opts: { customerKey: string }) => {
+        requestBillingAuth: (opts: {
+          method: string;
+          successUrl: string;
+          failUrl: string;
+          customerEmail?: string;
+          customerName?: string;
+        }) => Promise<void>;
+      };
     };
   }
 }
@@ -85,9 +86,9 @@ export default function BillingClient({
     setLoading(plan);
     try {
       const tossPayments = window.TossPayments(clientKey);
-      await tossPayments.requestBillingAuth({
+      const payment = tossPayments.payment({ customerKey: userId });
+      await payment.requestBillingAuth({
         method: "CARD",
-        customerKey: userId,
         successUrl: `${siteUrl}/billing/success?plan=${plan}&period=${period}`,
         failUrl: `${siteUrl}/billing/fail`,
         customerEmail: userEmail,
