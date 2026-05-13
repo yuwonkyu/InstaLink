@@ -2,6 +2,8 @@
 // 경로: app/pricing/page.tsx
 // 심사 완료 후 실제 결제 연동으로 업데이트 예정
 
+import Link from "next/link";
+
 export const metadata = {
   title: "요금제 | InstaLink",
   description: "InstaLink 월간·연간 구독 요금제를 확인해보세요.",
@@ -104,7 +106,7 @@ export default function PricingPage() {
                 ))}
               </ul>
 
-              <a
+              <Link
                 href="/dashboard"
                 className={`block w-full text-center py-3 rounded-xl font-medium transition ${
                   plan.highlighted
@@ -113,7 +115,7 @@ export default function PricingPage() {
                 }`}
               >
                 {plan.cta}
-              </a>
+              </Link>
             </div>
           ))}
         </div>
@@ -140,9 +142,9 @@ export default function PricingPage() {
               <p className="text-gray-500 text-sm mt-1">
                 결제 후 15일 이내 환불 요청 시 잔여 일수 기준으로 일할 계산
                 환불해드립니다. 자세한 내용은{" "}
-                <a href="/refund" className="text-indigo-600 underline">
+                <Link href="/refund" className="text-indigo-600 underline">
                   환불정책 페이지
-                </a>
+                </Link>
                 를 확인해주세요.
               </p>
             </div>
@@ -164,9 +166,9 @@ export default function PricingPage() {
           </p>
           <p>서울특별시 양천구 목동중앙본로26길 25, 202호 | 010-4748-2543</p>
           <p>
-            <a href="/refund" className="underline hover:text-gray-600">
+            <Link href="/refund" className="underline hover:text-gray-600">
               환불정책
-            </a>
+            </Link>
           </p>
         </div>
       </div>
