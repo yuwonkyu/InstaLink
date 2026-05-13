@@ -279,7 +279,7 @@ export default async function DashboardPage({
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/80 backdrop-blur-[2px] rounded-xl">
                   <span className="text-lg mb-1">🔒</span>
                   <p className="text-xs font-semibold text-foreground">주간 방문자 분석</p>
-                  <p className="mt-0.5 text-[11px] text-(--muted)">베이직 플랜에서 확인하세요</p>
+                  <p className="mt-0.5 text-[11px] text-(--muted)">Pro 플랜에서 확인하세요</p>
                   <Link href="/billing"
                     className="mt-2 rounded-lg bg-amber-400 px-3 py-1 text-xs font-semibold text-white hover:bg-amber-500 transition-colors">
                     업그레이드
