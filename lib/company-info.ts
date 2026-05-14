@@ -7,7 +7,7 @@ export const COMPANY_INFO = {
   address:    "서울특별시 양천구 목동중앙본로26길 25(목동, DH프라임)",
   phone:      "010-4748-2543",
   email:      "duck01777@gmail.com",
-  reportNo:   "처리중", // 통신판매업 신고 후 업데이트 예정
+  reportNo:   "제 2026-서울양천-0604호",
   // 후원 계좌
   donationKakao:    "https://qr.kakaopay.com/FQKB2yNrE", // 예: "https://qr.kakaopay.com/XXXX"
   donationTossBank: "토스뱅크 100-253-021786 유원규",
