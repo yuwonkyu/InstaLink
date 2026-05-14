@@ -238,33 +238,42 @@ export default async function AdminPage({
 
         {/* ── 필터 바 ── */}
         <div className="rounded-2xl bg-white p-4 shadow-[0_2px_12px_rgba(17,24,39,0.06)] flex flex-col gap-3">
-          <form className="flex flex-col gap-3">
-            {/* 검색 */}
-            <div className="flex gap-2">
-              <input
-                name="q"
-                defaultValue={q}
-                placeholder="이름 · 상호명 · 슬러그 검색"
-                className="flex-1 rounded-xl border border-gray-200 bg-(--secondary) px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-colors"
-              />
-              <button
-                type="submit"
-                className="rounded-xl bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-80 transition-opacity"
-              >
-                검색
-              </button>
-            </div>
+          {/* 검색: form 유지 (텍스트 입력 필요) */}
+          <form className="flex gap-2">
+            <input
+              name="q"
+              defaultValue={q}
+              placeholder="이름 · 상호명 · 슬러그 검색"
+              className="flex-1 rounded-xl border border-gray-200 bg-(--secondary) px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-colors"
+            />
+            {/* 검색 시 나머지 필터 유지 */}
+            {planFilter   && planFilter   !== "all" && <input type="hidden" name="plan"   value={planFilter} />}
+            {statusFilter && statusFilter !== "all" && <input type="hidden" name="status" value={statusFilter} />}
+            {sort !== "created_desc" && <input type="hidden" name="sort" value={sort} />}
+            <button
+              type="submit"
+              className="rounded-xl bg-foreground px-4 py-2 text-sm font-medium text-white hover:opacity-80 transition-opacity"
+            >
+              검색
+            </button>
+          </form>
 
-            {/* 플랜 필터 */}
-            <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-xs font-medium text-(--muted) w-8">플랜</span>
-              {[
-                { value: "all",   label: "전체" },
-                { value: "free",  label: "Free" },
-                { value: "basic", label: "Basic" },
-                { value: "pro",   label: "Pro" },
-              ].map(({ value, label }) => (
-                <button key={value} name="plan" value={value} type="submit"
+          {/* 플랜 필터 — a 링크 (hidden input 충돌 방지) */}
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="text-xs font-medium text-(--muted) w-8">플랜</span>
+            {[
+              { value: "all",   label: "전체" },
+              { value: "free",  label: "Free" },
+              { value: "basic", label: "Basic" },
+              { value: "pro",   label: "Pro" },
+            ].map(({ value, label }) => {
+              const p = new URLSearchParams();
+              if (q) p.set("q", q);
+              if (value !== "all") p.set("plan", value);
+              if (statusFilter && statusFilter !== "all") p.set("status", statusFilter);
+              if (sort !== "created_desc") p.set("sort", sort);
+              return (
+                <a key={value} href={`?${p.toString()}`}
                   className={`rounded-lg border px-3 py-1 text-xs font-medium transition-colors ${
                     (planFilter ?? "all") === value
                       ? "border-foreground bg-foreground text-white"
@@ -275,19 +284,26 @@ export default async function AdminPage({
                   {value !== "all" && (
                     <span className="ml-1 opacity-60">({planCounts[value] ?? 0})</span>
                   )}
-                </button>
-              ))}
-            </div>
+                </a>
+              );
+            })}
+          </div>
 
-            {/* 상태 필터 */}
-            <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-xs font-medium text-(--muted) w-8">상태</span>
-              {[
-                { value: "all",      label: "전체" },
-                { value: "active",   label: "공개 중" },
-                { value: "inactive", label: "비공개" },
-              ].map(({ value, label }) => (
-                <button key={value} name="status" value={value} type="submit"
+          {/* 상태 필터 — a 링크 */}
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="text-xs font-medium text-(--muted) w-8">상태</span>
+            {[
+              { value: "all",      label: "전체" },
+              { value: "active",   label: "공개 중" },
+              { value: "inactive", label: "비공개" },
+            ].map(({ value, label }) => {
+              const p = new URLSearchParams();
+              if (q) p.set("q", q);
+              if (planFilter && planFilter !== "all") p.set("plan", planFilter);
+              if (value !== "all") p.set("status", value);
+              if (sort !== "created_desc") p.set("sort", sort);
+              return (
+                <a key={value} href={`?${p.toString()}`}
                   className={`rounded-lg border px-3 py-1 text-xs font-medium transition-colors ${
                     (statusFilter ?? "all") === value
                       ? "border-foreground bg-foreground text-white"
@@ -295,21 +311,28 @@ export default async function AdminPage({
                   }`}
                 >
                   {label}
-                </button>
-              ))}
-            </div>
+                </a>
+              );
+            })}
+          </div>
 
-            {/* 정렬 */}
-            <div className="flex flex-wrap items-center gap-1.5">
-              <span className="text-xs font-medium text-(--muted) w-8">정렬</span>
-              {[
-                { value: "created_desc",  label: "최신 가입순" },
-                { value: "created_asc",   label: "오래된 가입순" },
-                { value: "views_desc",    label: "조회수 높은순" },
-                { value: "views_asc",     label: "조회수 낮은순" },
-                { value: "expires_soon",  label: `만료 임박 (${expiresSoonCount}명)` },
-              ].map(({ value, label }) => (
-                <button key={value} name="sort" value={value} type="submit"
+          {/* 정렬 — a 링크 */}
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="text-xs font-medium text-(--muted) w-8">정렬</span>
+            {[
+              { value: "created_desc",  label: "최신 가입순" },
+              { value: "created_asc",   label: "오래된 가입순" },
+              { value: "views_desc",    label: "조회수 높은순" },
+              { value: "views_asc",     label: "조회수 낮은순" },
+              { value: "expires_soon",  label: `만료 임박 (${expiresSoonCount}명)` },
+            ].map(({ value, label }) => {
+              const p = new URLSearchParams();
+              if (q) p.set("q", q);
+              if (planFilter && planFilter !== "all") p.set("plan", planFilter);
+              if (statusFilter && statusFilter !== "all") p.set("status", statusFilter);
+              if (value !== "created_desc") p.set("sort", value);
+              return (
+                <a key={value} href={`?${p.toString()}`}
                   className={`rounded-lg border px-3 py-1 text-xs font-medium transition-colors ${
                     sort === value
                       ? "border-blue-500 bg-blue-50 text-blue-700"
@@ -317,16 +340,10 @@ export default async function AdminPage({
                   }`}
                 >
                   {label}
-                </button>
-              ))}
-            </div>
-
-            {/* 숨김 필드: 현재 필터 유지 */}
-            {q          && <input type="hidden" name="q"      value={q} />}
-            {planFilter && <input type="hidden" name="plan"   value={planFilter} />}
-            {statusFilter && <input type="hidden" name="status" value={statusFilter} />}
-            {sort       && <input type="hidden" name="sort"   value={sort} />}
-          </form>
+                </a>
+              );
+            })}
+          </div>
 
           {/* 결과 요약 */}
           <p className="text-xs text-(--muted)">
