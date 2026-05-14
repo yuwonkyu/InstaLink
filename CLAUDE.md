@@ -8,33 +8,53 @@
 소상공인(카페·미용실·PT·필라테스 등)을 위한 인스타그램 프로필 링크 랜딩페이지 SaaS.
 링크트리 대신 서비스 소개 + 후기 + 카카오 문의까지 한 번에 담는 1페이지 사이트를 제공한다.
 
-## 핵심 목표 (지금 작업 중인 것)
-하드코딩된 `/sample`, `/sample2` 페이지 구조를
-→ Supabase DB 기반 `/[slug]` 동적 라우팅으로 전환한다.
-사장님이 대시보드에서 직접 편집 → 저장 즉시 본인 페이지에 반영되는 셀프서비스 SaaS.
+## 현재 상태 (2026-05-14 기준)
+Phase A~C 로드맵 완료. 다음 단계는 Phase D (첫 20명 유료 고객 확보) — 마케팅 중심.
+
+**완료된 핵심 기능**
+- `/[slug]` 동적 공개 페이지 + Supabase 연동
+- Supabase Auth 회원가입·로그인·온보딩 (3필드 단순화)
+- 대시보드 편집 (탭 4개: 내 페이지·서비스·메뉴·사진·후기·설정)
+- 편집 미리보기 패널 (데스크탑 iframe / 모바일 버튼)
+- 토스페이먼츠 구독 결제 (Free/Basic/Pro) + 자동 재시도 cron
+- 방문자 통계 + 7일 링크 클릭 차트
+- 바이럴 배지 (공개 페이지 푸터, Pro만 숨기기 가능)
+- Free 플랜 갤러리 3장 허용
+- CTA 위계 개선 (메인 full-width + 보조 소형 버튼)
+- 에러 바운더리 (`app/error.tsx`, `app/dashboard/error.tsx`, `app/[slug]/error.tsx`)
+- 로그인 없이 데모 체험 (`app/demo/page.tsx`)
+- 관리자 대시보드, 레퍼럴, QR코드, 주간 리포트 이메일, AI 소개글 추천
+- SEO: 업종별 카테고리 7개, JSON-LD, sitemap, GA4
 
 ## 기술 스택
 - **Framework**: Next.js App Router (TypeScript)
 - **DB + Auth**: Supabase
 - **이미지**: Cloudinary (현재도 사용 중 — URL 형식 유지)
-- **결제**: 토스페이먼츠 (빌링키 방식, 3~4주차 작업)
-- **배포**: Vercel
+- **결제**: 토스페이먼츠 (빌링키 방식, vercel.json cron으로 자동 재시도)
+- **배포**: Vercel (instalink.kkustudio.com)
 
 ## 디렉토리 규칙
 ```
 app/
   [slug]/          ← 고객 공개 페이지 (동적 라우팅)
-    page.tsx
-  dashboard/       ← 로그인한 사장님 편집 페이지
-    page.tsx
+  dashboard/       ← 로그인한 사장님 홈 (통계)
+    edit/          ← 편집 폼 (4탭) + 미리보기 패널
+    onboarding/    ← 가입 후 최초 설정 (3필드)
+    stats/         ← 상세 통계
+  demo/            ← 로그인 없이 체험 페이지
+  admin/           ← 관리자 대시보드
+  billing/         ← 구독 관리
   api/
-    profile/       ← Supabase CRUD API
+    profile/       ← Supabase CRUD
+    billing/       ← 토스페이먼츠 + cron
+    track/         ← 링크 클릭 추적
 components/
-  ProfilePage.tsx  ← 기존 sample 페이지 UI를 컴포넌트화
-  Editor.tsx       ← 대시보드 편집 UI
+  ProfilePage.tsx  ← 공개 페이지 UI
+  edit/tabs/       ← BasicTab, DesignTab 등 편집 탭
 lib/
   supabase.ts      ← Supabase 클라이언트
   types.ts         ← Profile 타입 정의
+  plan-limits.ts   ← 플랜별 수량 제한 (Free·Basic·Pro)
 ```
 
 ## Supabase 테이블 구조 (profiles)
@@ -81,20 +101,21 @@ TOSS_SECRET_KEY=
 - `pages/` 디렉토리 방식으로 롤백
 - 불필요한 패키지 추가 (현재 스택으로 해결 가능한 것은 추가 패키지 사용 금지)
 
-## 작업 우선순위 원칙 (docs/PRODUCT_ANALYSIS.md 근거)
+## 작업 우선순위 원칙
 
-작업 요청이 올 때 아래 순서로 우선순위를 판단한다:
+Phase A~C 완료. 현재는 Phase D (첫 유료 고객 확보) 단계.
 
-1. **Phase A 먼저** — 가입→활성 전환율에 영향 주는 것 (바이럴 배지, 무료 갤러리 3장, CTA 위계, 온보딩 단순화)
-2. **Phase B** — Pro 결제 유지에 영향 주는 것 (일별 방문자 차트, 편집 미리보기)
-3. **Phase C** — 안정성 (에러 바운더리, 입력 검증, 결제 재시도)
-4. **기능 추가 요청**은 Phase A~C 완료 후 검토
+작업 요청이 올 때:
+1. **수익 직결** — 유료 전환·이탈 방지에 영향 주는 것 최우선
+2. **안정성** — 에러 대응, 데이터 정합성
+3. **기능 추가** — 위 두 가지 완료 후 검토
 
-Phase A가 완전히 끝나기 전에 Phase B 작업 시작 금지.  
-기능 추가보다 **기존 기능의 전환율 개선**이 항상 우선이다.
-
-## 현재 알려진 버그 / 미완성
-- `app/dashboard/page.tsx:269` — 일별 방문자 차트 플레이스홀더 (Phase B-1)
-- `lib/plan-limits.ts` — Free 플랜 갤러리 0장 → 3장으로 수정 필요 (Phase A-1)
-- 에러 바운더리 (`error.tsx`) 대부분 라우트에 없음 (Phase C-1)
-- 공개 페이지 푸터에 바이럴 배지 없음 (Phase A-2)
+## Supabase GRANT 대응 필요 (2026-10-30 기한)
+Supabase가 2026-10-30부터 public schema 테이블에 명시적 GRANT를 요구함.
+현재 모든 SQL 파일에 GRANT 구문 없음 — 기한 전 추가 필요.
+대상 테이블: `profiles`, `subscriptions`, `link_clicks`, `referral_events`, `feedback_ratings`, `deleted_accounts`
+```sql
+grant select on public.{table} to anon;
+grant select, insert, update, delete on public.{table} to authenticated;
+grant select, insert, update, delete on public.{table} to service_role;
+```
