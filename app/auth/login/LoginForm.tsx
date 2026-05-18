@@ -1,9 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { useFormStatus } from "react-dom";
 import { signIn } from "@/app/auth/actions";
 import { createBrowserClient } from "@supabase/ssr";
+import { getSiteUrl } from "@/lib/site-url";
+import PasswordToggle from "@/components/auth/PasswordToggle";
 
 const inputCls =
   "w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-foreground placeholder:text-gray-400 outline-none focus:border-gray-400 transition-colors";
@@ -35,11 +38,13 @@ function handleSocialLogin(provider: "google" | "kakao") {
   );
   supabase.auth.signInWithOAuth({
     provider,
-    options: { redirectTo: `${window.location.origin}/auth/callback` },
+    options: { redirectTo: `${getSiteUrl()}/auth/callback` },
   });
 }
 
 export default function LoginForm() {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <div className="flex flex-col gap-4">
       {/* 소셜 로그인 */}
@@ -94,14 +99,20 @@ export default function LoginForm() {
         <label htmlFor="password" className="text-sm font-medium text-foreground">
           비밀번호
         </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          placeholder="••••••••"
-          required
-          className={inputCls}
-        />
+        <div className="relative">
+          <input
+            id="password"
+            name="password"
+            type={showPassword ? "text" : "password"}
+            placeholder="••••••••"
+            required
+            className={`${inputCls} pr-11`}
+          />
+          <PasswordToggle
+            visible={showPassword}
+            onToggle={() => setShowPassword((v) => !v)}
+          />
+        </div>
       </div>
       <SubmitButton />
       <div className="text-center">

@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { signUp } from "@/app/auth/actions";
 import { createBrowserClient } from "@supabase/ssr";
+import { getSiteUrl } from "@/lib/site-url";
+import PasswordToggle from "@/components/auth/PasswordToggle";
 
 function SubmitButton({ disabled }: { disabled: boolean }) {
   const { pending } = useFormStatus();
@@ -38,6 +40,7 @@ export default function SignUpForm({ refCode }: Props) {
   const [emailMsg, setEmailMsg]       = useState("");
   const [agreedTerms,   setAgreedTerms]   = useState(false);
   const [agreedPrivacy, setAgreedPrivacy] = useState(false);
+  const [showPassword,  setShowPassword]  = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const agreedAll = agreedTerms && agreedPrivacy;
@@ -50,7 +53,7 @@ export default function SignUpForm({ refCode }: Props) {
     await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${getSiteUrl()}/auth/callback`,
       },
     });
   };
@@ -213,15 +216,21 @@ export default function SignUpForm({ refCode }: Props) {
         <label htmlFor="password" className="text-sm font-medium text-foreground">
           비밀번호
         </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          placeholder="8자 이상"
-          required
-          minLength={8}
-          className={`${inputBase} border-gray-200`}
-        />
+        <div className="relative">
+          <input
+            id="password"
+            name="password"
+            type={showPassword ? "text" : "password"}
+            placeholder="8자 이상"
+            required
+            minLength={8}
+            className={`${inputBase} border-gray-200 pr-11`}
+          />
+          <PasswordToggle
+            visible={showPassword}
+            onToggle={() => setShowPassword((v) => !v)}
+          />
+        </div>
       </div>
 
       {/* 약관 동의 */}
