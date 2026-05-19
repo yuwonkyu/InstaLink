@@ -38,6 +38,80 @@ function CellValue({ v }: { v: string | boolean }) {
   return <span className="text-xs font-medium text-foreground">{v}</span>;
 }
 
+type PlanCardProps = {
+  plan: Plan;
+  period: BillingPeriod;
+  currentPlan: Plan;
+  loading: Plan | null;
+  onSelect: (plan: Plan) => void;
+  compact?: boolean;
+};
+
+function PlanCard({ plan, period, currentPlan, loading, onSelect, compact = false }: PlanCardProps) {
+  const meta = PLAN_META[plan];
+  const isCurrent = currentPlan === plan;
+  const isLoading = loading === plan;
+  const displayPrice = period === "annual" ? meta.annualPrice : meta.price;
+
+  return (
+    <div
+      className={`${compact ? "relative flex flex-col transition-all" : ""} rounded-2xl border-2 bg-white p-5 shadow-[0_2px_12px_rgba(17,24,39,0.06)] ${
+        isCurrent ? "border-foreground" : plan === "pro" ? "border-amber-300" : "border-gray-100"
+      }`}
+    >
+      {compact && plan === "basic" && !isCurrent && (
+        <span className="absolute -top-3 left-4 rounded-full bg-foreground px-3 py-0.5 text-xs font-semibold text-white">
+          추천
+        </span>
+      )}
+      {compact && isCurrent && (
+        <span className="absolute -top-3 right-4 rounded-full bg-green-500 px-3 py-0.5 text-xs font-semibold text-white">
+          현재 플랜
+        </span>
+      )}
+
+      <p className="text-sm font-bold text-foreground">{meta.label}</p>
+      <p className="mt-1 text-2xl font-bold text-foreground">
+        {displayPrice === 0 ? "무료" : `${displayPrice.toLocaleString()}원`}
+        {displayPrice > 0 && (
+          <span className="text-sm font-normal text-(--muted)">
+            /{period === "annual" ? "년" : "월"}
+          </span>
+        )}
+      </p>
+      {period === "annual" && plan !== "free" && (
+        <p className="mt-0.5 text-xs text-amber-600 font-medium">
+          월 {Math.round(displayPrice / 12).toLocaleString()}원 · 2개월 무료
+        </p>
+      )}
+
+      <ul className={`mt-4 ${compact ? "flex-1 " : ""}flex flex-col gap-1.5`}>
+        {meta.features.map((f) => (
+          <li key={f} className={`flex items-start gap-1.5 ${compact ? "text-xs" : "text-sm"} text-(--muted)`}>
+            <span className="mt-0.5 text-green-500">✓</span>
+            {f}
+          </li>
+        ))}
+      </ul>
+
+      <button
+        type="button"
+        disabled={isCurrent || isLoading}
+        onClick={() => onSelect(plan)}
+        className={`mt-5 w-full rounded-xl ${compact ? "py-2.5" : "py-3"} text-sm font-semibold transition-opacity disabled:cursor-not-allowed disabled:opacity-40 ${
+          isCurrent
+            ? "border border-gray-200 text-(--muted) cursor-not-allowed"
+            : plan === "free"
+              ? "border border-gray-200 text-foreground hover:bg-(--secondary)"
+              : "bg-foreground text-white hover:opacity-80"
+        }`}
+      >
+        {isLoading ? "처리 중…" : isCurrent ? "현재 플랜" : plan === "free" ? "Free로 다운그레이드" : `${meta.label} 시작하기`}
+      </button>
+    </div>
+  );
+}
+
 export default function BillingClient({
   currentPlan,
   userId,
@@ -177,158 +251,33 @@ export default function BillingClient({
         </div>
 
         {/* 선택된 플랜 카드 */}
-        {plans.map((plan) => {
-          if (plan !== mobilePlan) return null;
-          const meta = PLAN_META[plan];
-          const isCurrent = currentPlan === plan;
-          const isLoading = loading === plan;
-          const displayPrice = period === "annual" ? meta.annualPrice : meta.price;
-
-          return (
-            <div
+        {plans.map((plan) =>
+          plan !== mobilePlan ? null : (
+            <PlanCard
               key={plan}
-              className={`rounded-2xl border-2 bg-white p-5 shadow-[0_2px_12px_rgba(17,24,39,0.06)] ${
-                isCurrent
-                  ? "border-foreground"
-                  : plan === "pro"
-                    ? "border-amber-300"
-                    : "border-gray-100"
-              }`}
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-sm font-bold text-foreground">{meta.label}</p>
-                  <p className="mt-1 text-2xl font-bold text-foreground">
-                    {displayPrice === 0
-                      ? "무료"
-                      : `${displayPrice.toLocaleString()}원`}
-                    {displayPrice > 0 && (
-                      <span className="text-sm font-normal text-(--muted)">
-                        /{period === "annual" ? "년" : "월"}
-                      </span>
-                    )}
-                  </p>
-                  {period === "annual" && plan !== "free" && (
-                    <p className="mt-0.5 text-xs text-amber-600 font-medium">
-                      월 {Math.round(displayPrice / 12).toLocaleString()}원 · 2개월 무료
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <ul className="mt-4 flex flex-col gap-1.5">
-                {meta.features.map((f) => (
-                  <li key={f} className="flex items-start gap-1.5 text-sm text-(--muted)">
-                    <span className="mt-0.5 text-green-500">✓</span>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-
-              <button
-                type="button"
-                disabled={isCurrent || isLoading}
-                onClick={() => handleSelectPlan(plan)}
-                className={`mt-5 w-full rounded-xl py-3 text-sm font-semibold transition-opacity disabled:cursor-not-allowed disabled:opacity-40 ${
-                  isCurrent
-                    ? "border border-gray-200 text-(--muted) cursor-not-allowed"
-                    : plan === "free"
-                      ? "border border-gray-200 text-foreground hover:bg-(--secondary)"
-                      : "bg-foreground text-white hover:opacity-80"
-                }`}
-              >
-                {isLoading
-                  ? "처리 중…"
-                  : isCurrent
-                    ? "현재 플랜"
-                    : plan === "free"
-                      ? "Free로 다운그레이드"
-                      : `${meta.label} 시작하기`}
-              </button>
-            </div>
-          );
-        })}
+              plan={plan}
+              period={period}
+              currentPlan={currentPlan}
+              loading={loading}
+              onSelect={handleSelectPlan}
+            />
+          )
+        )}
       </div>
 
       {/* ── 데스크톱: 3열 카드 ── */}
       <div className="hidden sm:grid grid-cols-3 gap-4">
-        {plans.map((plan) => {
-          const meta = PLAN_META[plan];
-          const isCurrent = currentPlan === plan;
-          const isLoading = loading === plan;
-          const displayPrice = period === "annual" ? meta.annualPrice : meta.price;
-
-          return (
-            <div
-              key={plan}
-              className={`relative flex flex-col rounded-2xl border-2 bg-white p-5 shadow-[0_2px_12px_rgba(17,24,39,0.06)] transition-all ${
-                isCurrent
-                  ? "border-foreground"
-                  : plan === "pro"
-                    ? "border-amber-300"
-                    : "border-gray-100"
-              }`}
-            >
-              {plan === "basic" && !isCurrent && (
-                <span className="absolute -top-3 left-4 rounded-full bg-foreground px-3 py-0.5 text-xs font-semibold text-white">
-                  추천
-                </span>
-              )}
-              {isCurrent && (
-                <span className="absolute -top-3 right-4 rounded-full bg-green-500 px-3 py-0.5 text-xs font-semibold text-white">
-                  현재 플랜
-                </span>
-              )}
-
-              <p className="text-sm font-bold text-foreground">{meta.label}</p>
-              <p className="mt-1 text-2xl font-bold text-foreground">
-                {displayPrice === 0
-                  ? "무료"
-                  : `${displayPrice.toLocaleString()}원`}
-                {displayPrice > 0 && (
-                  <span className="text-sm font-normal text-(--muted)">
-                    /{period === "annual" ? "년" : "월"}
-                  </span>
-                )}
-              </p>
-              {period === "annual" && plan !== "free" && (
-                <p className="mt-0.5 text-xs text-amber-600 font-medium">
-                  월 {Math.round(displayPrice / 12).toLocaleString()}원 · 2개월 무료
-                </p>
-              )}
-
-              <ul className="mt-4 flex flex-1 flex-col gap-1.5">
-                {meta.features.map((f) => (
-                  <li key={f} className="flex items-start gap-1.5 text-xs text-(--muted)">
-                    <span className="mt-0.5 text-green-500">✓</span>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-
-              <button
-                type="button"
-                disabled={isCurrent || isLoading}
-                onClick={() => handleSelectPlan(plan)}
-                className={`mt-5 w-full rounded-xl py-2.5 text-sm font-semibold transition-opacity disabled:cursor-not-allowed disabled:opacity-40 ${
-                  isCurrent
-                    ? "border border-gray-200 text-(--muted) cursor-not-allowed"
-                    : plan === "free"
-                      ? "border border-gray-200 text-foreground hover:bg-(--secondary)"
-                      : "bg-foreground text-white hover:opacity-80"
-                }`}
-              >
-                {isLoading
-                  ? "처리 중…"
-                  : isCurrent
-                    ? "현재 플랜"
-                    : plan === "free"
-                      ? "Free로 다운그레이드"
-                      : `${meta.label} 시작하기`}
-              </button>
-            </div>
-          );
-        })}
+        {plans.map((plan) => (
+          <PlanCard
+            key={plan}
+            plan={plan}
+            period={period}
+            currentPlan={currentPlan}
+            loading={loading}
+            onSelect={handleSelectPlan}
+            compact
+          />
+        ))}
       </div>
 
       {/* ── 기능 비교 테이블 (공통) ── */}
