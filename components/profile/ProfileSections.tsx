@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { Profile } from "@/lib/types";
 import { formatReviewDate } from "@/lib/profile-utils";
+import { getCloudinaryUrl } from "@/lib/cloudinary";
 
 type Limits = { gallery: number; services: number; reviews: number };
 
@@ -52,10 +53,11 @@ export default function ProfileSections({
                       className="relative aspect-square overflow-hidden rounded-xl bg-black/[0.035] focus:outline-none focus-visible:ring-2 focus-visible:ring-black/30"
                     >
                       <Image
-                        src={img.url}
+                        src={getCloudinaryUrl(img.url, 600)}
                         alt={img.caption ?? `갤러리 ${idx + 1}`}
                         fill
                         sizes={imgSizes}
+                        quality={75}
                         className="object-cover transition-transform hover:scale-105"
                         loading="lazy"
                       />

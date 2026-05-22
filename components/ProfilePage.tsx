@@ -13,6 +13,7 @@ import { IconClock, IconPin, IconParking, IconInstagram } from "./profile/icons"
 import ProfileActions from "./profile/ProfileActions";
 import ProfileSections from "./profile/ProfileSections";
 import ProfileLightbox from "./profile/ProfileLightbox";
+import { getCloudinaryUrl } from "@/lib/cloudinary";
 
 type ProfilePageProps = { profile: Profile };
 
@@ -104,11 +105,11 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
         <div className="flex items-center gap-4">
           <div className="relative h-18 w-18 shrink-0 overflow-hidden rounded-full ring-2 ring-black/8 sm:h-20 sm:w-20">
             <Image
-              src={profile.image_url || "/user_img.svg"}
+              src={getCloudinaryUrl(profile.image_url || "/user_img.svg", 200)}
               alt={profile.name}
               fill
               sizes="(max-width: 640px) 72px, 80px"
-              quality={90}
+              quality={75}
               className="object-cover"
               priority
             />

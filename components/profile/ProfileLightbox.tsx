@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import type { GalleryImage } from "@/lib/types";
+import { getCloudinaryUrl } from "@/lib/cloudinary";
 
 type Props = {
   gallery: GalleryImage[];
@@ -44,10 +45,11 @@ export default function ProfileLightbox({
           style={{ height: "clamp(240px, 60svh, 480px)" }}
         >
           <Image
-            src={gallery[lightboxIdx].url}
+            src={getCloudinaryUrl(gallery[lightboxIdx].url, 960)}
             alt={gallery[lightboxIdx].caption ?? ""}
             fill
             sizes="(max-width: 640px) 90vw, 480px"
+            quality={80}
             className="object-contain"
             priority
           />
