@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { saveOnboarding } from "./actions";
 import { getSiteUrl } from "@/lib/site-url";
+import { trackSignup } from "@/lib/tracking";
 
 type Props = {
   defaultName: string;
@@ -29,6 +30,7 @@ export default function OnboardingForm({ defaultName, slug }: Props) {
           name: name.trim() || defaultName,
           kakao_url: kakaoUrl.trim(),
         });
+        trackSignup();
       } catch (e) {
         setError(e instanceof Error ? e.message : "오류가 발생했습니다.");
       }

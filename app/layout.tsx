@@ -1,11 +1,17 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { Suspense } from "react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { getSiteUrl } from "@/lib/site-url";
 import NavigationProgress from "@/components/NavigationProgress";
+import TrackingPageView from "@/components/TrackingPageView";
 import "./globals.css";
 
-const GA_ID = process.env.NEXT_PUBLIC_GA_ID ?? "G-PZQ8BD866G";
+const GA_ID              = process.env.NEXT_PUBLIC_GA_ID              ?? "G-PZQ8BD866G";
+const NAVER_ANALYTICS_ID = process.env.NEXT_PUBLIC_NAVER_ANALYTICS_ID ?? "";
+const META_PIXEL_ID      = process.env.NEXT_PUBLIC_META_PIXEL_ID      ?? "";
+const KAKAO_PIXEL_ID     = process.env.NEXT_PUBLIC_KAKAO_PIXEL_ID     ?? "";
+const GOOGLE_ADS_ID      = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID      ?? "";
 
 const SITE = getSiteUrl();
 
@@ -131,7 +137,7 @@ export default function RootLayout({
         />
       </head>
       <body className="flex min-h-full flex-col">
-        {/* Google Analytics 4 */}
+        {/* Google Analytics 4 + Google Ads */}
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
           strategy="afterInteractive"
@@ -141,11 +147,53 @@ export default function RootLayout({
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', '${GA_ID}', {
-              page_path: window.location.pathname,
-            });
+            gtag('config', '${GA_ID}', { page_path: window.location.pathname });
+            ${GOOGLE_ADS_ID ? `gtag('config', '${GOOGLE_ADS_ID}');` : ""}
           `}
         </Script>
+
+        {/* 네이버 애널리틱스 */}
+        {NAVER_ANALYTICS_ID && (
+          <>
+            <Script src="//wcs.naver.net/wcslog.js" strategy="afterInteractive" />
+            <Script id="naver-analytics-init" strategy="afterInteractive">
+              {`
+                if(!wcs_add) var wcs_add={};
+                wcs_add["wa"] = "${NAVER_ANALYTICS_ID}";
+                if(window.wcs) { wcs_do(); }
+              `}
+            </Script>
+          </>
+        )}
+
+        {/* Meta Pixel */}
+        {META_PIXEL_ID && (
+          <Script id="meta-pixel-init" strategy="afterInteractive">
+            {`
+              !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){
+              n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];
+              t=b.createElement(e);t.async=!0;t.src=v;
+              s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)
+              }(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+              fbq('init','${META_PIXEL_ID}');
+              fbq('track','PageView');
+            `}
+          </Script>
+        )}
+
+        {/* 카카오 픽셀 */}
+        {KAKAO_PIXEL_ID && (
+          <>
+            <Script
+              src="//t1.daumcdn.net/kas/static/kp.js"
+              strategy="afterInteractive"
+            />
+            <Script id="kakao-pixel-init" strategy="afterInteractive">
+              {`kakaoPixel('${KAKAO_PIXEL_ID}').pageView();`}
+            </Script>
+          </>
+        )}
         {/* WebSite 구조화 데이터 */}
         <script
           type="application/ld+json"
@@ -154,6 +202,9 @@ export default function RootLayout({
           }}
         />
         <NavigationProgress />
+        <Suspense fallback={null}>
+          <TrackingPageView />
+        </Suspense>
         {children}
         <SpeedInsights />
       </body>
