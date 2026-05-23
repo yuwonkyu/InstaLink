@@ -116,5 +116,5 @@ export default async function BillingSuccessPage({ searchParams }: Props) {
   const tmpl = paymentSuccessEmail(profile.name ?? "", plan, amount);
   sendEmail({ to: user.email!, ...tmpl }).catch(() => {});
 
-  redirect("/dashboard?upgraded=1");
+  redirect(`/dashboard?upgraded=1&plan=${plan}&amount=${amount}`);
 }

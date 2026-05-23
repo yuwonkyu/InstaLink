@@ -93,7 +93,7 @@ async function getMyProfile(ownerId: string): Promise<Profile | null> {
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{ onboarded?: string }>;
+  searchParams: Promise<{ onboarded?: string; upgraded?: string; plan?: string; amount?: string }>;
 }) {
   // searchParams·supabase 클라이언트 초기화를 병렬 실행
   const [{ onboarded }, supabase] = await Promise.all([
