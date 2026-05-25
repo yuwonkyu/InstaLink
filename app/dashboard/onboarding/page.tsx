@@ -5,25 +5,18 @@ import OnboardingForm from "./OnboardingForm";
 
 export default async function OnboardingPage() {
   const supabase = await getSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login");
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("name, slug, is_active")
+    .select("name, slug, shop_name, tagline, description, instagram_id, image_url, services, custom_links, is_active")
     .eq("owner_id", user.id)
     .maybeSingle();
 
-  // 이미 온보딩 완료된 사용자 (is_active === true) → 대시보드로
-  if (profile?.is_active) {
-    redirect("/dashboard");
-  }
+  if (profile?.is_active) redirect("/dashboard");
 
   const defaultName = profile?.name || user.email?.split("@")[0] || "";
-  const slug = profile?.slug ?? "";
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-(--secondary) px-4 py-10">
@@ -35,7 +28,17 @@ export default async function OnboardingPage() {
       </div>
 
       <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-[0_4px_20px_rgba(17,24,39,0.08)]">
-        <OnboardingForm defaultName={defaultName} slug={slug} />
+        <OnboardingForm
+          defaultName={defaultName}
+          slug={profile?.slug ?? ""}
+          defaultShopName={profile?.shop_name ?? ""}
+          defaultTagline={profile?.tagline ?? ""}
+          defaultDescription={profile?.description ?? ""}
+          defaultInstagramId={profile?.instagram_id ?? ""}
+          defaultImageUrl={profile?.image_url ?? ""}
+          defaultServices={profile?.services ?? []}
+          defaultCustomLinks={profile?.custom_links ?? []}
+        />
       </div>
 
       <p className="mt-4 text-xs text-(--muted)">
