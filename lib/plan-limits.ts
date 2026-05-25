@@ -11,21 +11,24 @@
 
 export const PLAN_LIMITS = {
   free: {
-    services: 3,    // 편집 & 공개 3개
-    reviews:  3,    // 편집 & 공개 3개
-    gallery:  3,    // 무료 3장 (첫 가치 경험 제공)
+    services: 3,
+    reviews:  3,
+    gallery:  3,
+    links:    5,
     themes:   ["light"] as const,
   },
   basic: {
-    services: 6,    // 편집 & 공개 6개
-    reviews:  6,    // 편집 & 공개 6개
-    gallery:  6,    // 편집 & 공개 6장
+    services: 6,
+    reviews:  6,
+    gallery:  6,
+    links:    10,
     themes:   ["light", "dark", "ucc"] as const,
   },
   pro: {
-    services: Infinity, // 무제한
-    reviews:  Infinity, // 무제한
-    gallery:  15,       // 최대 15장 (무제한 남용 방지)
+    services: Infinity,
+    reviews:  Infinity,
+    gallery:  15,
+    links:    Infinity,
     themes:   "all" as const,
   },
 } as const;
