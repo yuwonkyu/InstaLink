@@ -57,7 +57,7 @@ export default function ProfileActions({
       {visible.map((link, idx) => {
         const title = getLinkTitle(link);
         const style = link.style ?? "text";
-        if (style === "card") return <CardLink key={idx} link={{ ...link, url: link.url }} title={title} />;
+        if (style === "card") return <CardLink key={idx} link={{ ...link, url: link.url }} title={title} btnColor={btnColor} btnTextColor={btnTextColor} />;
         if (style === "thumb") return <ThumbLink key={idx} link={{ ...link, url: link.url }} title={title} btnColor={btnColor} btnTextColor={btnTextColor} />;
         return <TextLink key={idx} link={{ ...link, url: link.url }} title={title} btnColor={btnColor} btnTextColor={btnTextColor} />;
       })}
@@ -73,13 +73,15 @@ export default function ProfileActions({
 
 // ── 카드형 ────────────────────────────────────────────────────
 
-function CardLink({ link, title }: { link: CustomLink & { url: string }; title: string }) {
+function CardLink({
+  link, title, btnColor, btnTextColor,
+}: { link: CustomLink & { url: string }; title: string; btnColor: string | null; btnTextColor: string | null }) {
   return (
     <a
       href={link.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="block overflow-hidden rounded-2xl border border-black/[0.07] bg-white/60 shadow-sm active:translate-y-px transition-transform"
+      className="block overflow-hidden rounded-2xl border border-black/[0.07] shadow-sm active:translate-y-px transition-transform"
     >
       {link.image_url ? (
         <div className="relative aspect-video w-full overflow-hidden bg-gray-100">
@@ -90,8 +92,15 @@ function CardLink({ link, title }: { link: CustomLink & { url: string }; title: 
           <span className="text-3xl">🔗</span>
         </div>
       )}
-      <div className="px-4 py-3">
-        <p className="text-sm font-semibold text-foreground">{title}</p>
+      <div
+        className="px-4 py-3"
+        style={
+          btnColor
+            ? { backgroundColor: btnColor, color: btnTextColor || "#fff" }
+            : { backgroundColor: "rgba(255,255,255,0.6)", color: "#111827" }
+        }
+      >
+        <p className="text-sm font-semibold">{title}</p>
       </div>
     </a>
   );
