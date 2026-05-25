@@ -58,6 +58,14 @@ export default function LinkManager({ links, limit, onChange }: Props) {
     onChange(links.filter((_, i) => i !== idx));
   }
 
+  function move(idx: number, dir: -1 | 1) {
+    const next = [...links];
+    const target = idx + dir;
+    if (target < 0 || target >= next.length) return;
+    [next[idx], next[target]] = [next[target], next[idx]];
+    onChange(next);
+  }
+
   function startEdit(idx: number) {
     const l = links[idx];
     setEditIdx(idx);
@@ -107,6 +115,28 @@ export default function LinkManager({ links, limit, onChange }: Props) {
                 />
               ) : (
                 <div className="flex items-center justify-between gap-3">
+                  {/* 순서 변경 버튼 */}
+                  <div className="flex shrink-0 flex-col gap-0.5">
+                    <button
+                      type="button"
+                      onClick={() => move(idx, -1)}
+                      disabled={idx === 0}
+                      className="flex h-5 w-5 items-center justify-center rounded text-gray-300 hover:text-gray-500 disabled:opacity-20"
+                      aria-label="위로"
+                    >
+                      ▲
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => move(idx, 1)}
+                      disabled={idx === links.length - 1}
+                      className="flex h-5 w-5 items-center justify-center rounded text-gray-300 hover:text-gray-500 disabled:opacity-20"
+                      aria-label="아래로"
+                    >
+                      ▼
+                    </button>
+                  </div>
+
                   <div className="flex items-center gap-2.5 min-w-0 flex-1 overflow-hidden">
                     {link.image_url && (
                       <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-md">
