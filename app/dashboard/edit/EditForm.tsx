@@ -356,13 +356,10 @@ export default function EditForm({ profile, plan }: Props) {
           hours={hours} setHours={setHours}
           parkingInfo={parkingInfo} setParkingInfo={setParkingInfo}
           instagramId={instagramId} setInstaId={setInstaId}
-          kakaoUrl={kakaoUrl} setKakaoUrl={setKakaoUrl}
-          kakaoBookingUrl={kakaoBookingUrl} setKakaoBk={setKakaoBk}
-          naverBookingUrl={naverBookingUrl} setNaverBk={setNaverBk}
           phoneUrl={phoneUrl} setPhoneUrl={setPhoneUrl}
-          instaDmUrl={instaDmUrl} setInstaDmUrl={setInstaDmUrl}
-          kakaoChanUrl={kakaoChanUrl} setKakaoChan={setKakaoChan}
           imageUrl={imageUrl} setImageUrl={setImageUrl}
+          customLinks={customLinks} setCustomLinks={setCustomLinks}
+          linksLimit={limits.links === Infinity ? undefined : limits.links}
           category={category} setCategory={setCategory}
           isProPlan={isProPlan}
           aiLoading={aiLoading}
@@ -377,8 +374,6 @@ export default function EditForm({ profile, plan }: Props) {
           services={services} setServices={setServices}
           servicesLimit={limits.services === Infinity ? undefined : limits.services}
           invalidServiceIndex={invalidServiceIndex}
-          customLinks={customLinks} setCustomLinks={setCustomLinks}
-          linksLimit={limits.links === Infinity ? undefined : limits.links}
           businessHours={businessHours} setBusinessHours={setBusinessHours}
           isPaidPlan={isPaidPlan} isProPlan={isProPlan}
           category={category} setCategory={setCategory}

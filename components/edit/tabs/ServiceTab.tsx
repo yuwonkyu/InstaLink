@@ -1,17 +1,14 @@
 import Link from "next/link";
 import Section from "@/components/edit/Section";
 import ServiceManager from "@/components/dashboard/ServiceManager";
-import LinkManager from "@/components/dashboard/LinkManager";
 import BusinessHoursEditor from "@/components/dashboard/BusinessHoursEditor";
 import { TEMPLATES } from "@/data/templates";
-import type { Service, CustomLink, BusinessHours } from "@/lib/types";
+import type { Service, BusinessHours } from "@/lib/types";
 
 export type ServiceTabProps = {
   services: Service[];          setServices: (v: Service[]) => void;
   servicesLimit?: number;
   invalidServiceIndex?: number | null;
-  customLinks: CustomLink[];    setCustomLinks: (v: CustomLink[]) => void;
-  linksLimit?: number;
   businessHours: BusinessHours; setBusinessHours: (v: BusinessHours) => void;
   isPaidPlan: boolean;
   isProPlan: boolean;
@@ -23,7 +20,6 @@ export type ServiceTabProps = {
 export default function ServiceTab({
   services, setServices, servicesLimit,
   invalidServiceIndex,
-  customLinks, setCustomLinks, linksLimit,
   businessHours, setBusinessHours,
   isPaidPlan, isProPlan,
   category, setCategory,
@@ -52,17 +48,6 @@ export default function ServiceTab({
           onCategoryChange={setCategory}
           templateServices={TEMPLATES[category]?.services ?? []}
         />
-      </Section>
-
-      {/* ── 추가 링크 ── */}
-      <Section title="추가 링크 (선택)">
-        <div className="mb-3 rounded-xl bg-blue-50 border border-blue-100 px-3.5 py-3">
-          <p className="text-xs font-semibold text-blue-800">💡 TIP</p>
-          <p className="mt-0.5 text-xs text-blue-700 leading-relaxed">
-            네이버 스마트스토어, 유튜브, 블로그 등 고객에게 추가로 보여주고 싶은 링크를 자유롭게 넣을 수 있어요.
-          </p>
-        </div>
-        <LinkManager links={customLinks} limit={linksLimit} onChange={setCustomLinks} />
       </Section>
 
       {/* ── 영업일 & 운영시간 ── */}
