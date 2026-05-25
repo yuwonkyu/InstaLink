@@ -48,21 +48,16 @@ export default function EditForm({ profile, plan }: Props) {
   const isProPlan  = planKey === "pro";
 
   // ── 기본 정보 상태 ──
-  const [name,            setName]         = useState(profile.name ?? "");
-  const [shopName,        setShopName]     = useState(profile.shop_name ?? "");
-  const [tagline,         setTagline]      = useState(profile.tagline ?? "");
-  const [description,     setDesc]         = useState(profile.description ?? "");
-  const [kakaoUrl,        setKakaoUrl]     = useState(profile.kakao_url ?? "");
-  const [kakaoBookingUrl, setKakaoBk]      = useState(profile.kakao_booking_url ?? "");
-  const [naverBookingUrl, setNaverBk]      = useState(profile.naver_booking_url ?? "");
-  const [phoneUrl,        setPhoneUrl]     = useState(profile.phone_url ?? "");
-  const [instaDmUrl,      setInstaDmUrl]   = useState(profile.instagram_dm_url ?? "");
-  const [kakaoChanUrl,    setKakaoChan]    = useState(profile.kakao_channel_url ?? "");
-  const [instagramId,     setInstaId]      = useState(profile.instagram_id ?? "");
-  const [location,        setLocation]     = useState(profile.location ?? "");
-  const [hours,           setHours]        = useState(profile.hours ?? "");
-  const [imageUrl,        setImageUrl]     = useState(profile.image_url ?? "");
-  const [parkingInfo,     setParkingInfo]  = useState(profile.parking_info ?? "");
+  const [name,        setName]        = useState(profile.name ?? "");
+  const [shopName,    setShopName]    = useState(profile.shop_name ?? "");
+  const [tagline,     setTagline]     = useState(profile.tagline ?? "");
+  const [description, setDesc]        = useState(profile.description ?? "");
+  const [phoneUrl,    setPhoneUrl]    = useState(profile.phone_url ?? "");
+  const [instagramId, setInstaId]     = useState(profile.instagram_id ?? "");
+  const [location,    setLocation]    = useState(profile.location ?? "");
+  const [hours,       setHours]       = useState(profile.hours ?? "");
+  const [imageUrl,    setImageUrl]    = useState(profile.image_url ?? "");
+  const [parkingInfo, setParkingInfo] = useState(profile.parking_info ?? "");
 
   // ── 테마 · 콘텐츠 상태 ──
   const [theme,       setTheme]       = useState<Theme>(profile.theme ?? "light");
@@ -102,8 +97,7 @@ export default function EditForm({ profile, plan }: Props) {
     if (isFirstRender.current) { isFirstRender.current = false; return; }
     setIsDirty(true);
   }, [
-    name, shopName, tagline, description, kakaoUrl, kakaoBookingUrl,
-    naverBookingUrl, phoneUrl, instaDmUrl, kakaoChanUrl, instagramId,
+    name, shopName, tagline, description, phoneUrl, instagramId,
     location, hours, imageUrl, theme, services, reviews, customLinks,
     gallery, parkingInfo, sectionOrder, buttonColor, buttonTextColor,
     galleryLayout, businessHours,
@@ -118,18 +112,7 @@ export default function EditForm({ profile, plan }: Props) {
       setActiveTab("service");
       return;
     }
-    if (message.includes("추가 링크")) {
-      setActiveTab("service");
-      return;
-    }
-    if (
-      message.includes("URL") ||
-      message.includes("카카오") ||
-      message.includes("인스타그램") ||
-      message.includes("네이버") ||
-      message.includes("전화") ||
-      message.includes("로그인")
-    ) {
+    if (message.includes("링크") || message.includes("인스타그램") || message.includes("로그인")) {
       setActiveTab("page");
     }
   }
@@ -194,10 +177,7 @@ export default function EditForm({ profile, plan }: Props) {
       return;
     }
 
-    const urlValidationMessage = validateProfileUrls({
-      kakaoUrl, kakaoBookingUrl, kakaoChanUrl, naverBookingUrl,
-      instaDmUrl, customLinks, instagramId,
-    });
+    const urlValidationMessage = validateProfileUrls({ customLinks, instagramId });
     if (urlValidationMessage) {
       openSaveError(urlValidationMessage);
       return;
@@ -205,9 +185,7 @@ export default function EditForm({ profile, plan }: Props) {
 
     const payload: SaveProfilePayload = {
       name, shop_name: shopName, tagline, description,
-      kakao_url: kakaoUrl, kakao_booking_url: kakaoBookingUrl,
-      naver_booking_url: naverBookingUrl,
-      phone_url: phoneUrl, instagram_dm_url: instaDmUrl, kakao_channel_url: kakaoChanUrl,
+      phone_url: phoneUrl,
       instagram_id: instagramId,
       location, hours, image_url: imageUrl, theme, services, reviews,
       custom_links: customLinks,
@@ -356,13 +334,10 @@ export default function EditForm({ profile, plan }: Props) {
           hours={hours} setHours={setHours}
           parkingInfo={parkingInfo} setParkingInfo={setParkingInfo}
           instagramId={instagramId} setInstaId={setInstaId}
-          kakaoUrl={kakaoUrl} setKakaoUrl={setKakaoUrl}
-          kakaoBookingUrl={kakaoBookingUrl} setKakaoBk={setKakaoBk}
-          naverBookingUrl={naverBookingUrl} setNaverBk={setNaverBk}
           phoneUrl={phoneUrl} setPhoneUrl={setPhoneUrl}
-          instaDmUrl={instaDmUrl} setInstaDmUrl={setInstaDmUrl}
-          kakaoChanUrl={kakaoChanUrl} setKakaoChan={setKakaoChan}
           imageUrl={imageUrl} setImageUrl={setImageUrl}
+          customLinks={customLinks} setCustomLinks={setCustomLinks}
+          linksLimit={limits.links === Infinity ? undefined : limits.links}
           category={category} setCategory={setCategory}
           isProPlan={isProPlan}
           aiLoading={aiLoading}
@@ -377,8 +352,6 @@ export default function EditForm({ profile, plan }: Props) {
           services={services} setServices={setServices}
           servicesLimit={limits.services === Infinity ? undefined : limits.services}
           invalidServiceIndex={invalidServiceIndex}
-          customLinks={customLinks} setCustomLinks={setCustomLinks}
-          linksLimit={limits.links === Infinity ? undefined : limits.links}
           businessHours={businessHours} setBusinessHours={setBusinessHours}
           isPaidPlan={isPaidPlan} isProPlan={isProPlan}
           category={category} setCategory={setCategory}

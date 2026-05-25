@@ -7,21 +7,10 @@ import type { Service, Review, Theme, CustomLink, GalleryImage, GalleryLayout, B
 import { validateServicesOrThrow } from "@/lib/service-validation";
 
 function isSafeUrl(url: string): boolean {
-  if (!url) return true; // 빈 값은 저장 허용
-  try {
-    const u = new URL(url);
-    return u.protocol === "https:" || u.protocol === "http:";
-  } catch {
-    return false;
-  }
-}
-
-const KAKAO_DOMAINS = ["open.kakao.com", "pf.kakao.com"];
-function isKakaoUrl(url: string): boolean {
   if (!url) return true;
   try {
     const u = new URL(url);
-    return KAKAO_DOMAINS.includes(u.hostname);
+    return u.protocol === "https:" || u.protocol === "http:";
   } catch {
     return false;
   }
@@ -86,12 +75,7 @@ export type SaveProfilePayload = {
   shop_name: string;
   tagline: string;
   description: string;
-  kakao_url: string;
-  kakao_booking_url?: string;
-  naver_booking_url?: string;
   phone_url?: string;
-  instagram_dm_url?: string;
-  kakao_channel_url?: string;
   instagram_id: string;
   location: string;
   hours: string;
@@ -120,27 +104,9 @@ export async function saveProfile(payload: SaveProfilePayload) {
     throw new Error("로그인이 만료되었습니다. 다시 로그인 후 저장해주세요.");
   }
 
-  // URL 필드 화이트리스트 검증 (javascript:, data: 등 차단)
-  const urlFields: (string | undefined)[] = [
-    payload.kakao_url,
-    payload.kakao_booking_url,
-    payload.naver_booking_url,
-    payload.instagram_dm_url,
-    payload.kakao_channel_url,
-  ];
-  for (const u of urlFields) {
-    if (u && !isSafeUrl(u)) throw new Error("허용되지 않는 URL 형식입니다.");
-  }
+  // URL 화이트리스트 검증 (javascript:, data: 등 차단)
   for (const link of payload.custom_links ?? []) {
-    if (link.url && !isSafeUrl(link.url)) throw new Error("커스텀 링크에 허용되지 않는 URL이 포함되어 있습니다.");
-  }
-
-  // 카카오 URL: open.kakao.com 또는 pf.kakao.com 도메인만 허용
-  const kakaoFields = [payload.kakao_url, payload.kakao_booking_url, payload.kakao_channel_url];
-  for (const u of kakaoFields) {
-    if (u && !isKakaoUrl(u)) {
-      throw new Error("카카오 URL은 open.kakao.com 또는 pf.kakao.com 주소만 사용할 수 있습니다.");
-    }
+    if (link.url && !isSafeUrl(link.url)) throw new Error("링크에 허용되지 않는 URL이 포함되어 있습니다.");
   }
 
   // 인스타그램 아이디: 영문·숫자·밑줄·점만 허용 (1~30자)
@@ -157,12 +123,7 @@ export async function saveProfile(payload: SaveProfilePayload) {
       shop_name: payload.shop_name.trim(),
       tagline: payload.tagline.trim(),
       description: payload.description.trim(),
-      kakao_url: payload.kakao_url.trim(),
-      kakao_booking_url: payload.kakao_booking_url?.trim() || null,
-      naver_booking_url: payload.naver_booking_url?.trim() || null,
       phone_url: payload.phone_url?.trim() || null,
-      instagram_dm_url: payload.instagram_dm_url?.trim() || null,
-      kakao_channel_url: payload.kakao_channel_url?.trim() || null,
       instagram_id: payload.instagram_id.trim(),
       location: payload.location.trim(),
       hours: payload.hours.trim(),

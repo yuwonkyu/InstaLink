@@ -6,6 +6,8 @@ import { CldUploadWidget } from "next-cloudinary";
 import Section from "@/components/edit/Section";
 import Field from "@/components/edit/Field";
 import HintPanel from "@/components/edit/HintPanel";
+import LinkManager from "@/components/dashboard/LinkManager";
+import type { CustomLink } from "@/lib/types";
 
 // ── 최근 이미지 (localStorage) ──────────────────────────
 const RECENT_IMG_KEY = "instalink_recent_images";
@@ -35,13 +37,10 @@ export type BasicTabProps = {
   hours: string;         setHours: (v: string) => void;
   parkingInfo: string;   setParkingInfo: (v: string) => void;
   instagramId: string;   setInstaId: (v: string) => void;
-  kakaoUrl: string;         setKakaoUrl: (v: string) => void;
-  kakaoBookingUrl: string;  setKakaoBk: (v: string) => void;
-  naverBookingUrl: string;  setNaverBk: (v: string) => void;
-  phoneUrl: string;         setPhoneUrl: (v: string) => void;
-  instaDmUrl: string;       setInstaDmUrl: (v: string) => void;
-  kakaoChanUrl: string;     setKakaoChan: (v: string) => void;
+  phoneUrl: string;      setPhoneUrl: (v: string) => void;
   imageUrl: string;      setImageUrl: (v: string) => void;
+  customLinks: CustomLink[];  setCustomLinks: (v: CustomLink[]) => void;
+  linksLimit?: number;
   category: string;      setCategory: (v: string) => void;
   isProPlan: boolean;
   aiLoading: string | null;
@@ -53,10 +52,9 @@ export default function BasicTab({
   tagline, setTagline, description, setDesc,
   location, setLocation, hours, setHours,
   parkingInfo, setParkingInfo, instagramId, setInstaId,
-  kakaoUrl, setKakaoUrl, kakaoBookingUrl, setKakaoBk,
-  naverBookingUrl, setNaverBk, phoneUrl, setPhoneUrl,
-  instaDmUrl, setInstaDmUrl, kakaoChanUrl, setKakaoChan,
+  phoneUrl, setPhoneUrl,
   imageUrl, setImageUrl,
+  customLinks, setCustomLinks, linksLimit,
   category, setCategory,
   isProPlan, aiLoading, onAISuggest,
 }: BasicTabProps) {
@@ -168,12 +166,7 @@ export default function BasicTab({
           <Field label="운영시간"         value={hours}       onChange={setHours}       placeholder="평일 07:00 ~ 21:00" maxLength={50} />
           <Field label="주차 안내 (선택)" value={parkingInfo} onChange={setParkingInfo}  placeholder="건물 내 무료 주차 2시간 · 발레파킹 가능" maxLength={80} />
           <Field label="인스타그램 ID"    value={instagramId} onChange={setInstaId}     placeholder="fitwithji" maxLength={30} />
-          <Field label="카카오 오픈채팅 URL"     value={kakaoUrl}        onChange={setKakaoUrl} placeholder="https://open.kakao.com/o/..." />
-          <Field label="카카오 예약 URL (선택)" value={kakaoBookingUrl} onChange={setKakaoBk}  placeholder="https://pf.kakao.com/..." />
-          <Field label="네이버 예약 URL (선택)" value={naverBookingUrl} onChange={setNaverBk}  placeholder="https://booking.naver.com/..." />
-          <Field label="전화 연결 (선택)"        value={phoneUrl}        onChange={setPhoneUrl} placeholder="010-1234-5678" />
-          <Field label="인스타 DM URL (선택)"    value={instaDmUrl}      onChange={setInstaDmUrl} placeholder="https://ig.me/m/아이디" />
-          <Field label="카카오채널 URL (선택)"   value={kakaoChanUrl}    onChange={setKakaoChan}  placeholder="https://pf.kakao.com/_채널아이디" />
+          <Field label="전화번호 (선택)"  value={phoneUrl}    onChange={setPhoneUrl}    placeholder="010-1234-5678" maxLength={20} />
         </div>
       </Section>
 
@@ -243,6 +236,17 @@ export default function BasicTab({
             </div>
           )}
         </div>
+      </Section>
+
+      {/* ── 링크 ── */}
+      <Section title="링크 추가">
+        <div className="mb-3 rounded-xl bg-blue-50 border border-blue-100 px-3.5 py-3">
+          <p className="text-xs font-semibold text-blue-800">💡 TIP</p>
+          <p className="mt-0.5 text-xs text-blue-700 leading-relaxed">
+            카카오 오픈채팅, 네이버 예약, 블로그 등 고객에게 보여줄 링크를 자유롭게 추가하세요. 스타일도 선택할 수 있어요.
+          </p>
+        </div>
+        <LinkManager links={customLinks} limit={linksLimit} onChange={setCustomLinks} />
       </Section>
     </>
   );
