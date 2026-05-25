@@ -378,6 +378,7 @@ export default function EditForm({ profile, plan }: Props) {
           servicesLimit={limits.services === Infinity ? undefined : limits.services}
           invalidServiceIndex={invalidServiceIndex}
           customLinks={customLinks} setCustomLinks={setCustomLinks}
+          linksLimit={limits.links === Infinity ? undefined : limits.links}
           businessHours={businessHours} setBusinessHours={setBusinessHours}
           isPaidPlan={isPaidPlan} isProPlan={isProPlan}
           category={category} setCategory={setCategory}

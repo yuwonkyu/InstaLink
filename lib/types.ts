@@ -4,10 +4,20 @@ export type Service = {
   note?: string;
 };
 
+export type CustomLinkStyle = "card" | "thumb" | "text";
+
 export type CustomLink = {
-  label: string;
+  title?: string;
+  label?: string;   // 기존 데이터 하위호환
   url: string;
+  style?: CustomLinkStyle;
+  image_url?: string;
 };
+
+/** title 또는 구형 label 반환 */
+export function getLinkTitle(link: CustomLink): string {
+  return link.title ?? link.label ?? "";
+}
 
 export type GalleryImage = {
   url: string;

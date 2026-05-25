@@ -94,9 +94,12 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
   const naverBookingUrl  = normalizeExternalHref(profile.naver_booking_url);
   const instagramDmUrl   = normalizeExternalHref(profile.instagram_dm_url);
 
+  const phoneNumber = profile.phone_url?.replace(/[^0-9+\-\s]/g, "").trim() || null;
+  const phoneTel = profile.phone_url ? `tel:${profile.phone_url.replace(/[^0-9+]/g, "")}` : null;
+
   const hasBusinessInfo =
     profile.hours || profile.business_hours || profile.location ||
-    profile.parking_info || profile.instagram_id;
+    profile.parking_info || profile.instagram_id || phoneNumber;
 
   return (
     <>
@@ -148,14 +151,13 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
           </p>
         )}
 
-        {/* ── CTA + 추가 링크 ── */}
+        {/* ── 링크 블록 ── */}
         <ProfileActions
           kakaoUrl={kakaoUrl}
           kakaoBookingUrl={kakaoBookingUrl}
           kakaoChannelUrl={kakaoChannelUrl}
           naverBookingUrl={naverBookingUrl}
           instagramDmUrl={instagramDmUrl}
-          phoneUrl={profile.phone_url}
           profileId={profile.id}
           btnColor={btnColor}
           btnTextColor={btnTextColor}
@@ -266,6 +268,14 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
                   >
                     {instagramHandle}
                   </a>
+                </div>
+              )}
+              {phoneNumber && phoneTel && (
+                <div className="flex items-center gap-2 text-sm text-(--muted)">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 opacity-60" aria-hidden="true">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.48 2 2 0 0 1 3.59 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.86a16 16 0 0 0 6 6l.92-.86a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+                  </svg>
+                  <a href={phoneTel} className="hover:underline">{phoneNumber}</a>
                 </div>
               )}
             </div>
