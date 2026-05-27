@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { getSupabaseServerClient } from "@/lib/supabase";
-import { sendEmail, welcomeEmail } from "@/lib/resend";
+import { sendEmail, welcomeEmail, newSignupNotificationEmail } from "@/lib/resend";
 import { applyReferral } from "@/lib/referral";
 import { getSiteUrl } from "@/lib/site-url";
 
@@ -72,6 +72,18 @@ export async function signUp(formData: FormData) {
   const slugBase = email.split("@")[0];
   const tmpl = welcomeEmail(name, slugBase, SITE_URL);
   sendEmail({ to: email, ...tmpl }).catch(() => {});
+
+  // ── 운영자 알림 이메일 (가입 즉시) ──
+  // OWNER_NOTIFICATION_EMAIL 우선, 미설정 시 ADMIN_EMAIL 폴백.
+  // 두 값 모두 비우면 알림이 자동으로 꺼짐 (예: 토스 심사 통과 후).
+  const ownerEmail =
+    process.env.OWNER_NOTIFICATION_EMAIL || process.env.ADMIN_EMAIL;
+  if (ownerEmail) {
+    const adminTmpl = newSignupNotificationEmail(name, email, SITE_URL);
+    sendEmail({ to: ownerEmail, ...adminTmpl }).catch((e) =>
+      console.error("[signup] 운영자 알림 실패:", e),
+    );
+  }
 
   redirect("/auth/signup?success=1");
 }
