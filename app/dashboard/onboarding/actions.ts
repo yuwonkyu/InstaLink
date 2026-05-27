@@ -3,8 +3,6 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getSupabaseServerClient } from "@/lib/supabase";
-import { sendEmail, newSignupNotificationEmail } from "@/lib/resend";
-import { getSiteUrl } from "@/lib/site-url";
 import type { Service, CustomLink } from "@/lib/types";
 
 // ── Step 1: 기본 정보 ──────────────────────────────────────────
@@ -22,7 +20,7 @@ export async function saveOnboardingStep1(payload: Step1Payload) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login");
 
-  const { data: profile, error } = await supabase
+  const { error } = await supabase
     .from("profiles")
     .update({
       name:         payload.name.trim(),
@@ -33,25 +31,11 @@ export async function saveOnboardingStep1(payload: Step1Payload) {
       image_url:    payload.image_url.trim(),
       is_active:    true,
     })
-    .eq("owner_id", user.id)
-    .select("slug")
-    .single();
+    .eq("owner_id", user.id);
 
   if (error) throw new Error(error.message);
 
-  // 운영자 알림 이메일
-  const ownerEmail = process.env.OWNER_NOTIFICATION_EMAIL;
-  if (ownerEmail && profile?.slug) {
-    const tmpl = newSignupNotificationEmail(
-      payload.name.trim(),
-      profile.slug,
-      user.email ?? "",
-      getSiteUrl(),
-    );
-    sendEmail({ to: ownerEmail, ...tmpl }).catch((e) =>
-      console.error("[onboarding] 운영자 알림 실패:", e),
-    );
-  }
+  // 운영자 알림 이메일은 signUp 시점(app/auth/actions.ts)에서 발송됨 — 여기서 중복 발송 안 함.
 
   revalidatePath("/dashboard");
   revalidatePath("/[slug]", "page");

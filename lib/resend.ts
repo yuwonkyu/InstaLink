@@ -144,21 +144,29 @@ export function weeklyReportEmail(
   };
 }
 
-export function newSignupNotificationEmail(name: string, slug: string, email: string, siteUrl: string) {
+export function newSignupNotificationEmail(
+  name: string,
+  email: string,
+  siteUrl: string,
+  slug?: string,
+) {
+  const signedUpAt = new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" });
   return {
-    subject: `[InstaLink] 새 가입자: ${name}`,
+    subject: `[InstaLink] 신규 회원가입이 생겼습니다 — ${name}`,
     html: `
 <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;color:#111827">
-  <h1 style="font-size:20px;font-weight:700;margin:0 0 16px">🎉 새 가입자가 생겼어요!</h1>
+  <h1 style="font-size:20px;font-weight:700;margin:0 0 12px">신규 회원가입이 생겼습니다 🎉</h1>
   <div style="background:#f9fafb;border-radius:12px;padding:16px 20px;margin-bottom:24px">
-    <p style="margin:0 0 8px;font-size:13px;color:#9ca3af">이름</p>
-    <p style="margin:0 0 16px;font-size:15px;font-weight:600;color:#111827">${name}</p>
-    <p style="margin:0 0 8px;font-size:13px;color:#9ca3af">이메일</p>
-    <p style="margin:0 0 16px;font-size:15px;font-weight:600;color:#111827">${email}</p>
-    <p style="margin:0 0 8px;font-size:13px;color:#9ca3af">링크 주소</p>
-    <p style="margin:0;font-size:15px;font-weight:600;color:#111827">
-      <a href="${siteUrl}/${slug}" style="color:#2563eb">${siteUrl}/${slug}</a>
-    </p>
+    <p style="margin:0 0 6px;font-size:13px;color:#9ca3af">이름</p>
+    <p style="margin:0 0 12px;font-size:15px;font-weight:600;color:#111827">${name}</p>
+    <p style="margin:0 0 6px;font-size:13px;color:#9ca3af">이메일</p>
+    <p style="margin:0 0 12px;font-size:15px;font-weight:600;color:#111827">${email}</p>
+    ${slug
+      ? `<p style="margin:0 0 6px;font-size:13px;color:#9ca3af">링크 주소</p>
+         <p style="margin:0 0 12px;font-size:15px;font-weight:600;color:#111827"><a href="${siteUrl}/${slug}" style="color:#2563eb">${siteUrl}/${slug}</a></p>`
+      : ""}
+    <p style="margin:0 0 6px;font-size:13px;color:#9ca3af">가입 시각</p>
+    <p style="margin:0;font-size:14px;color:#111827">${signedUpAt}</p>
   </div>
   <a href="${siteUrl}/admin"
      style="display:inline-block;background:#111827;color:#fff;text-decoration:none;padding:12px 24px;border-radius:12px;font-size:14px;font-weight:600">
