@@ -143,16 +143,7 @@ export default async function SlugPage({ params }: PageProps) {
   }
 
   if (!profile.is_active) {
-    return (
-      <main className="flex min-h-screen w-full items-center justify-center bg-(--secondary) px-4 py-6 sm:px-6">
-        <div className="w-full max-w-md rounded-2xl bg-(--card) p-8 text-center shadow-[0_4px_20px_rgba(17,24,39,0.06)] backdrop-blur-sm">
-          <h1 className="text-2xl font-bold text-foreground">서비스 준비 중</h1>
-          <p className="mt-3 text-sm text-(--muted)">
-            현재 페이지는 활성화되지 않았습니다. 잠시 후 다시 확인해주세요.
-          </p>
-        </div>
-      </main>
-    );
+    notFound();
   }
 
   const themeClass =
