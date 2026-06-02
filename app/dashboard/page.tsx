@@ -405,11 +405,9 @@ export default async function DashboardPage({
         <div className="rounded-2xl bg-(--card) p-5 shadow-[0_4px_20px_rgba(17,24,39,0.06)]">
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-sm font-semibold text-foreground">구독 플랜</h2>
-            {!profile.is_mvp && (
-              <Link href="/billing" className="text-xs font-semibold text-amber-500 hover:text-amber-600 transition-colors">
-                플랜 변경 →
-              </Link>
-            )}
+            <Link href="/billing" className="text-xs font-semibold text-amber-500 hover:text-amber-600 transition-colors">
+              플랜 변경 →
+            </Link>
           </div>
           <div className="flex items-center gap-3 flex-wrap">
             <span className="rounded-full bg-foreground px-3 py-1 text-xs font-semibold text-white capitalize">
