@@ -70,9 +70,9 @@ export const metadata: Metadata = {
       "6월 30일까지 가입하면 Pro 플랜(월 29,900원)을 평생 무료로. 서비스·가격·후기·카카오 상담을 한 페이지에. 소상공인 인스타 링크 페이지.",
     images: [
       {
-        url: "/opengraph-image",
-        width: 1200,
-        height: 630,
+        url: "/instalink_OG.png",
+        width: 1920,
+        height: 1080,
         alt: "InstaLink — 6월 한정 Pro 평생 무료 이벤트",
       },
     ],
