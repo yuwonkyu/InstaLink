@@ -19,14 +19,13 @@ export default async function BillingPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("id, name, plan, plan_expires_at, is_mvp")
+    .select("id, name, plan, plan_expires_at")
     .eq("owner_id", user.id)
     .maybeSingle();
 
   if (!profile) redirect("/dashboard");
 
   const currentPlan: Plan = (profile.plan as Plan) ?? "free";
-  const isMvp: boolean = profile.is_mvp ?? false;
 
   return (
     <div className="min-h-screen bg-(--secondary)">
@@ -74,7 +73,6 @@ export default async function BillingPage() {
 
         <BillingClient
           currentPlan={currentPlan}
-          isMvp={isMvp}
           userId={user.id}
           userEmail={user.email ?? ""}
           userName={profile.name ?? ""}
