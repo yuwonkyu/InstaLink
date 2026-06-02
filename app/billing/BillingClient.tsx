@@ -24,6 +24,7 @@ declare global {
 
 type Props = {
   currentPlan: Plan;
+  isMvp: boolean;
   userId: string;
   userEmail: string;
   userName: string;
@@ -114,6 +115,7 @@ function PlanCard({ plan, period, currentPlan, loading, onSelect, compact = fals
 
 export default function BillingClient({
   currentPlan,
+  isMvp,
   userId,
   userEmail,
   userName,
@@ -133,6 +135,10 @@ export default function BillingClient({
   const PLAN_TIER: Record<Plan, number> = { free: 0, basic: 1, pro: 2 };
 
   async function handleSelectPlan(plan: Plan) {
+    if (isMvp && (plan === "free" || plan === "basic")) {
+      alert("MVP 얼리어답터 혜택으로 Pro가 영구 무료 제공됩니다.\n다운그레이드는 지원하지 않습니다.");
+      return;
+    }
     if (plan === "free") {
       if (!confirm("Free 플랜으로 다운그레이드하면 구독이 취소됩니다. 계속하시겠습니까?")) return;
       setLoading("free");
@@ -184,6 +190,20 @@ export default function BillingClient({
         onReady={() => setSdkReady(true)}
         strategy="afterInteractive"
       />
+
+      {/* MVP 배너 */}
+      {isMvp && (
+        <div className="mb-6 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 p-4">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-lg">⭐</span>
+            <p className="text-sm font-bold text-amber-800">MVP 얼리어답터 혜택</p>
+          </div>
+          <p className="text-xs text-amber-700">
+            초기 가입자 감사 혜택으로 <strong>Pro 플랜을 영구 무료</strong>로 이용하고 계십니다.
+            이 혜택은 절대 사라지지 않으며, 다운그레이드도 지원하지 않습니다.
+          </p>
+        </div>
+      )}
 
       {/* 월/연 토글 */}
       <div className="mb-6 flex justify-center">

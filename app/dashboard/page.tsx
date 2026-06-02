@@ -405,26 +405,40 @@ export default async function DashboardPage({
         <div className="rounded-2xl bg-(--card) p-5 shadow-[0_4px_20px_rgba(17,24,39,0.06)]">
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-sm font-semibold text-foreground">구독 플랜</h2>
-            <Link href="/billing" className="text-xs font-semibold text-amber-500 hover:text-amber-600 transition-colors">
-              플랜 변경 →
-            </Link>
+            {!profile.is_mvp && (
+              <Link href="/billing" className="text-xs font-semibold text-amber-500 hover:text-amber-600 transition-colors">
+                플랜 변경 →
+              </Link>
+            )}
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             <span className="rounded-full bg-foreground px-3 py-1 text-xs font-semibold text-white capitalize">
               {profile.plan ?? "free"}
             </span>
+            {profile.is_mvp && (
+              <span className="rounded-full bg-gradient-to-r from-amber-400 to-orange-500 px-3 py-1 text-xs font-bold text-white">
+                ⭐ MVP
+              </span>
+            )}
             <span className="text-sm text-(--muted)">
-              {PLAN_META[profile.plan ?? "free"]?.price === 0
-                ? "무료"
-                : `${PLAN_META[profile.plan ?? "free"]?.price.toLocaleString()}원/월`}
+              {profile.is_mvp
+                ? "얼리어답터 무료"
+                : PLAN_META[profile.plan ?? "free"]?.price === 0
+                  ? "무료"
+                  : `${PLAN_META[profile.plan ?? "free"]?.price.toLocaleString()}원/월`}
             </span>
           </div>
-          {profile.plan_expires_at && (
+          {profile.is_mvp && (
+            <p className="mt-2 text-xs text-amber-600 font-medium">
+              초기 가입자 감사 혜택으로 Pro를 영구 무료로 이용하실 수 있습니다.
+            </p>
+          )}
+          {profile.plan_expires_at && !profile.is_mvp && (
             <p className="mt-1.5 text-xs text-(--muted)">
               다음 결제일: {new Date(profile.plan_expires_at).toLocaleDateString("ko-KR")}
             </p>
           )}
-          {(!profile.plan || profile.plan === "free") && (
+          {(!profile.plan || profile.plan === "free") && !profile.is_mvp && (
             <Link
               href="/billing"
               className="mt-3 inline-block rounded-xl bg-amber-400 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-500 transition-colors"

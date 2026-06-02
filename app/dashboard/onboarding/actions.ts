@@ -15,21 +15,27 @@ export type Step1Payload = {
   image_url: string;
 };
 
+// 2026-06-30까지 신규 가입자는 Pro(MVP) 무료 승격
+const MVP_CUTOFF = new Date("2026-07-01T00:00:00+09:00");
+
 export async function saveOnboardingStep1(payload: Step1Payload) {
   const supabase = await getSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login");
 
+  const isMvpPeriod = new Date() < MVP_CUTOFF;
+
   const { error } = await supabase
     .from("profiles")
     .update({
-      name:         payload.name.trim(),
-      shop_name:    payload.shop_name.trim() || payload.name.trim(),
-      tagline:      payload.tagline.trim(),
-      description:  payload.description.trim(),
-      instagram_id: payload.instagram_id.trim(),
-      image_url:    payload.image_url.trim(),
-      is_active:    true,
+      name:            payload.name.trim(),
+      shop_name:       payload.shop_name.trim() || payload.name.trim(),
+      tagline:         payload.tagline.trim(),
+      description:     payload.description.trim(),
+      instagram_id:    payload.instagram_id.trim(),
+      image_url:       payload.image_url.trim(),
+      is_active:       true,
+      ...(isMvpPeriod && { plan: "pro", is_mvp: true, plan_expires_at: null }),
     })
     .eq("owner_id", user.id);
 

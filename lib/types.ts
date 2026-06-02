@@ -92,6 +92,7 @@ export type Profile = {
   button_text_color?: string | null; // Pro: 커스텀 버튼 텍스트 컬러 (hex)
   gallery_layout?: GalleryLayout | null; // Pro: 갤러리 레이아웃 (grid2 | grid3)
   business_hours?: BusinessHours | null; // Basic+: 요일별 영업시간
+  is_mvp?: boolean | null; // 얼리어답터 무료 Pro 혜택 대상
 };
 
 export type Subscription = {
