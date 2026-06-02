@@ -65,22 +65,22 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "InstaLink",
-    title: "인스타 바이오 링크 페이지를 1분 만에 — InstaLink",
+    title: "6월 한정 · 지금 가입하면 Pro 평생 무료 — InstaLink",
     description:
-      "서비스 소개 + 가격 + 후기 + 카카오 상담을 한 페이지에. 소상공인·1인 사업자 무료 인스타 링크 페이지.",
+      "6월 30일까지 가입하면 Pro 플랜(월 29,900원)을 평생 무료로. 서비스·가격·후기·카카오 상담을 한 페이지에. 소상공인 인스타 링크 페이지.",
     images: [
       {
         url: "/instalink_OG.png",
         width: 1920,
         height: 1080,
-        alt: "InstaLink — 인스타 바이오 링크 페이지 서비스",
+        alt: "InstaLink — 6월 한정 Pro 평생 무료 이벤트",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "인스타 바이오 링크 페이지를 1분 만에 — InstaLink",
-    description: "서비스·가격·카카오 상담을 한 페이지에. 소상공인 무료 링크 페이지.",
+    title: "6월 한정 · 지금 가입하면 Pro 평생 무료 — InstaLink",
+    description: "6월 30일까지 가입하면 Pro 평생 무료. 소상공인 인스타 링크 페이지를 1분 만에.",
   },
   icons: {
     icon: "/favicon.png",
