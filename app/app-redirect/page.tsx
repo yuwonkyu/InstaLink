@@ -1,16 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
-export default function AppRedirectPage() {
+function RedirectContent() {
   const params = useSearchParams();
   const [tried, setTried] = useState(false);
 
   const openApp = () => {
     const code = params.get("code");
     if (!code) return;
-    // instalink:// 커스텀 scheme으로 앱 열기
     window.location.href = `instalink:///app-redirect?code=${code}`;
   };
 
@@ -18,7 +17,6 @@ export default function AppRedirectPage() {
     const code = params.get("code");
     if (!code || tried) return;
     setTried(true);
-    // 페이지 로드 후 자동으로 앱 열기 시도
     window.location.href = `instalink:///app-redirect?code=${code}`;
   }, [params, tried]);
 
@@ -33,5 +31,17 @@ export default function AppRedirectPage() {
         앱 열기
       </button>
     </div>
+  );
+}
+
+export default function AppRedirectPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-gray-500">이동 중...</p>
+      </div>
+    }>
+      <RedirectContent />
+    </Suspense>
   );
 }
