@@ -1,10 +1,8 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 
-// 자동 redirect 완전 제거 — Custom Tab이 이 페이지에 안착했을 때
-// openAuthSessionAsync가 URL을 가로채도록 JS redirect 없이 유지
 function RedirectContent() {
   const params = useSearchParams();
 
@@ -17,10 +15,17 @@ function RedirectContent() {
     }, 1000);
   };
 
+  // 안드로이드(앱)에서만 자동 실행, 웹 브라우저는 버튼만 표시
+  useEffect(() => {
+    if (/android/i.test(navigator.userAgent)) {
+      openApp();
+    }
+  }, []);
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-white px-6 text-center">
       <p className="text-lg font-bold text-gray-800">InstaLink 앱으로 이동 중...</p>
-      <p className="text-sm text-gray-500">앱이 자동으로 열리지 않으면 아래 버튼을 눌러주세요.</p>
+      <p className="text-sm text-gray-500">자동으로 이동되지 않으면 아래 버튼을 눌러주세요.</p>
       <button
         onClick={openApp}
         className="rounded-2xl bg-gray-900 px-8 py-3 text-sm font-bold text-white"
