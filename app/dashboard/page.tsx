@@ -111,6 +111,9 @@ export default async function DashboardPage({
   // 프로필 먼저 조회 후, 파생 데이터를 병렬로 조회
   const profile = await getMyProfile(user.id);
 
+  // 프로필이 없으면 온보딩으로 — 소셜 로그인 직후 트리거 지연 등으로 dashboard에 직접 도달한 경우
+  if (!profile) redirect("/dashboard/onboarding");
+
   const [clickStats, referralCount, dailyMini] = profile
     ? await Promise.all([
         getClickStats(profile.id),
@@ -155,18 +158,6 @@ export default async function DashboardPage({
         </h1>
         <p className="mt-1 text-sm text-(--muted)">내 InstaLink 페이지를 관리하세요.</p>
       </div>
-
-      {/* 프로필 없는 경우 온보딩 안내 */}
-      {!profile && (
-        <div className="rounded-2xl border-2 border-dashed border-gray-200 bg-white p-6 text-center">
-          <p className="text-sm text-(--muted)">아직 페이지가 없습니다.</p>
-          <p className="mt-1 text-xs text-(--muted)">
-            Supabase 트리거가 자동으로 프로필을 생성합니다.
-            <br />
-            페이지가 보이지 않으면 로그아웃 후 다시 로그인해보세요.
-          </p>
-        </div>
-      )}
 
       {/* 내 페이지 카드 */}
       {profile && (

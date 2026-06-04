@@ -38,7 +38,7 @@ function handleSocialLogin(provider: "google" | "kakao") {
   );
   supabase.auth.signInWithOAuth({
     provider,
-    options: { redirectTo: `${getSiteUrl()}/auth/callback` },
+    options: { redirectTo: `${getSiteUrl()}/auth/callback?next=/dashboard/onboarding` },
   });
 }
 
