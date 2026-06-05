@@ -123,12 +123,14 @@ export default function Page() {
           <div className="flex flex-col items-center gap-10 md:flex-row md:items-center md:gap-12">
             {/* 좌: 텍스트 영역 */}
             <div className="flex-1 min-w-0">
-              <div className="flex flex-wrap items-center gap-2">
+              {/* 6월 한정 이벤트 배너 */}
+              <div className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-amber-400 to-orange-400 px-4 py-2 shadow-[0_2px_12px_rgba(251,191,36,0.4)]">
+                <span className="text-base">🔥</span>
+                <span className="text-sm font-bold text-white">6월 30일까지 가입하면 Pro 평생 무료</span>
+              </div>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
                 <p className="inline-block rounded-full border border-black/10 bg-white px-3 py-1 text-xs font-semibold text-(--muted)">
                   PT · 필라테스 · 미용 · 카페 소상공인용
-                </p>
-                <p className="inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-700">
-                  ✓ 무료로 시작 가능
                 </p>
               </div>
               <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl">
@@ -150,7 +152,7 @@ export default function Page() {
                   href="/auth/signup"
                   className="rounded-xl bg-foreground px-6 py-3 text-sm font-semibold text-white transition hover:opacity-85"
                 >
-                  지금 무료로 시작하기 →
+                  지금 무료로 시작하기 — Pro 평생 무료 →
                 </Link>
                 <Link
                   href="/demo"
