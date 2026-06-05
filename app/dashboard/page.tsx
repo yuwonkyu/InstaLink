@@ -19,30 +19,34 @@ const InstaGuideModal = dynamic(() => import("@/components/dashboard/InstaGuideM
 
 type ClickStats = { kakao: number; instagram: number; phone: number };
 
-function sumClicks(data: { link_type: string }[] | null): ClickStats {
-  return (data ?? []).reduce(
-    (acc, row) => {
-      if (row.link_type === "kakao")     acc.kakao     += 1;
-      if (row.link_type === "instagram") acc.instagram += 1;
-      if (row.link_type === "phone")     acc.phone     += 1;
-      return acc;
-    },
-    { kakao: 0, instagram: 0, phone: 0 },
-  );
-}
-
 async function getClickStats(profileId: string): Promise<{ total: ClickStats; week: ClickStats }> {
   const supabase = await getSupabaseServerClient();
   const weekAgo = new Date();
   weekAgo.setDate(weekAgo.getDate() - 7);
+  const weekAgoIso = weekAgo.toISOString();
 
-  const [totalRes, weekRes] = await Promise.all([
-    supabase.from("link_clicks").select("link_type").eq("profile_id", profileId),
-    supabase.from("link_clicks").select("link_type").eq("profile_id", profileId)
-      .gte("created_at", weekAgo.toISOString()),
+  const countQuery = (type: string, since?: string) => {
+    const q = supabase
+      .from("link_clicks")
+      .select("*", { count: "exact", head: true })
+      .eq("profile_id", profileId)
+      .eq("link_type", type);
+    return since ? q.gte("created_at", since) : q;
+  };
+
+  const [tKakao, tInsta, tPhone, wKakao, wInsta, wPhone] = await Promise.all([
+    countQuery("kakao"),
+    countQuery("instagram"),
+    countQuery("phone"),
+    countQuery("kakao", weekAgoIso),
+    countQuery("instagram", weekAgoIso),
+    countQuery("phone", weekAgoIso),
   ]);
 
-  return { total: sumClicks(totalRes.data), week: sumClicks(weekRes.data) };
+  return {
+    total: { kakao: tKakao.count ?? 0, instagram: tInsta.count ?? 0, phone: tPhone.count ?? 0 },
+    week:  { kakao: wKakao.count ?? 0, instagram: wInsta.count ?? 0, phone: wPhone.count ?? 0 },
+  };
 }
 
 type DailyBar = { label: string; total: number };

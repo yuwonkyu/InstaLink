@@ -1,4 +1,6 @@
+import { cache } from "react";
 import type { Metadata } from "next";
+import { after } from "next/server";
 import { notFound } from "next/navigation";
 import ProfilePage from "@/components/ProfilePage";
 import { getSupabaseServerClient } from "@/lib/supabase";
@@ -22,7 +24,8 @@ function getSiteUrl(): string {
   return getCanonicalSiteUrl();
 }
 
-async function getProfileBySlug(slug: string): Promise<Profile | null> {
+// cache()로 같은 요청 내 generateMetadata + SlugPage 간 DB 중복 호출 제거
+const getProfileBySlug = cache(async function getProfileBySlug(slug: string): Promise<Profile | null> {
   try {
     const supabase = await getSupabaseServerClient();
     const { data, error } = await supabase
@@ -91,7 +94,7 @@ async function getProfileBySlug(slug: string): Promise<Profile | null> {
     created_at: new Date().toISOString(),
     theme: localUser.options?.theme,
   } as Profile;
-}
+});
 
 export async function generateMetadata({
   params,
@@ -132,10 +135,12 @@ export default async function SlugPage({ params }: PageProps) {
   const profile = await getProfileBySlug(slug);
   const SITE = getSiteUrl();
 
-  // 조회수 증가 (서버리스 환경에서 fire-and-forget은 완료 보장 안 됨 → await 사용)
+  // 조회수 증가 — after()로 응답 후 실행해 TTFB 단축 (서버리스에서 완료 보장됨)
   if (profile?.is_active) {
-    const supabase = await getSupabaseServerClient();
-    await supabase.rpc("increment_view_count", { profile_slug: slug });
+    after(async () => {
+      const supabase = await getSupabaseServerClient();
+      await supabase.rpc("increment_view_count", { profile_slug: slug });
+    });
   }
 
   if (!profile) {
