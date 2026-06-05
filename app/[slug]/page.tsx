@@ -241,7 +241,7 @@ export default async function SlugPage({ params }: PageProps) {
           </a>
         </div>
       </div>
-      {(!profile.plan || profile.plan === "free") && <FreeCtaBanner />}
+      {(!profile.plan || profile.plan === "free" || profile.plan === "basic") && <FreeCtaBanner />}
     </main>
   );
 }

@@ -85,7 +85,7 @@ export async function signUp(formData: FormData) {
     );
   }
 
-  redirect("/auth/signup?success=1");
+  redirect(`/auth/check-email?email=${encodeURIComponent(email)}`);
 }
 
 // ──────────────────────────────────────────────
