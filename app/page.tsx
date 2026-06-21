@@ -359,6 +359,14 @@ export default function Page() {
           처음엔 무료로, 성장하면 그때 올리세요.
         </p>
 
+        {/* 이벤트 안내 — 히어로 배너와 메시지 일치 (Pro 평생 무료) */}
+        <div className="mt-4 flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-400 to-orange-400 px-4 py-3 shadow-[0_2px_12px_rgba(251,191,36,0.4)]">
+          <span className="text-base">🔥</span>
+          <span className="text-sm font-bold text-white">
+            지금 가입하면 아래 Pro 플랜을 평생 무료로 드려요
+          </span>
+        </div>
+
         {/* 플랜 카드 */}
         <div className="mt-6 grid gap-3 sm:grid-cols-3">
           {PLANS.map((plan) => {
