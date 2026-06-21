@@ -8,8 +8,8 @@ type Props = {
 };
 
 const PLAN_AMOUNTS: Record<string, { monthly: number; annual: number }> = {
-  basic: { monthly: 19900, annual: 199000 },
-  pro:   { monthly: 29900, annual: 299000 },
+  basic: { monthly: 4900, annual: 49000 },
+  pro:   { monthly: 7900, annual: 79000 },
 };
 
 function tossAuth() {

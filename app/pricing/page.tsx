@@ -30,8 +30,8 @@ const PLANS = [
   {
     key: "basic",
     label: "Basic",
-    monthly: 19900,
-    annual: 199000,
+    monthly: 4900,
+    annual: 49000,
     desc: "본격적으로 고객을 모으고 싶은 사장님을 위한 플랜",
     features: [
       "테마 3종 (라이트·다크·UCC)",
@@ -46,8 +46,8 @@ const PLANS = [
   {
     key: "pro",
     label: "Pro",
-    monthly: 29900,
-    annual: 299000,
+    monthly: 7900,
+    annual: 79000,
     desc: "데이터로 성장을 확인하고 싶은 사장님을 위한 플랜",
     features: [
       "Basic 모든 기능 + 테마 7종",

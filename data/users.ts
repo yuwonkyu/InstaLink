@@ -324,12 +324,12 @@ export const users: User[] = [
       },
       {
         name: "Basic 플랜",
-        price: "₩19,900 / 월",
+        price: "₩4,900 / 월",
         note: "테마 3종 · 갤러리 6장 · 서비스·후기 6개",
       },
       {
         name: "Pro 플랜",
-        price: "₩29,900 / 월",
+        price: "₩7,900 / 월",
         note: "테마 7종 · 방문자 통계 · AI 문구 추천 · 모든 기능",
       },
     ],
