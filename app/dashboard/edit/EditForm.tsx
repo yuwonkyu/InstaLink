@@ -4,13 +4,14 @@ import Link from "next/link";
 import { useState, useTransition, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { saveProfile, type SaveProfilePayload } from "./actions";
-import type { Profile, Service, Review, Theme, CustomLink, GalleryImage, BusinessHours, GalleryLayout } from "@/lib/types";
+import type { Profile, Service, Review, Theme, CustomLink, GalleryImage, BusinessHours, GalleryLayout, SocialLink } from "@/lib/types";
 import { PLAN_LIMITS, toPlanKey } from "@/lib/plan-limits";
 import { getFirstServiceValidationIssue, getServiceValidationMessage } from "@/lib/service-validation";
 import { validateProfileUrls } from "@/lib/url-validation";
 // BasicTab은 초기 화면에서 즉시 필요 → 정적 임포트 유지
 import BasicTab from "@/components/edit/tabs/BasicTab";
 import SaveSuccessModal from "@/components/edit/SaveSuccessModal";
+import SocialLinksEditor from "@/components/dashboard/SocialLinksEditor";
 import SaveErrorModal from "@/components/edit/SaveErrorModal";
 // 나머지 탭은 클릭 시점에만 필요 → 동적 임포트로 초기 번들에서 분리
 const DesignTab   = dynamic(() => import("@/components/edit/tabs/DesignTab"),   { loading: () => <TabLoading /> });
@@ -64,6 +65,7 @@ export default function EditForm({ profile, plan }: Props) {
   const [services,    setServices]    = useState<Service[]>(profile.services ?? []);
   const [reviews,     setReviews]     = useState<Review[]>(profile.reviews ?? []);
   const [customLinks, setCustomLinks] = useState<CustomLink[]>(profile.custom_links ?? []);
+  const [socialLinks, setSocialLinks] = useState<SocialLink[]>(profile.social_links ?? []);
   const [gallery,     setGallery]     = useState<GalleryImage[]>(profile.gallery ?? []);
 
   // ── Pro 전용 상태 ──
@@ -100,7 +102,7 @@ export default function EditForm({ profile, plan }: Props) {
     name, shopName, tagline, description, phoneUrl, instagramId,
     location, hours, imageUrl, theme, services, reviews, customLinks,
     gallery, parkingInfo, sectionOrder, buttonColor, buttonTextColor,
-    galleryLayout, businessHours,
+    galleryLayout, businessHours, socialLinks,
   ]);
 
   useEffect(() => {
@@ -189,6 +191,7 @@ export default function EditForm({ profile, plan }: Props) {
       instagram_id: instagramId,
       location, hours, image_url: imageUrl, theme, services, reviews,
       custom_links: customLinks,
+      social_links: socialLinks,
       gallery,
       parking_info: parkingInfo,
       section_order:     isProPlan  ? sectionOrder    : undefined,
@@ -343,6 +346,7 @@ export default function EditForm({ profile, plan }: Props) {
           aiLoading={aiLoading}
           onAISuggest={aiSuggest}
         />
+        <SocialLinksEditor socialLinks={socialLinks} setSocialLinks={setSocialLinks} />
         <DesignTab theme={theme} setTheme={setTheme} plan={plan} />
       </div>
 
