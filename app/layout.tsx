@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     siteName: "InstaLink",
     title: "7월 한정 · 지금 가입하면 Pro 평생 무료 — InstaLink",
     description:
-      "7월 31일까지 가입하면 Pro 플랜(월 29,900원)을 평생 무료로. 서비스·가격·후기·카카오 상담을 한 페이지에. 소상공인 인스타 링크 페이지.",
+      "7월 31일까지 가입하면 Pro 플랜(월 7,900원)을 평생 무료로. 서비스·가격·후기·카카오 상담을 한 페이지에. 소상공인 인스타 링크 페이지.",
     images: [
       {
         url: "/instalink_OG.png",

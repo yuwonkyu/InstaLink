@@ -127,8 +127,8 @@ export const PLAN_META: Record<
   },
   basic: {
     label: "Basic",
-    price: 19900,
-    annualPrice: 199000, // 월 19,900 × 10개월 (2개월 무료)
+    price: 4900,
+    annualPrice: 49000, // 월 4,900 × 10개월 (2개월 무료)
     features: [
       "테마 3종 (라이트·다크·UCC)",
       "서비스·후기 6개",
@@ -138,8 +138,8 @@ export const PLAN_META: Record<
   },
   pro: {
     label: "Pro",
-    price: 29900,
-    annualPrice: 299000, // 월 29,900 × 10개월 (2개월 무료)
+    price: 7900,
+    annualPrice: 79000, // 월 7,900 × 10개월 (2개월 무료)
     features: [
       "Basic 모든 기능 + 테마 7종",
       "방문자 통계 + 주간 리포트",

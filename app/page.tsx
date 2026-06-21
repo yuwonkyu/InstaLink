@@ -80,11 +80,6 @@ const landingJsonLd = {
       billingIncrement: "P1M",
     },
   ],
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.8",
-    ratingCount: "120",
-  },
 };
 
 const faqJsonLd = {
