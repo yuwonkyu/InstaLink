@@ -36,7 +36,6 @@ export type BasicTabProps = {
   location: string;      setLocation: (v: string) => void;
   hours: string;         setHours: (v: string) => void;
   parkingInfo: string;   setParkingInfo: (v: string) => void;
-  instagramId: string;   setInstaId: (v: string) => void;
   phoneUrl: string;      setPhoneUrl: (v: string) => void;
   imageUrl: string;      setImageUrl: (v: string) => void;
   customLinks: CustomLink[];  setCustomLinks: (v: CustomLink[]) => void;
@@ -51,7 +50,7 @@ export default function BasicTab({
   name, setName, shopName, setShopName,
   tagline, setTagline, description, setDesc,
   location, setLocation, hours, setHours,
-  parkingInfo, setParkingInfo, instagramId, setInstaId,
+  parkingInfo, setParkingInfo,
   phoneUrl, setPhoneUrl,
   imageUrl, setImageUrl,
   customLinks, setCustomLinks, linksLimit,
@@ -165,7 +164,6 @@ export default function BasicTab({
           <Field label="위치"            value={location}    onChange={setLocation}    placeholder="서울 서초구 방배동" maxLength={50} />
           <Field label="운영시간"         value={hours}       onChange={setHours}       placeholder="평일 07:00 ~ 21:00" maxLength={50} />
           <Field label="주차 안내 (선택)" value={parkingInfo} onChange={setParkingInfo}  placeholder="건물 내 무료 주차 2시간 · 발레파킹 가능" maxLength={80} />
-          <Field label="인스타그램 ID"    value={instagramId} onChange={setInstaId}     placeholder="fitwithji" maxLength={30} />
           <Field label="전화번호 (선택)"  value={phoneUrl}    onChange={setPhoneUrl}    placeholder="010-1234-5678" maxLength={20} />
         </div>
       </Section>

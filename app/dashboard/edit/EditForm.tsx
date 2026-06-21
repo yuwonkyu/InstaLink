@@ -54,7 +54,8 @@ export default function EditForm({ profile, plan }: Props) {
   const [tagline,     setTagline]     = useState(profile.tagline ?? "");
   const [description, setDesc]        = useState(profile.description ?? "");
   const [phoneUrl,    setPhoneUrl]    = useState(profile.phone_url ?? "");
-  const [instagramId, setInstaId]     = useState(profile.instagram_id ?? "");
+  // 인스타는 소셜 채널로 관리 — 입력란은 제거하되 기존 값은 보존해 저장·표시
+  const instagramId = profile.instagram_id ?? "";
   const [location,    setLocation]    = useState(profile.location ?? "");
   const [hours,       setHours]       = useState(profile.hours ?? "");
   const [imageUrl,    setImageUrl]    = useState(profile.image_url ?? "");
@@ -99,7 +100,7 @@ export default function EditForm({ profile, plan }: Props) {
     if (isFirstRender.current) { isFirstRender.current = false; return; }
     setIsDirty(true);
   }, [
-    name, shopName, tagline, description, phoneUrl, instagramId,
+    name, shopName, tagline, description, phoneUrl,
     location, hours, imageUrl, theme, services, reviews, customLinks,
     gallery, parkingInfo, sectionOrder, buttonColor, buttonTextColor,
     galleryLayout, businessHours, socialLinks,
@@ -336,7 +337,6 @@ export default function EditForm({ profile, plan }: Props) {
           location={location} setLocation={setLocation}
           hours={hours} setHours={setHours}
           parkingInfo={parkingInfo} setParkingInfo={setParkingInfo}
-          instagramId={instagramId} setInstaId={setInstaId}
           phoneUrl={phoneUrl} setPhoneUrl={setPhoneUrl}
           imageUrl={imageUrl} setImageUrl={setImageUrl}
           customLinks={customLinks} setCustomLinks={setCustomLinks}
