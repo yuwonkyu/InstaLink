@@ -6,10 +6,10 @@ import Link from "next/link";
 import type { Profile, BusinessHours } from "@/lib/types";
 import { PLAN_LIMITS, toPlanKey } from "@/lib/plan-limits";
 import {
-  toInstagramUrl, normalizeExternalHref, getAutoTextColor,
+  normalizeExternalHref, getAutoTextColor,
   groupBusinessHours, DAYS_KR,
 } from "@/lib/profile-utils";
-import { IconClock, IconPin, IconParking, IconInstagram } from "./profile/icons";
+import { IconClock, IconPin, IconParking } from "./profile/icons";
 import ProfileActions from "./profile/ProfileActions";
 import ProfileSections from "./profile/ProfileSections";
 import ProfileLightbox from "./profile/ProfileLightbox";
@@ -84,11 +84,6 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
       setLightboxIdx((i) => i !== null ? (i > 0 ? i - 1 : profile.gallery!.length - 1) : 0);
   }
 
-  const instagramHandle = profile.instagram_id.startsWith("@")
-    ? profile.instagram_id
-    : `@${profile.instagram_id}`;
-  const instagramUrl = toInstagramUrl(profile.instagram_id);
-
   const kakaoUrl         = normalizeExternalHref(profile.kakao_url);
   const kakaoBookingUrl  = normalizeExternalHref(profile.kakao_booking_url);
   const kakaoChannelUrl  = normalizeExternalHref(profile.kakao_channel_url);
@@ -100,7 +95,7 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
 
   const hasBusinessInfo =
     profile.hours || profile.business_hours || profile.location ||
-    profile.parking_info || profile.instagram_id || phoneNumber;
+    profile.parking_info || phoneNumber;
 
   return (
     <>
@@ -249,28 +244,6 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
                   <span>{profile.parking_info}</span>
                 </div>
               )}
-              {profile.instagram_id && (
-                <div className="flex items-center gap-2 text-sm text-(--muted)">
-                  <IconInstagram />
-                  <a
-                    href={instagramUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => {
-                      if (profile.id) {
-                        fetch("/api/track/click", {
-                          method: "POST",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({ profileId: profile.id, linkType: "instagram" }),
-                        }).catch(() => {});
-                      }
-                    }}
-                    className="hover:underline"
-                  >
-                    {instagramHandle}
-                  </a>
-                </div>
-              )}
               {phoneNumber && phoneTel && (
                 <div className="flex items-center gap-2 text-sm text-(--muted)">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 opacity-60" aria-hidden="true">
@@ -283,9 +256,9 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
           </>
         )}
 
-        {/* ── 소셜 채널 ── */}
-        {profile.social_links && profile.social_links.length > 0 && (
-          <ProfileSocial links={profile.social_links} />
+        {/* ── 소셜 채널 (기존 instagram_id는 폴백으로 인스타 아이콘 표시) ── */}
+        {(profile.social_links?.length || profile.instagram_id) && (
+          <ProfileSocial links={profile.social_links ?? []} instagramId={profile.instagram_id} profileId={profile.id} />
         )}
       </section>
 
