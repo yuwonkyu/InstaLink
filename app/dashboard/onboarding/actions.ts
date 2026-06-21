@@ -15,8 +15,8 @@ export type Step1Payload = {
   image_url: string;
 };
 
-// 2026-06-30까지 신규 가입자는 Pro(MVP) 무료 승격
-const MVP_CUTOFF = new Date("2026-07-01T00:00:00+09:00");
+// 2026-07-31까지 신규 가입자는 Pro(MVP) 무료 승격 (이벤트 배너와 동일 — app/page.tsx, app/layout.tsx)
+const MVP_CUTOFF = new Date("2026-08-01T00:00:00+09:00");
 
 export async function saveOnboardingStep1(payload: Step1Payload) {
   const supabase = await getSupabaseServerClient();
