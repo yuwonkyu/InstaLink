@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getSupabaseServerClient } from "@/lib/supabase";
-import type { Service, Review, Theme, CustomLink, GalleryImage, GalleryLayout, BusinessHours } from "@/lib/types";
+import type { Service, Review, Theme, CustomLink, GalleryImage, GalleryLayout, BusinessHours, SocialLink } from "@/lib/types";
 import { validateServicesOrThrow } from "@/lib/service-validation";
 
 function isSafeUrl(url: string): boolean {
@@ -91,6 +91,7 @@ export type SaveProfilePayload = {
   button_text_color?: string;
   gallery_layout?: GalleryLayout;
   business_hours?: BusinessHours;
+  social_links?: SocialLink[];
 };
 
 export async function saveProfile(payload: SaveProfilePayload) {
@@ -107,6 +108,11 @@ export async function saveProfile(payload: SaveProfilePayload) {
   // URL 화이트리스트 검증 (javascript:, data: 등 차단)
   for (const link of payload.custom_links ?? []) {
     if (link.url && !isSafeUrl(link.url)) throw new Error("링크에 허용되지 않는 URL이 포함되어 있습니다.");
+  }
+
+  // 소셜 채널 URL 검증
+  for (const social of payload.social_links ?? []) {
+    if (social.url && !isSafeUrl(social.url)) throw new Error("소셜 채널에 허용되지 않는 URL이 포함되어 있습니다.");
   }
 
   // 인스타그램 아이디: 영문·숫자·밑줄·점만 허용 (1~30자)
@@ -132,6 +138,7 @@ export async function saveProfile(payload: SaveProfilePayload) {
       services: safeServices,
       reviews: payload.reviews,
       custom_links: payload.custom_links,
+      social_links: payload.social_links ?? [],
       gallery: payload.gallery,
       parking_info: payload.parking_info?.trim() || null,
       section_order: payload.section_order?.length ? payload.section_order : null,

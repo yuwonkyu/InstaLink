@@ -13,6 +13,7 @@ import { IconClock, IconPin, IconParking, IconInstagram } from "./profile/icons"
 import ProfileActions from "./profile/ProfileActions";
 import ProfileSections from "./profile/ProfileSections";
 import ProfileLightbox from "./profile/ProfileLightbox";
+import ProfileSocial from "./profile/ProfileSocial";
 import { getCloudinaryUrl } from "@/lib/cloudinary";
 
 type ProfilePageProps = { profile: Profile };
@@ -280,6 +281,11 @@ export default function ProfilePage({ profile }: ProfilePageProps) {
               )}
             </div>
           </>
+        )}
+
+        {/* ── 소셜 채널 ── */}
+        {profile.social_links && profile.social_links.length > 0 && (
+          <ProfileSocial links={profile.social_links} />
         )}
       </section>
 
