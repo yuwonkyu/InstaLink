@@ -21,6 +21,9 @@ export const metadata: Metadata = {
 
 const PLANS: Plan[] = ["free", "basic", "pro"];
 
+// 실고객 후기 확보 전까지 후기 섹션 숨김 — 복구하려면 true로 변경
+const SHOW_TESTIMONIALS = false;
+
 // ── 서브 컴포넌트 ────────────────────────────────────────────
 function CheckIcon() {
   return (
@@ -473,9 +476,10 @@ export default function Page() {
         </div>
       </section>
 
-      {/* 후기 */}
+      {/* 후기 섹션 — 실고객 후기 확보 전까지 숨김 (SHOW_TESTIMONIALS) */}
+      {SHOW_TESTIMONIALS && (
       <section className="mx-auto w-full max-w-6xl px-4 pb-14 sm:px-6">
-        <h2 className="text-xl font-bold sm:text-2xl">실제 사용자 후기</h2>
+        <h2 className="text-xl font-bold sm:text-2xl">사용자 후기</h2>
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
           {TESTIMONIALS.map((t) => (
             <blockquote
@@ -492,6 +496,7 @@ export default function Page() {
           ))}
         </div>
       </section>
+      )}
 
       {/* FAQ */}
       <section className="mx-auto w-full max-w-6xl px-4 pb-14 sm:px-6">
