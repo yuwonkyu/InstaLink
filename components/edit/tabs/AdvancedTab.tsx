@@ -1,5 +1,8 @@
+"use client";
+
 import Section from "@/components/edit/Section";
 import type { GalleryLayout } from "@/lib/types";
+import { useDragReorder } from "@/lib/use-drag-reorder";
 
 export type AdvancedTabProps = {
   isProPlan: boolean;
@@ -22,6 +25,7 @@ export default function AdvancedTab({
   buttonColor, setButtonColor,
   buttonTextColor, setButtonTextColor,
 }: AdvancedTabProps) {
+  const { dragIdx, overIdx, dragProps } = useDragReorder(sectionOrder, setSectionOrder);
   if (!isProPlan) return null;
 
   return (
@@ -37,11 +41,14 @@ export default function AdvancedTab({
       {/* ── 섹션 순서 ── */}
       <Section title="섹션 순서 (Pro)">
         <div className="flex flex-col gap-2">
-          <p className="text-xs text-(--muted)">↑ ↓ 버튼으로 공개 페이지의 섹션 순서를 조정하세요.</p>
+          <p className="text-xs text-(--muted)">드래그하거나 ↑ ↓ 버튼으로 공개 페이지의 섹션 순서를 조정하세요.</p>
           {sectionOrder.map((key, idx) => (
             <div
               key={key}
-              className="flex items-center justify-between rounded-xl bg-(--secondary) px-4 py-2.5"
+              {...dragProps(idx)}
+              className={`flex items-center justify-between rounded-xl bg-(--secondary) px-4 py-2.5 cursor-grab active:cursor-grabbing ${
+                dragIdx === idx ? "opacity-50" : ""
+              } ${overIdx === idx && dragIdx !== idx ? "ring-2 ring-blue-400" : ""}`}
             >
               <span className="text-sm font-medium text-foreground">
                 {SECTION_LABEL[key] ?? key}

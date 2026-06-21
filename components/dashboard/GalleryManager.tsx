@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { CldUploadWidget } from "next-cloudinary";
 import type { GalleryImage } from "@/lib/types";
+import { useDragReorder } from "@/lib/use-drag-reorder";
 
 const DEFAULT_MAX_GALLERY = 15;
 
@@ -28,6 +29,8 @@ export default function GalleryManager({ images, onChange, limit }: Props) {
 
   // 위젯이 열려있는 동안 업로드된 이미지를 임시 보관 → 닫을 때 일괄 추가
   const pendingRef = useRef<GalleryImage[]>([]);
+
+  const { dragIdx, overIdx, dragProps } = useDragReorder(images, onChange);
 
   function remove(idx: number) {
     onChange(images.filter((_, i) => i !== idx));
@@ -70,7 +73,15 @@ export default function GalleryManager({ images, onChange, limit }: Props) {
       {images.length > 0 && (
         <div className="grid grid-cols-3 gap-2">
           {images.map((img, idx) => (
-            <div key={img.url + idx} className="flex flex-col gap-1">
+            <div
+              key={img.url + idx}
+              {...(editIdx === idx ? {} : dragProps(idx))}
+              className={`flex flex-col gap-1 ${
+                editIdx === idx ? "" : "cursor-grab active:cursor-grabbing"
+              } ${dragIdx === idx ? "opacity-50" : ""} ${
+                overIdx === idx && dragIdx !== idx ? "rounded-xl ring-2 ring-blue-400" : ""
+              }`}
+            >
               <div className="relative aspect-square overflow-hidden rounded-xl border border-gray-200 bg-gray-50 group">
                 <Image
                   src={img.url}
@@ -196,7 +207,7 @@ export default function GalleryManager({ images, onChange, limit }: Props) {
       )}
 
       <p className="text-xs text-(--muted)">
-        작업물·매장 사진을 올리면 고객 신뢰도가 높아집니다. 사진 위에 마우스를 올리면 순서 변경·캡션·삭제가 가능합니다.
+        작업물·매장 사진을 올리면 고객 신뢰도가 높아집니다. 사진을 드래그해 순서를 바꾸거나, 마우스를 올려 ← → 버튼·캡션·삭제를 사용하세요.
       </p>
     </div>
   );

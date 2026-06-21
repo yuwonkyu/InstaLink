@@ -5,6 +5,7 @@ import Image from "next/image";
 import { CldUploadWidget } from "next-cloudinary";
 import type { CustomLink, CustomLinkStyle } from "@/lib/types";
 import { getLinkTitle } from "@/lib/types";
+import { useDragReorder } from "@/lib/use-drag-reorder";
 
 const TITLE_MAX = 40;
 const URL_MAX   = 500;
@@ -40,6 +41,7 @@ export default function LinkManager({ links, limit, onChange }: Props) {
   const [form,    setForm]    = useState<FormState>(EMPTY_FORM);
   const [editIdx, setEditIdx] = useState<number | null>(null);
   const [editForm, setEditForm] = useState<FormState>(EMPTY_FORM);
+  const { dragIdx, overIdx, dragProps } = useDragReorder(links, onChange);
 
   const atLimit = limit !== undefined && limit !== Infinity && links.length >= limit;
 
@@ -103,7 +105,15 @@ export default function LinkManager({ links, limit, onChange }: Props) {
       {links.length > 0 && (
         <ul className="flex flex-col gap-2">
           {links.map((link, idx) => (
-            <li key={idx} className="rounded-xl bg-(--secondary) px-3.5 py-2.5">
+            <li
+              key={idx}
+              {...(editIdx === idx ? {} : dragProps(idx))}
+              className={`rounded-xl bg-(--secondary) px-3.5 py-2.5 transition-shadow ${
+                editIdx === idx ? "" : "cursor-grab active:cursor-grabbing"
+              } ${dragIdx === idx ? "opacity-50" : ""} ${
+                overIdx === idx && dragIdx !== idx ? "ring-2 ring-blue-400" : ""
+              }`}
+            >
               {editIdx === idx ? (
                 <LinkForm
                   form={editForm}
