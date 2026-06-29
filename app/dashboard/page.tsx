@@ -12,6 +12,7 @@ import DeleteAccountButton  from "@/components/dashboard/DeleteAccountButton";
 import AvailabilityToggle   from "@/components/dashboard/AvailabilityToggle";
 import ReviewLinkCard       from "@/components/dashboard/ReviewLinkCard";
 import DashboardGuideWidget from "@/components/dashboard/DashboardGuideWidget";
+import QuickStartCard       from "@/components/dashboard/QuickStartCard";
 
 // qrcode 라이브러리·모달은 초기 번들에서 분리해 첫 로드 속도 개선 (lazy chunk)
 const QRCodeCard      = dynamic(() => import("@/components/dashboard/QRCodeCard"));
@@ -142,6 +143,14 @@ export default async function DashboardPage({
 
   return (
     <div className="flex flex-col gap-6">
+      {/* 비공개 상태 — 빠른 공개 유도 (온보딩 건너뛴 사용자 등) */}
+      {profile && !profile.is_active && (
+        <QuickStartCard
+          defaultName={profile.name ?? ""}
+          defaultShopName={profile.shop_name ?? ""}
+        />
+      )}
+
       {/* 온보딩 완료 배너 */}
       {onboarded === "1" && profile && (
         <div className="rounded-2xl bg-green-50 border border-green-100 p-4">

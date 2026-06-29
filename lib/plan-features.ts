@@ -20,5 +20,7 @@ export const PLAN_FEATURE_ROWS: PlanFeatureRow[] = [
   { label: "주간 리포트 이메일", free: false, basic: false, pro: true },
   { label: "AI 문구 추천", free: false, basic: false, pro: true },
   { label: "섹션 순서 변경", free: false, basic: false, pro: true },
+  { label: "배경·글자·포인트 색상 커스텀", free: false, basic: false, pro: true },
+  { label: "폰트 선택", free: false, basic: false, pro: true },
   { label: "버튼 컬러 커스텀", free: false, basic: false, pro: true },
 ];

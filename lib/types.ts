@@ -108,6 +108,12 @@ export type Profile = {
   business_hours?: BusinessHours | null; // Basic+: 요일별 영업시간
   social_links?: SocialLink[] | null; // 소셜 채널 아이콘 줄 (유튜브·틱톡·블로그 등)
   is_mvp?: boolean | null; // 얼리어답터 무료 Pro 혜택 대상
+  // ── Pro: 풀 디자인 커스텀 (테마 위에 인라인 CSS 변수로 덮어씀) ──
+  bg_color?: string | null;     // Pro: 페이지 배경색 (--base / --secondary)
+  card_color?: string | null;   // Pro: 카드·섹션 배경색 (--card)
+  text_color?: string | null;   // Pro: 본문 글자색 (--foreground, --muted 파생)
+  accent_color?: string | null; // Pro: 포인트색 (--third)
+  font_key?: string | null;     // Pro: 폰트 선택 (lib/fonts.ts FontKey)
 };
 
 export type Subscription = {
@@ -159,6 +165,7 @@ export const PLAN_META: Record<
       "Basic 모든 기능 + 테마 7종",
       "방문자 통계 + 주간 리포트",
       "AI 문구 추천",
+      "색상·폰트 자유 커스텀 (배경·글자·포인트)",
       "섹션 순서·버튼 색상 커스텀",
     ],
   },

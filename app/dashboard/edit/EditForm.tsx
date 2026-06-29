@@ -15,6 +15,7 @@ import SocialLinksEditor from "@/components/dashboard/SocialLinksEditor";
 import SaveErrorModal from "@/components/edit/SaveErrorModal";
 // 나머지 탭은 클릭 시점에만 필요 → 동적 임포트로 초기 번들에서 분리
 const DesignTab   = dynamic(() => import("@/components/edit/tabs/DesignTab"),   { loading: () => <TabLoading /> });
+const AppearanceCustomizer = dynamic(() => import("@/components/dashboard/AppearanceCustomizer"), { loading: () => <TabLoading /> });
 const ServiceTab  = dynamic(() => import("@/components/edit/tabs/ServiceTab"),  { loading: () => <TabLoading /> });
 const ContentTab  = dynamic(() => import("@/components/edit/tabs/ContentTab"),  { loading: () => <TabLoading /> });
 const AdvancedTab = dynamic(() => import("@/components/edit/tabs/AdvancedTab"), { loading: () => <TabLoading /> });
@@ -74,6 +75,12 @@ export default function EditForm({ profile, plan }: Props) {
   const [buttonColor,     setButtonColor]     = useState(profile.button_color ?? "");
   const [buttonTextColor, setButtonTextColor] = useState(profile.button_text_color ?? "");
   const [galleryLayout,   setGalleryLayout]   = useState<GalleryLayout>(profile.gallery_layout ?? "grid3");
+  // ── Pro: 색상·폰트 풀 커스텀 ──
+  const [bgColor,     setBgColor]     = useState(profile.bg_color ?? "");
+  const [cardColor,   setCardColor]   = useState(profile.card_color ?? "");
+  const [textColor,   setTextColor]   = useState(profile.text_color ?? "");
+  const [accentColor, setAccentColor] = useState(profile.accent_color ?? "");
+  const [fontKey,     setFontKey]     = useState(profile.font_key ?? "");
 
   // ── Basic+ 상태 ──
   const [businessHours, setBusinessHours] = useState<BusinessHours>(profile.business_hours ?? {});
@@ -104,6 +111,7 @@ export default function EditForm({ profile, plan }: Props) {
     location, hours, imageUrl, theme, services, reviews, customLinks,
     gallery, parkingInfo, sectionOrder, buttonColor, buttonTextColor,
     galleryLayout, businessHours, socialLinks,
+    bgColor, cardColor, textColor, accentColor, fontKey,
   ]);
 
   useEffect(() => {
@@ -200,6 +208,11 @@ export default function EditForm({ profile, plan }: Props) {
       button_text_color: isProPlan  ? buttonTextColor : undefined,
       gallery_layout:    isProPlan  ? galleryLayout   : undefined,
       business_hours:    isPaidPlan ? businessHours   : undefined,
+      bg_color:          isProPlan  ? bgColor         : undefined,
+      card_color:        isProPlan  ? cardColor       : undefined,
+      text_color:        isProPlan  ? textColor       : undefined,
+      accent_color:      isProPlan  ? accentColor     : undefined,
+      font_key:          isProPlan  ? fontKey         : undefined,
     };
     startTransition(async () => {
       try {
@@ -348,6 +361,16 @@ export default function EditForm({ profile, plan }: Props) {
         />
         <SocialLinksEditor socialLinks={socialLinks} setSocialLinks={setSocialLinks} />
         <DesignTab theme={theme} setTheme={setTheme} plan={plan} />
+        <AppearanceCustomizer
+          isProPlan={isProPlan}
+          bgColor={bgColor}         setBgColor={setBgColor}
+          cardColor={cardColor}     setCardColor={setCardColor}
+          textColor={textColor}     setTextColor={setTextColor}
+          accentColor={accentColor} setAccentColor={setAccentColor}
+          fontKey={fontKey}         setFontKey={setFontKey}
+          buttonColor={buttonColor}         setButtonColor={setButtonColor}
+          buttonTextColor={buttonTextColor} setButtonTextColor={setButtonTextColor}
+        />
       </div>
 
       {/* 🔗 서비스·메뉴 */}
@@ -380,8 +403,6 @@ export default function EditForm({ profile, plan }: Props) {
           isProPlan={isProPlan}
           sectionOrder={sectionOrder} setSectionOrder={setSectionOrder}
           galleryLayout={galleryLayout} setGalleryLayout={setGalleryLayout}
-          buttonColor={buttonColor} setButtonColor={setButtonColor}
-          buttonTextColor={buttonTextColor} setButtonTextColor={setButtonTextColor}
         />
       </div>
 

@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { getSupabaseServerClient } from "@/lib/supabase";
 import type { Service, Review, Theme, CustomLink, GalleryImage, GalleryLayout, BusinessHours, SocialLink } from "@/lib/types";
 import { validateServicesOrThrow } from "@/lib/service-validation";
+import { isValidFontKey } from "@/lib/fonts";
 
 function isSafeUrl(url: string): boolean {
   if (!url) return true;
@@ -92,7 +93,19 @@ export type SaveProfilePayload = {
   gallery_layout?: GalleryLayout;
   business_hours?: BusinessHours;
   social_links?: SocialLink[];
+  bg_color?: string;
+  card_color?: string;
+  text_color?: string;
+  accent_color?: string;
+  font_key?: string;
 };
+
+// 색상 입력 정규화: #rrggbb 형식만 허용, 그 외는 null
+function safeHexOrNull(v?: string): string | null {
+  const t = v?.trim();
+  if (!t) return null;
+  return /^#[0-9a-fA-F]{6}$/.test(t) ? t.toLowerCase() : null;
+}
 
 export async function saveProfile(payload: SaveProfilePayload) {
   const supabase = await getSupabaseServerClient();
@@ -146,6 +159,11 @@ export async function saveProfile(payload: SaveProfilePayload) {
       button_text_color: payload.button_text_color?.trim() || null,
       gallery_layout: payload.gallery_layout ?? null,
       business_hours: payload.business_hours ?? null,
+      bg_color:     safeHexOrNull(payload.bg_color),
+      card_color:   safeHexOrNull(payload.card_color),
+      text_color:   safeHexOrNull(payload.text_color),
+      accent_color: safeHexOrNull(payload.accent_color),
+      font_key:     isValidFontKey(payload.font_key) ? payload.font_key : null,
       is_active: true, // 저장하면 페이지 공개
     })
     .eq("owner_id", user.id);

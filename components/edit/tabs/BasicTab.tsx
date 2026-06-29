@@ -8,6 +8,7 @@ import Field from "@/components/edit/Field";
 import HintPanel from "@/components/edit/HintPanel";
 import LinkManager from "@/components/dashboard/LinkManager";
 import type { CustomLink } from "@/lib/types";
+import { getLinkTitle } from "@/lib/types";
 
 // ── 최근 이미지 (localStorage) ──────────────────────────
 const RECENT_IMG_KEY = "instalink_recent_images";
@@ -60,6 +61,12 @@ export default function BasicTab({
   const [showTaglineHints, setShowTaglineHints] = useState(false);
   const [showDescHints,    setShowDescHints]    = useState(false);
   const [recentImages, setRecentImages] = useState<string[]>(getRecentImages);
+
+  // 가입 시 자동으로 넣어둔 예시 링크가 아직 남아 있는지 (남아 있으면 교체 안내)
+  const hasExampleLinks = customLinks.some((l) => {
+    const t = getLinkTitle(l);
+    return t === "InstaLink 대시보드" || (t === "인스타그램" && l.url === "https://instagram.com");
+  });
 
   return (
     <>
@@ -244,6 +251,13 @@ export default function BasicTab({
             카카오 오픈채팅, 네이버 예약, 블로그 등 고객에게 보여줄 링크를 자유롭게 추가하세요. 스타일도 선택할 수 있어요.
           </p>
         </div>
+        {hasExampleLinks && (
+          <div className="mb-3 rounded-xl bg-amber-50 border border-amber-100 px-3.5 py-2.5">
+            <p className="text-xs text-amber-800 leading-relaxed">
+              ✏️ 지금은 <b>예시 링크</b>가 들어 있어요. 카카오 오픈채팅·예약 링크 등 <b>내 실제 링크</b>로 바꾸거나 삭제해주세요.
+            </p>
+          </div>
+        )}
         <LinkManager links={customLinks} limit={linksLimit} onChange={setCustomLinks} />
       </Section>
     </>

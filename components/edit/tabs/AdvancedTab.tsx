@@ -8,8 +8,6 @@ export type AdvancedTabProps = {
   isProPlan: boolean;
   sectionOrder: string[];        setSectionOrder: (v: string[]) => void;
   galleryLayout: GalleryLayout;  setGalleryLayout: (v: GalleryLayout) => void;
-  buttonColor: string;           setButtonColor: (v: string) => void;
-  buttonTextColor: string;       setButtonTextColor: (v: string) => void;
 };
 
 const SECTION_LABEL: Record<string, string> = {
@@ -22,8 +20,6 @@ export default function AdvancedTab({
   isProPlan,
   sectionOrder, setSectionOrder,
   galleryLayout, setGalleryLayout,
-  buttonColor, setButtonColor,
-  buttonTextColor, setButtonTextColor,
 }: AdvancedTabProps) {
   const { dragIdx, overIdx, dragProps } = useDragReorder(sectionOrder, setSectionOrder);
   if (!isProPlan) return null;
@@ -34,7 +30,7 @@ export default function AdvancedTab({
       <div className="rounded-xl bg-blue-50 border border-blue-100 px-3.5 py-3">
         <p className="text-xs font-semibold text-blue-800">💡 TIP</p>
         <p className="mt-0.5 text-xs text-blue-700 leading-relaxed">
-          버튼 컬러로 브랜드 포인트 색상을 적용하고, 섹션 순서를 조정해 가장 보여주고 싶은 내용을 위쪽에 올릴 수 있어요.
+          섹션 순서를 조정해 가장 보여주고 싶은 내용을 위쪽에 올리고, 갤러리 표시 방식을 골라보세요. (색상·폰트·버튼색은 「내 페이지」 탭의 색상·폰트 꾸미기에서 바꿔요.)
         </p>
       </div>
 
@@ -112,67 +108,6 @@ export default function AdvancedTab({
               </span>
             </button>
           ))}
-        </div>
-      </Section>
-
-      {/* ── 버튼 컬러 커스텀 ── */}
-      <Section title="버튼 컬러 커스텀 (Pro)">
-        <div className="flex flex-col gap-4">
-          {/* 배경색 */}
-          <div className="flex flex-col gap-2">
-            <p className="text-xs font-medium text-(--muted)">버튼 배경색</p>
-            <p className="text-xs text-(--muted)">커스텀 링크·전화 버튼의 배경 컬러를 선택하세요.</p>
-            <div className="flex items-center gap-3">
-              <input
-                type="color"
-                value={buttonColor || "#111827"}
-                onChange={(e) => setButtonColor(e.target.value)}
-                className="h-10 w-12 cursor-pointer rounded-lg border border-gray-200 p-0.5"
-              />
-              <span className="text-sm font-mono text-foreground">{buttonColor || "#111827"}</span>
-              {buttonColor && (
-                <button
-                  type="button"
-                  onClick={() => setButtonColor("")}
-                  className="text-xs text-(--muted) hover:text-foreground"
-                >
-                  초기화
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* 텍스트색 */}
-          <div className="flex flex-col gap-2">
-            <p className="text-xs font-medium text-(--muted)">버튼 텍스트 색</p>
-            <p className="text-xs text-(--muted)">배경색에 맞게 텍스트 색을 선택하세요. (기본: 흰색)</p>
-            <div className="flex items-center gap-3">
-              <input
-                type="color"
-                value={buttonTextColor || "#ffffff"}
-                onChange={(e) => setButtonTextColor(e.target.value)}
-                className="h-10 w-12 cursor-pointer rounded-lg border border-gray-200 p-0.5"
-              />
-              <span className="text-sm font-mono text-foreground">{buttonTextColor || "#ffffff"}</span>
-              {buttonTextColor && (
-                <button
-                  type="button"
-                  onClick={() => setButtonTextColor("")}
-                  className="text-xs text-(--muted) hover:text-foreground"
-                >
-                  초기화 (흰색)
-                </button>
-              )}
-            </div>
-            {buttonColor && (
-              <div
-                className="flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold"
-                style={{ backgroundColor: buttonColor, color: buttonTextColor || "#ffffff" }}
-              >
-                버튼 미리보기
-              </div>
-            )}
-          </div>
         </div>
       </Section>
     </>

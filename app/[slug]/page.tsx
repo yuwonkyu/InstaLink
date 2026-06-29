@@ -1,4 +1,5 @@
 import { cache } from "react";
+import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import { after } from "next/server";
 import { notFound } from "next/navigation";
@@ -10,6 +11,7 @@ import ShareButton from "./ShareButton";
 import FreeCtaBanner from "./FreeCtaBanner";
 import SamplePlanBanner from "./SamplePlanBanner";
 import { toPlanKey } from "@/lib/plan-limits";
+import { getFontOption } from "@/lib/fonts";
 import { COMPANY_INFO } from "@/lib/company-info";
 import { getSiteUrl as getCanonicalSiteUrl } from "@/lib/site-url";
 
@@ -154,6 +156,32 @@ export default async function SlugPage({ params }: PageProps) {
   const themeClass =
     profile.theme && profile.theme !== "light" ? `theme-${profile.theme}` : "";
 
+  // ── Pro 풀 디자인 커스텀 — 테마 위에 인라인 CSS 변수로 덮어씀 ──
+  const isProProfile = toPlanKey(profile.plan) === "pro";
+  const customFont = isProProfile ? getFontOption(profile.font_key) : null;
+  const cssVars: Record<string, string> = {};
+  if (isProProfile) {
+    const bg = profile.bg_color?.trim();
+    const card = profile.card_color?.trim();
+    const text = profile.text_color?.trim();
+    const accent = profile.accent_color?.trim();
+    if (bg) {
+      cssVars["--base"] = bg;
+      cssVars["--secondary"] = bg;
+    }
+    if (card) cssVars["--card"] = card;
+    if (text) {
+      cssVars["--foreground"] = text;
+      cssVars["--muted"] = `color-mix(in srgb, ${text} 62%, transparent)`;
+    }
+    if (accent) cssVars["--third"] = accent;
+    if (customFont) {
+      cssVars["--font-body"] = customFont.stack;
+      cssVars["--font-display"] = customFont.stack;
+    }
+  }
+  const hasCustomStyle = Object.keys(cssVars).length > 0;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
@@ -213,7 +241,12 @@ export default async function SlugPage({ params }: PageProps) {
   return (
     <main
       className={`flex min-h-screen w-full flex-col items-center bg-(--secondary) px-4 py-6 sm:px-6 ${themeClass}`}
+      style={hasCustomStyle ? (cssVars as CSSProperties) : undefined}
     >
+      {/* Pro 커스텀 폰트 — 선택된 경우에만 로드 (React 19가 <head>로 호이스팅) */}
+      {customFont?.googleHref && (
+        <link rel="stylesheet" href={customFont.googleHref} precedence="high" />
+      )}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
