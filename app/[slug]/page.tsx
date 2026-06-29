@@ -153,18 +153,17 @@ export default async function SlugPage({ params }: PageProps) {
     notFound();
   }
 
-  const themeClass =
-    profile.theme && profile.theme !== "light" ? `theme-${profile.theme}` : "";
-
   // ── Pro 풀 디자인 커스텀 — 테마 위에 인라인 CSS 변수로 덮어씀 ──
   const isProProfile = toPlanKey(profile.plan) === "pro";
   const customFont = isProProfile ? getFontOption(profile.font_key) : null;
   const cssVars: Record<string, string> = {};
+  let useCustomColors = false;
   if (isProProfile) {
     const bg = profile.bg_color?.trim();
     const card = profile.card_color?.trim();
     const text = profile.text_color?.trim();
     const accent = profile.accent_color?.trim();
+    useCustomColors = !!(bg || card || text || accent);
     if (bg) {
       cssVars["--base"] = bg;
       cssVars["--secondary"] = bg;
@@ -178,9 +177,17 @@ export default async function SlugPage({ params }: PageProps) {
     if (customFont) {
       cssVars["--font-body"] = customFont.stack;
       cssVars["--font-display"] = customFont.stack;
+      // body가 이미 계산한 폰트를 자식이 상속하므로, main에 직접 지정해야 링크 등 모든 텍스트에 적용됨
+      cssVars["fontFamily"] = customFont.stack;
     }
   }
   const hasCustomStyle = Object.keys(cssVars).length > 0;
+
+  // 테마와 커스텀 색상은 둘 중 하나만 적용 — 커스텀 색상이 있으면 테마(그라데이션·색) 미적용
+  const themeClass =
+    !useCustomColors && profile.theme && profile.theme !== "light"
+      ? `theme-${profile.theme}`
+      : "";
 
   const jsonLd = {
     "@context": "https://schema.org",

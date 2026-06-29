@@ -44,7 +44,7 @@ export async function publishQuickStart(payload: QuickStartPayload) {
     const base = getExampleLinks(getSiteUrl(), current?.instagram_id);
     seededLinks =
       primary && !isKakao
-        ? [{ title: "문의하기", url: primary, style: "card" as const }, ...base]
+        ? [{ title: "문의하기", url: primary, style: "text" as const }, ...base]
         : base;
   }
 
