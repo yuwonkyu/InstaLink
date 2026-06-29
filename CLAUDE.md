@@ -25,6 +25,8 @@ Phase A~C 로드맵 완료. 다음 단계는 Phase D (첫 20명 유료 고객 �
 - 로그인 없이 데모 체험 (`app/demo/page.tsx`)
 - 관리자 대시보드, 레퍼럴, QR코드, 주간 리포트 이메일, AI 소개글 추천
 - SEO: 업종별 카테고리 7개, JSON-LD, sitemap, GA4
+- Pro 풀 디자인 커스텀 (배경·카드·글자·포인트 색상 + 폰트 4종, 프리셋 우선 UX — `components/dashboard/AppearanceCustomizer.tsx`, 공개 페이지는 `app/[slug]/page.tsx`에서 CSS 변수 주입)
+- 신규 가입 게시 유도 (비공개 시 대시보드 `QuickStartCard` 인라인 공개) + 첫 페이지 예시 링크 2개 자동 시드 (`lib/example-links.ts`)
 
 ## 기술 스택
 - **Framework**: Next.js App Router (TypeScript)
@@ -75,7 +77,15 @@ services     jsonb                  -- [{name, price, note}]
 reviews      jsonb                  -- [{text, author}]
 is_active    boolean default true   -- 결제 상태 연동
 created_at   timestamptz default now()
+-- Pro 풀 디자인 커스텀 (테마 위에 CSS 변수로 덮어씀, 모두 nullable)
+bg_color     text                   -- 배경색 (--base/--secondary)
+card_color   text                   -- 카드·섹션색 (--card)
+text_color   text                   -- 글자색 (--foreground, --muted 파생)
+accent_color text                   -- 포인트색 (--third)
+font_key     text                   -- 폰트 키 (lib/fonts.ts: pretendard|gowun|jua|nanummyeongjo)
+-- 그 외 기존 Pro/Basic 커스텀: button_color, button_text_color, section_order, gallery_layout, business_hours, social_links 등 (lib/types.ts 참조)
 ```
+> 새 컬럼 마이그레이션: `supabase/migrations/add_appearance_customization.sql` (배포 전 Supabase에서 실행 필요)
 
 ## 코드 작성 규칙
 - `any` 타입 절대 금지 — 반드시 `lib/types.ts`의 타입 사용
@@ -112,8 +122,9 @@ Phase A~C 완료. 현재는 Phase D (첫 유료 고객 확보) 단계.
 
 ## Supabase GRANT 대응 필요 (2026-10-30 기한)
 Supabase가 2026-10-30부터 public schema 테이블에 명시적 GRANT를 요구함.
-현재 모든 SQL 파일에 GRANT 구문 없음 — 기한 전 추가 필요.
-대상 테이블: `profiles`, `subscriptions`, `link_clicks`, `referral_events`, `feedback_ratings`, `deleted_accounts`
+기한 전 추가 필요.
+- ✅ `profiles` — `supabase/migrations/add_appearance_customization.sql`에 GRANT 포함 (이 마이그레이션 실행 시 반영)
+- ⏳ 남은 대상: `subscriptions`, `link_clicks`, `referral_events`, `feedback_ratings`, `deleted_accounts`
 ```sql
 grant select on public.{table} to anon;
 grant select, insert, update, delete on public.{table} to authenticated;
