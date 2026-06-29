@@ -97,7 +97,7 @@ function CardLink({
         style={
           btnColor
             ? { backgroundColor: btnColor, color: btnTextColor || "#fff" }
-            : { backgroundColor: "rgba(255,255,255,0.6)", color: "#111827" }
+            : { backgroundColor: "var(--card)", color: "var(--foreground)" }
         }
       >
         <p className="text-sm font-semibold">{title}</p>
@@ -111,9 +111,9 @@ function CardLink({
 function ThumbLink({
   link, title, btnColor, btnTextColor,
 }: { link: CustomLink & { url: string }; title: string; btnColor: string | null; btnTextColor: string | null }) {
-  const bg = btnColor ?? "rgba(255,255,255,0.6)";
-  const color = btnColor ? (btnTextColor || "#fff") : "#111827";
-  const border = btnColor ? "none" : "1px solid rgba(0,0,0,0.09)";
+  const bg = btnColor ?? "var(--card)";
+  const color = btnColor ? (btnTextColor || "#fff") : "var(--foreground)";
+  const border = btnColor ? "none" : "1px solid color-mix(in srgb, var(--foreground) 10%, transparent)";
 
   return (
     <a
@@ -152,7 +152,7 @@ function TextLink({
       style={
         btnColor
           ? { backgroundColor: btnColor, color: btnTextColor || "#fff", border: "none" }
-          : { backgroundColor: "rgba(255,255,255,0.6)", color: "#111827", border: "1px solid rgba(0,0,0,0.09)" }
+          : { backgroundColor: "var(--card)", color: "var(--foreground)", border: "1px solid color-mix(in srgb, var(--foreground) 10%, transparent)" }
       }
     >
       {title}

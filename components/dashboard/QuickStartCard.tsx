@@ -76,13 +76,13 @@ export default function QuickStartCard({ defaultName, defaultShopName }: Props) 
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-xs font-medium text-(--muted)">
-            대표 링크 <span className="text-(--muted)">(카카오 오픈채팅·예약 등, 선택)</span>
+            대표 링크 <span className="text-(--muted)">(카카오·네이버 예약, 인스타그램 등 아무 링크나, 선택)</span>
           </label>
           <input
             type="url"
             value={primaryLink}
             onChange={(e) => setPrimaryLink(e.target.value)}
-            placeholder="https://open.kakao.com/..."
+            placeholder="예: open.kakao.com / naver.me / instagram.com/..."
             className={inputCls}
             maxLength={300}
           />

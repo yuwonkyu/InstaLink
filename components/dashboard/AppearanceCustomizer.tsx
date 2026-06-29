@@ -96,7 +96,11 @@ export default function AppearanceCustomizer({
     textColor.toLowerCase() === p.text.toLowerCase() &&
     accentColor.toLowerCase() === p.accent.toLowerCase();
 
-  const hasAnyCustom = !!(bgColor || cardColor || textColor || accentColor || fontKey);
+  const hasCustomColors = !!(bgColor || cardColor || textColor || accentColor);
+  const hasAnyCustom = hasCustomColors || !!fontKey;
+  function resetColors() {
+    setBgColor(""); setCardColor(""); setTextColor(""); setAccentColor("");
+  }
 
   // ── 비-Pro: 업그레이드 유도(프리셋 미리보기 + 잠금) ──
   if (!isProPlan) {
@@ -133,9 +137,22 @@ export default function AppearanceCustomizer({
       <div className="mb-3 rounded-xl bg-blue-50 border border-blue-100 px-3.5 py-3">
         <p className="text-xs font-semibold text-blue-800">💡 가장 쉬운 방법</p>
         <p className="mt-0.5 text-xs text-blue-700 leading-relaxed">
-          아래 <b>색상 테마</b>를 한 번 누르면 배경·카드·글자·포인트 색이 한꺼번에 적용돼요. 더 세밀하게 바꾸고 싶으면 「직접 고르기」를 펼치세요. (라이트 테마에서 가장 깔끔하게 보여요.)
+          아래 <b>색상 테마</b>를 한 번 누르면 배경·카드·글자·포인트 색이 한꺼번에 적용돼요. 더 세밀하게 바꾸고 싶으면 「직접 고르기」를 펼치세요.
         </p>
       </div>
+
+      {/* 테마 vs 내 색상 — 둘 중 하나만 적용됨 안내 */}
+      {hasCustomColors && (
+        <div className="mb-3 flex items-center justify-between gap-2 rounded-xl bg-amber-50 border border-amber-100 px-3.5 py-2.5">
+          <p className="text-xs text-amber-800 leading-relaxed">
+            🎨 <b>내 색상</b>을 사용 중이에요. 이때는 위쪽 <b>테마 색</b>은 적용되지 않아요.
+          </p>
+          <button type="button" onClick={resetColors}
+            className="shrink-0 rounded-lg border border-amber-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-amber-700 hover:bg-amber-100 transition-colors">
+            테마 색으로
+          </button>
+        </div>
+      )}
 
       {/* ① 원클릭 프리셋 */}
       <p className="mb-2 text-xs font-medium text-(--muted)">색상 테마</p>
@@ -180,10 +197,10 @@ export default function AppearanceCustomizer({
           <div className="h-px bg-gray-100" />
           <ColorRow label="버튼 배경색" hint="링크·전화 버튼" value={buttonColor} fallback="#111827" onChange={setButtonColor} />
           <ColorRow label="버튼 글자색" value={buttonTextColor} fallback="#ffffff" onChange={setButtonTextColor} resetLabel="초기화 (흰색)" />
-          {hasAnyCustom && (
+          {hasCustomColors && (
             <button
               type="button"
-              onClick={() => { setBgColor(""); setCardColor(""); setTextColor(""); setAccentColor(""); }}
+              onClick={resetColors}
               className="self-start text-xs text-(--muted) hover:text-foreground transition-colors underline underline-offset-2"
             >
               색상 전체 초기화

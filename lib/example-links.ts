@@ -14,8 +14,9 @@ export function getExampleLinks(
     ? toInstagramUrl(instagramId)
     : "https://instagram.com";
 
+  // 이미지가 없는 예시 링크 → 빈 카드 대신 깔끔한 텍스트 폼
   return [
-    { title: "InstaLink 대시보드", url: `${siteUrl}/dashboard`, style: "card" },
-    { title: "인스타그램", url: igUrl, style: "card" },
+    { title: "InstaLink 대시보드", url: `${siteUrl}/dashboard`, style: "text" },
+    { title: "인스타그램", url: igUrl, style: "text" },
   ];
 }

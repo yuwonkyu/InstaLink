@@ -6,9 +6,10 @@ export type DesignTabProps = {
   theme: Theme;
   setTheme: (v: Theme) => void;
   plan?: string;
+  customColorsActive?: boolean;
 };
 
-export default function DesignTab({ theme, setTheme, plan }: DesignTabProps) {
+export default function DesignTab({ theme, setTheme, plan, customColorsActive }: DesignTabProps) {
   return (
     <Section title="테마">
       <div className="mb-3 rounded-xl bg-blue-50 border border-blue-100 px-3.5 py-3">
@@ -17,6 +18,13 @@ export default function DesignTab({ theme, setTheme, plan }: DesignTabProps) {
           테마는 내 업종과 분위기에 맞는 걸 골라보세요. 바꾼 뒤 상단 「저장하고 페이지 공개하기」를 누르고, 「내 페이지 보기」로 실제 결과를 확인해보세요.
         </p>
       </div>
+      {customColorsActive && (
+        <div className="mb-3 rounded-xl bg-amber-50 border border-amber-100 px-3.5 py-2.5">
+          <p className="text-xs text-amber-800 leading-relaxed">
+            아래 <b>색상·폰트 꾸미기</b>에서 내 색상을 사용 중이라, <b>테마 색은 적용되지 않아요.</b> 테마를 고르면 내 색상은 해제됩니다.
+          </p>
+        </div>
+      )}
       <ThemeSelector selected={theme} onChange={setTheme} plan={plan} />
     </Section>
   );

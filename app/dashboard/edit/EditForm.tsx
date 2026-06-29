@@ -173,6 +173,15 @@ export default function EditForm({ profile, plan }: Props) {
     }
   }
 
+  // 테마와 내 색상은 둘 중 하나만 — 테마를 고르면 커스텀 색상 해제 (폰트는 유지)
+  const customColorsActive = isProPlan && !!(bgColor || cardColor || textColor || accentColor);
+  function handleThemeChange(t: Theme) {
+    setTheme(t);
+    if (customColorsActive) {
+      setBgColor(""); setCardColor(""); setTextColor(""); setAccentColor("");
+    }
+  }
+
   // ── 저장 ─────────────────────────────────────────────────
   function handleSave() {
     setSaveError(null);
@@ -360,7 +369,7 @@ export default function EditForm({ profile, plan }: Props) {
           onAISuggest={aiSuggest}
         />
         <SocialLinksEditor socialLinks={socialLinks} setSocialLinks={setSocialLinks} />
-        <DesignTab theme={theme} setTheme={setTheme} plan={plan} />
+        <DesignTab theme={theme} setTheme={handleThemeChange} plan={plan} customColorsActive={customColorsActive} />
         <AppearanceCustomizer
           isProPlan={isProPlan}
           bgColor={bgColor}         setBgColor={setBgColor}
