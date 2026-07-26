@@ -26,7 +26,7 @@ Phase A~C 로드맵 완료. 다음 단계는 Phase D (첫 20명 유료 고객 �
 - 관리자 대시보드, 레퍼럴, QR코드, 주간 리포트 이메일, AI 소개글 추천
 - SEO: 업종별 카테고리 7개, JSON-LD, sitemap, GA4
 - Pro 풀 디자인 커스텀 (배경·카드·글자·포인트 색상 + 폰트 4종, 프리셋 우선 UX — `components/dashboard/AppearanceCustomizer.tsx`, 공개 페이지는 `app/[slug]/page.tsx`에서 CSS 변수 주입)
-- 신규 가입 게시 유도 (비공개 시 대시보드 `QuickStartCard` 인라인 공개) + 첫 페이지 예시 링크 2개 자동 시드 (`lib/example-links.ts`)
+- 신규 가입 게시 유도 (비공개 시 대시보드 `QuickStartCard` 인라인 공개) — 예시 링크 자동 시드는 방문 고객에게 로그인 전용 대시보드·범용 인스타그램 링크가 노출되는 문제로 제거함 (2026-07-26)
 
 ## 기술 스택
 - **Framework**: Next.js App Router (TypeScript)

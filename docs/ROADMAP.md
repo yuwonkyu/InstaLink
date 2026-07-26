@@ -19,7 +19,8 @@
 - [x] 에러 바운더리 (`app/error.tsx`, `app/dashboard/error.tsx`, `app/[slug]/error.tsx`)
 - [x] 로그인 없이 데모 체험 (`app/demo/`)
 - [x] Pro 풀 디자인 커스텀 — 배경·카드·글자·포인트 색상 + 폰트 4종 (프리셋 우선 UX, `components/dashboard/AppearanceCustomizer.tsx`)
-- [x] 신규 가입 게시 유도 (`QuickStartCard`) + 첫 페이지 예시 링크 2개 시드 (`lib/example-links.ts`)
+- [x] 신규 가입 게시 유도 (`QuickStartCard`)
+- [x] 첫 페이지 예시 링크 자동 시드 도입 → 방문 고객에게 로그인 전용 링크가 노출되는 문제로 제거 (2026-07-26)
 
 ### 남은 기술 부채
 - [ ] Supabase GRANT 추가 (기한: 2026-10-30) — `profiles`는 `add_appearance_customization.sql`에 반영됨(실행 필요), 나머지 5개 테이블 미완
