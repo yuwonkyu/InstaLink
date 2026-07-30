@@ -101,9 +101,10 @@ font_key     text                   -- 폰트 키 (lib/fonts.ts: pretendard|gowu
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
-NEXT_PUBLIC_TOSS_CLIENT_KEY=
-TOSS_SECRET_KEY=
+NEXT_PUBLIC_TOSSPAYMENTS_CLIENT_KEY=   -- 토스 API 개별 연동 클라이언트 키 (app/billing/page.tsx)
+TOSSPAYMENTS_SECRET_KEY=               -- 토스 API 개별 연동 시크릿 키 (charge/retry/retry-final/success 라우트)
 ```
+> 웹훅(`app/api/billing/webhook/route.ts`)은 시크릿·서명 검증 없음 — 토스가 PAYMENT_STATUS_CHANGED 이벤트엔 secret·서명 헤더를 제공하지 않음(secret은 가상계좌 DEPOSIT_CALLBACK 전용, 서명 헤더는 payout.changed·seller.changed 전용). orderId가 subscriptions 테이블에 존재해야만 처리하는 방식으로 방어.
 
 ## 하면 안 되는 것
 - `/sample`, `/sample2` 파일 삭제 (레퍼런스용으로 유지)
