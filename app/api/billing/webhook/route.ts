@@ -6,7 +6,9 @@
  *  - 결제 실패(ABORTED/EXPIRED/CANCELED): plan → free, subscription → failed
  *
  * 보안:
- *  - 요청 본문의 secret 필드가 TOSS_WEBHOOK_SECRET 환경변수와 일치해야 처리
+ *  - 토스는 PAYMENT_STATUS_CHANGED 이벤트에 secret·서명 헤더를 제공하지 않음
+ *    (secret 필드는 가상계좌 DEPOSIT_CALLBACK 전용, 서명 헤더는 payout.changed·seller.changed 전용 — 공식 문서 확인됨)
+ *  - 따라서 orderId가 subscriptions 테이블에 실제로 존재해야만 상태를 반영 (모르는 orderId는 무시)
  *
  * 멱등성:
  *  - orderId로 subscriptions 테이블 조회 → 이미 처리된 주문은 무시 (중복 처리 방지)
@@ -27,7 +29,6 @@ const supabaseAdmin = createClient(
 type TossWebhookPayload = {
   eventType: string;
   createdAt: string;
-  secret: string;
   data: {
     paymentKey?: string;
     orderId: string;
@@ -43,16 +44,6 @@ export async function POST(req: NextRequest) {
     payload = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
-  }
-
-  // ── 2. 웹훅 시크릿 검증 ──────────────────────────
-  const webhookSecret = process.env.TOSS_WEBHOOK_SECRET;
-  if (!webhookSecret) {
-    console.error("TOSS_WEBHOOK_SECRET 환경변수가 설정되지 않았습니다.");
-    return NextResponse.json({ error: "Webhook not configured" }, { status: 503 });
-  }
-  if (payload.secret !== webhookSecret) {
-    return NextResponse.json({ error: "Invalid secret" }, { status: 401 });
   }
 
   const { eventType, data } = payload;
