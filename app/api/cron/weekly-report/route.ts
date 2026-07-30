@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
         .from("link_clicks")
         .select("link_type")
         .eq("profile_id", profile.id)
-        .gte("created_at", weekAgo.toISOString());
+        .gte("clicked_at", weekAgo.toISOString());
 
       const weekViews  = 0; // view_logs 테이블 없어서 현재는 0 (추후 구현)
       const kakaoClicks = (clicks ?? []).filter((c) => c.link_type === "kakao").length;
