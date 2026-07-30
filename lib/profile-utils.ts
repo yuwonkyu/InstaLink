@@ -19,7 +19,7 @@ export function normalizeExternalHref(raw?: string | null): string | null {
 
 export function trackClick(
   profileId: string,
-  linkType: "kakao" | "instagram" | "phone",
+  linkType: "kakao" | "instagram" | "phone" | "custom",
 ): void {
   if (!profileId) return;
   fetch("/api/track/click", {

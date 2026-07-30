@@ -3,7 +3,7 @@
 import Image from "next/image";
 import type { CustomLink } from "@/lib/types";
 import { getLinkTitle } from "@/lib/types";
-import { normalizeExternalHref } from "@/lib/profile-utils";
+import { normalizeExternalHref, trackClick } from "@/lib/profile-utils";
 import { PLAN_LIMITS, toPlanKey } from "@/lib/plan-limits";
 
 type Props = {
@@ -23,6 +23,7 @@ type Props = {
 export default function ProfileActions({
   customLinks, btnColor, btnTextColor, plan,
   kakaoUrl, kakaoBookingUrl, kakaoChannelUrl, naverBookingUrl, instagramDmUrl,
+  profileId,
 }: Props) {
   const planKey = toPlanKey(plan);
   const limit = PLAN_LIMITS[planKey].links;
@@ -43,6 +44,7 @@ export default function ProfileActions({
       instagramDmUrl={instagramDmUrl}
       btnColor={btnColor}
       btnTextColor={btnTextColor}
+      profileId={profileId}
     />;
   }
 
@@ -57,9 +59,10 @@ export default function ProfileActions({
       {visible.map((link, idx) => {
         const title = getLinkTitle(link);
         const style = link.style ?? "text";
-        if (style === "card") return <CardLink key={idx} link={{ ...link, url: link.url }} title={title} btnColor={btnColor} btnTextColor={btnTextColor} />;
-        if (style === "thumb") return <ThumbLink key={idx} link={{ ...link, url: link.url }} title={title} btnColor={btnColor} btnTextColor={btnTextColor} />;
-        return <TextLink key={idx} link={{ ...link, url: link.url }} title={title} btnColor={btnColor} btnTextColor={btnTextColor} />;
+        const onClick = () => trackClick(profileId, "custom");
+        if (style === "card") return <CardLink key={idx} link={{ ...link, url: link.url }} title={title} btnColor={btnColor} btnTextColor={btnTextColor} onClick={onClick} />;
+        if (style === "thumb") return <ThumbLink key={idx} link={{ ...link, url: link.url }} title={title} btnColor={btnColor} btnTextColor={btnTextColor} onClick={onClick} />;
+        return <TextLink key={idx} link={{ ...link, url: link.url }} title={title} btnColor={btnColor} btnTextColor={btnTextColor} onClick={onClick} />;
       })}
       {hiddenCount > 0 && (
         <div className="flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-black/10 py-3 text-xs text-(--muted)">
@@ -74,13 +77,14 @@ export default function ProfileActions({
 // ── 카드형 ────────────────────────────────────────────────────
 
 function CardLink({
-  link, title, btnColor, btnTextColor,
-}: { link: CustomLink & { url: string }; title: string; btnColor: string | null; btnTextColor: string | null }) {
+  link, title, btnColor, btnTextColor, onClick,
+}: { link: CustomLink & { url: string }; title: string; btnColor: string | null; btnTextColor: string | null; onClick: () => void }) {
   return (
     <a
       href={link.url}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={onClick}
       className="block overflow-hidden rounded-2xl border border-black/[0.07] shadow-sm active:translate-y-px transition-transform"
     >
       {link.image_url ? (
@@ -109,8 +113,8 @@ function CardLink({
 // ── 썸네일형 ──────────────────────────────────────────────────
 
 function ThumbLink({
-  link, title, btnColor, btnTextColor,
-}: { link: CustomLink & { url: string }; title: string; btnColor: string | null; btnTextColor: string | null }) {
+  link, title, btnColor, btnTextColor, onClick,
+}: { link: CustomLink & { url: string }; title: string; btnColor: string | null; btnTextColor: string | null; onClick: () => void }) {
   const bg = btnColor ?? "var(--card)";
   const color = btnColor ? (btnTextColor || "#fff") : "var(--foreground)";
   const border = btnColor ? "none" : "1px solid color-mix(in srgb, var(--foreground) 10%, transparent)";
@@ -120,6 +124,7 @@ function ThumbLink({
       href={link.url}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={onClick}
       className="flex min-h-14 items-center gap-3 overflow-hidden rounded-xl px-3 shadow-sm active:translate-y-px transition-transform"
       style={{ backgroundColor: bg, color, border }}
     >
@@ -141,13 +146,14 @@ function ThumbLink({
 // ── 텍스트형 ──────────────────────────────────────────────────
 
 function TextLink({
-  link, title, btnColor, btnTextColor,
-}: { link: CustomLink & { url: string }; title: string; btnColor: string | null; btnTextColor: string | null }) {
+  link, title, btnColor, btnTextColor, onClick,
+}: { link: CustomLink & { url: string }; title: string; btnColor: string | null; btnTextColor: string | null; onClick: () => void }) {
   return (
     <a
       href={link.url}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={onClick}
       className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl px-4 text-sm font-medium active:translate-y-px transition-transform"
       style={
         btnColor
@@ -164,19 +170,19 @@ function TextLink({
 
 function LegacyCtaFallback({
   kakaoUrl, kakaoBookingUrl, kakaoChannelUrl, naverBookingUrl, instagramDmUrl,
-  btnColor, btnTextColor,
+  btnColor, btnTextColor, profileId,
 }: {
   kakaoUrl?: string | null; kakaoBookingUrl?: string | null; kakaoChannelUrl?: string | null;
   naverBookingUrl?: string | null; instagramDmUrl?: string | null;
-  btnColor: string | null; btnTextColor: string | null;
+  btnColor: string | null; btnTextColor: string | null; profileId: string;
 }) {
   const items = [
-    kakaoUrl && { href: kakaoUrl, label: "카카오톡으로 무료 상담 받기", bg: "#FEE500", color: "#000" },
-    kakaoBookingUrl && { href: kakaoBookingUrl, label: "카카오로 예약하기", bg: "#FEE500", color: "#000" },
-    kakaoChannelUrl && { href: kakaoChannelUrl, label: "카카오채널 문의", bg: "#FEE500", color: "#000" },
-    naverBookingUrl && { href: naverBookingUrl, label: "네이버로 예약하기", bg: "#03C75A", color: "#fff" },
-    instagramDmUrl && { href: instagramDmUrl, label: "인스타그램 DM 보내기", bg: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", color: "#fff" },
-  ].filter(Boolean) as { href: string; label: string; bg: string; color: string }[];
+    kakaoUrl && { href: kakaoUrl, label: "카카오톡으로 무료 상담 받기", bg: "#FEE500", color: "#000", linkType: "kakao" as const },
+    kakaoBookingUrl && { href: kakaoBookingUrl, label: "카카오로 예약하기", bg: "#FEE500", color: "#000", linkType: "kakao" as const },
+    kakaoChannelUrl && { href: kakaoChannelUrl, label: "카카오채널 문의", bg: "#FEE500", color: "#000", linkType: "kakao" as const },
+    naverBookingUrl && { href: naverBookingUrl, label: "네이버로 예약하기", bg: "#03C75A", color: "#fff", linkType: "custom" as const },
+    instagramDmUrl && { href: instagramDmUrl, label: "인스타그램 DM 보내기", bg: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", color: "#fff", linkType: "instagram" as const },
+  ].filter(Boolean) as { href: string; label: string; bg: string; color: string; linkType: "kakao" | "instagram" | "custom" }[];
 
   if (!items.length) return null;
 
@@ -185,6 +191,7 @@ function LegacyCtaFallback({
   return (
     <div className="mt-5 flex flex-col gap-2">
       <a href={primary.href} target="_blank" rel="noopener noreferrer"
+        onClick={() => trackClick(profileId, primary.linkType)}
         className="flex min-h-14 w-full items-center justify-center gap-2 rounded-xl px-3 text-[14.5px] font-bold shadow-[0_4px_18px_rgba(17,24,39,0.18)] active:translate-y-px"
         style={{ background: primary.bg, color: primary.color }}>
         {primary.label}
@@ -193,6 +200,7 @@ function LegacyCtaFallback({
         <div className={`grid gap-2 ${secondary.length === 1 ? "grid-cols-1" : "grid-cols-2"}`}>
           {secondary.map((item, i) => (
             <a key={i} href={item.href} target="_blank" rel="noopener noreferrer"
+              onClick={() => trackClick(profileId, item.linkType)}
               className="flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl px-2 text-[13px] font-semibold shadow-[0_2px_8px_rgba(17,24,39,0.10)] active:translate-y-px"
               style={{ background: item.bg, color: item.color }}>
               {item.label}

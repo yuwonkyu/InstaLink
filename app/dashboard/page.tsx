@@ -32,7 +32,7 @@ async function getClickStats(profileId: string): Promise<{ total: ClickStats; we
       .select("*", { count: "exact", head: true })
       .eq("profile_id", profileId)
       .eq("link_type", type);
-    return since ? q.gte("created_at", since) : q;
+    return since ? q.gte("clicked_at", since) : q;
   };
 
   const [tKakao, tInsta, tPhone, wKakao, wInsta, wPhone] = await Promise.all([
@@ -60,13 +60,13 @@ async function getDailyClicksMini(profileId: string): Promise<DailyBar[]> {
 
   const { data } = await supabase
     .from("link_clicks")
-    .select("created_at")
+    .select("clicked_at")
     .eq("profile_id", profileId)
-    .gte("created_at", sevenDaysAgo.toISOString());
+    .gte("clicked_at", sevenDaysAgo.toISOString());
 
   const byDate: Record<string, number> = {};
   for (const row of data ?? []) {
-    const date = new Date(row.created_at).toISOString().split("T")[0];
+    const date = new Date(row.clicked_at).toISOString().split("T")[0];
     byDate[date] = (byDate[date] ?? 0) + 1;
   }
 

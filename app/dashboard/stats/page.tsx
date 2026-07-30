@@ -3,13 +3,14 @@ import Link from "next/link";
 import { getSupabaseServerClient } from "@/lib/supabase";
 import type { Profile } from "@/lib/types";
 
-type ClickRow = { link_type: string; created_at: string };
+type ClickRow = { link_type: string; clicked_at: string };
 type DailyClicks = {
   date: string;
   label: string;
   kakao: number;
   instagram: number;
   phone: number;
+  custom: number;
   total: number;
 };
 
@@ -28,21 +29,26 @@ async function getDailyClicks(profileId: string): Promise<DailyClicks[]> {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("link_clicks")
-    .select("link_type, created_at")
+    .select("link_type, clicked_at")
     .eq("profile_id", profileId)
-    .gte("created_at", thirtyDaysAgo.toISOString())
-    .order("created_at", { ascending: true });
+    .gte("clicked_at", thirtyDaysAgo.toISOString())
+    .order("clicked_at", { ascending: true });
+
+  if (error) {
+    console.error("링크 클릭 통계 조회 실패:", error.message);
+  }
 
   // 날짜별 집계
-  const byDate: Record<string, { kakao: number; instagram: number; phone: number }> = {};
+  const byDate: Record<string, { kakao: number; instagram: number; phone: number; custom: number }> = {};
   for (const row of (data as ClickRow[] | null) ?? []) {
-    const date = new Date(row.created_at).toISOString().split("T")[0];
-    if (!byDate[date]) byDate[date] = { kakao: 0, instagram: 0, phone: 0 };
+    const date = new Date(row.clicked_at).toISOString().split("T")[0];
+    if (!byDate[date]) byDate[date] = { kakao: 0, instagram: 0, phone: 0, custom: 0 };
     if (row.link_type === "kakao")     byDate[date].kakao++;
     if (row.link_type === "instagram") byDate[date].instagram++;
     if (row.link_type === "phone")     byDate[date].phone++;
+    if (row.link_type === "custom")    byDate[date].custom++;
   }
 
   // 최근 30일 전체 채우기
@@ -53,8 +59,8 @@ async function getDailyClicks(profileId: string): Promise<DailyClicks[]> {
     d.setDate(d.getDate() - i);
     const date = d.toISOString().split("T")[0];
     const label = i === 0 ? "오늘" : `${d.getMonth() + 1}/${d.getDate()}(${DAYS_KO[d.getDay()]})`;
-    const counts = byDate[date] ?? { kakao: 0, instagram: 0, phone: 0 };
-    result.push({ date, label, ...counts, total: counts.kakao + counts.instagram + counts.phone });
+    const counts = byDate[date] ?? { kakao: 0, instagram: 0, phone: 0, custom: 0 };
+    result.push({ date, label, ...counts, total: counts.kakao + counts.instagram + counts.phone + counts.custom });
   }
   return result;
 }
@@ -106,6 +112,7 @@ export default async function StatsPage() {
   const kakaoSum  = dailyClicks.reduce((s, d) => s + d.kakao, 0);
   const instaSum  = dailyClicks.reduce((s, d) => s + d.instagram, 0);
   const phoneSum  = dailyClicks.reduce((s, d) => s + d.phone, 0);
+  const customSum = dailyClicks.reduce((s, d) => s + d.custom, 0);
 
   return (
     <div className="flex flex-col gap-6">
@@ -200,6 +207,7 @@ export default async function StatsPage() {
             { label: "카카오 문의", value: kakaoSum, color: "bg-yellow-400" },
             { label: "인스타그램",  value: instaSum, color: "bg-pink-500"   },
             { label: "전화 연결",   value: phoneSum,  color: "bg-blue-500"  },
+            { label: "기타 링크",   value: customSum, color: "bg-gray-400"  },
           ].map(({ label, value, color }) => (
             <div key={label}>
               <div className="flex items-center justify-between mb-1.5">
@@ -230,6 +238,7 @@ export default async function StatsPage() {
                 <th className="pb-2 text-right font-medium">카카오</th>
                 <th className="pb-2 text-right font-medium">인스타</th>
                 <th className="pb-2 text-right font-medium">전화</th>
+                <th className="pb-2 text-right font-medium">기타</th>
                 <th className="pb-2 text-right font-medium pr-1">합계</th>
               </tr>
             </thead>
@@ -240,6 +249,7 @@ export default async function StatsPage() {
                   <td className="py-2.5 text-right">{d.kakao || "—"}</td>
                   <td className="py-2.5 text-right">{d.instagram || "—"}</td>
                   <td className="py-2.5 text-right">{d.phone || "—"}</td>
+                  <td className="py-2.5 text-right">{d.custom || "—"}</td>
                   <td className="py-2.5 pr-1 text-right font-semibold">{d.total || "—"}</td>
                 </tr>
               ))}

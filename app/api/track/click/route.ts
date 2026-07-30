@@ -8,10 +8,10 @@ const supabaseAdmin = createClient(
 
 type ClickBody = {
   profileId: string;
-  linkType: "kakao" | "instagram" | "phone";
+  linkType: "kakao" | "instagram" | "phone" | "custom";
 };
 
-const VALID_LINK_TYPES = ["kakao", "instagram", "phone"];
+const VALID_LINK_TYPES = ["kakao", "instagram", "phone", "custom"];
 
 export async function POST(req: NextRequest) {
   let body: ClickBody;
