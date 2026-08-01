@@ -119,7 +119,7 @@ export default async function DashboardPage({
   // 프로필이 없으면 온보딩으로 — 소셜 로그인 직후 트리거 지연 등으로 dashboard에 직접 도달한 경우
   if (!profile) redirect("/dashboard/onboarding");
 
-  const [clickStats, referralCount, dailyMini] = profile
+  const [clickStats, referralCount, dailyMini, hasActiveSub] = profile
     ? await Promise.all([
         getClickStats(profile.id),
         getSupabaseServerClient().then((sb) =>
@@ -130,8 +130,24 @@ export default async function DashboardPage({
             .then(({ count }) => count ?? 0)
         ),
         getDailyClicksMini(profile.id),
+        getSupabaseServerClient().then((sb) =>
+          sb
+            .from("subscriptions")
+            .select("id", { count: "exact", head: true })
+            .eq("profile_id", profile.id)
+            .eq("status", "active")
+            .then(({ count }) => (count ?? 0) > 0)
+        ),
       ])
-    : [null, 0, null];
+    : [null, 0, null, false];
+
+  // 결제 없이 Pro + 만료일 보유 = 첫 달 무료 체험 중 (is_mvp는 영구 무료라 별도)
+  const isTrialPro =
+    !!profile &&
+    profile.plan === "pro" &&
+    !profile.is_mvp &&
+    !!profile.plan_expires_at &&
+    !hasActiveSub;
 
   // eslint-disable-next-line react-hooks/purity
   const now = Date.now();
@@ -425,9 +441,11 @@ export default async function DashboardPage({
             <span className="text-sm text-(--muted)">
               {profile.is_mvp
                 ? "얼리어답터 무료"
-                : PLAN_META[profile.plan ?? "free"]?.price === 0
-                  ? "무료"
-                  : `${PLAN_META[profile.plan ?? "free"]?.price.toLocaleString()}원/월`}
+                : isTrialPro
+                  ? "첫 달 무료 체험"
+                  : PLAN_META[profile.plan ?? "free"]?.price === 0
+                    ? "무료"
+                    : `${PLAN_META[profile.plan ?? "free"]?.price.toLocaleString()}원/월`}
             </span>
           </div>
           {profile.is_mvp && (
@@ -435,9 +453,14 @@ export default async function DashboardPage({
               초기 가입자 감사 혜택으로 Pro를 영구 무료로 이용하실 수 있습니다.
             </p>
           )}
+          {isTrialPro && (
+            <p className="mt-2 text-xs text-amber-600 font-medium">
+              가입 혜택으로 Pro를 무료 체험 중이에요. 종료 후에는 Free 플랜으로 전환됩니다.
+            </p>
+          )}
           {profile.plan_expires_at && !profile.is_mvp && (
             <p className="mt-1.5 text-xs text-(--muted)">
-              다음 결제일: {new Date(profile.plan_expires_at).toLocaleDateString("ko-KR")}
+              {isTrialPro ? "무료 체험 종료일" : "다음 결제일"}: {new Date(profile.plan_expires_at).toLocaleDateString("ko-KR")}
             </p>
           )}
           {(!profile.plan || profile.plan === "free") && !profile.is_mvp && (
