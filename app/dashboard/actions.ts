@@ -3,9 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getSupabaseServerClient } from "@/lib/supabase";
-import { getSiteUrl } from "@/lib/site-url";
-import { isMvpPeriod } from "@/lib/mvp";
-import { getExampleLinks } from "@/lib/example-links";
+import { getTrialProFields } from "@/lib/trial";
 import { normalizeExternalHref } from "@/lib/profile-utils";
 import type { CustomLink } from "@/lib/types";
 
@@ -29,7 +27,7 @@ export async function publishQuickStart(payload: QuickStartPayload) {
 
   const { data: current } = await supabase
     .from("profiles")
-    .select("custom_links, instagram_id")
+    .select("custom_links, plan")
     .eq("owner_id", user.id)
     .maybeSingle();
 
@@ -37,16 +35,14 @@ export async function publishQuickStart(payload: QuickStartPayload) {
   const primary = normalizeExternalHref(payload.primaryLink);
   const isKakao = !!primary && /kakao/i.test(primary);
 
-  // custom_links 가 비어 있을 때만 예시 링크 2개 시드 (실제 링크는 절대 덮지 않음).
-  // 카카오가 아닌 대표 링크는 맨 앞 버튼으로 추가.
-  let seededLinks = existingLinks;
-  if (existingLinks.length === 0) {
-    const base = getExampleLinks(getSiteUrl(), current?.instagram_id);
-    seededLinks =
-      primary && !isKakao
-        ? [{ title: "문의하기", url: primary, style: "text" as const }, ...base]
-        : base;
-  }
+  // 카카오가 아닌 대표 링크는 실제 링크를 맨 앞 버튼으로 추가 (예시 링크는 시드하지 않음).
+  const seededLinks =
+    primary && !isKakao
+      ? [{ title: "문의하기", url: primary, style: "text" as const }, ...existingLinks]
+      : existingLinks;
+
+  // 첫 게시 혜택 — 현재 free 플랜일 때만 Pro 1개월 무료 체험 부여 (유료·MVP 유저 보호)
+  const grantTrial = !current?.plan || current.plan === "free";
 
   const { error } = await supabase
     .from("profiles")
@@ -56,7 +52,7 @@ export async function publishQuickStart(payload: QuickStartPayload) {
       custom_links: seededLinks,
       ...(isKakao && primary ? { kakao_url: primary } : {}),
       is_active: true,
-      ...(isMvpPeriod() && { plan: "pro", is_mvp: true, plan_expires_at: null }),
+      ...(grantTrial ? getTrialProFields() : {}),
     })
     .eq("owner_id", user.id);
 

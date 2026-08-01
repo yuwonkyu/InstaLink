@@ -192,10 +192,10 @@ export default async function CategoryLandingPage({ params }: PageProps) {
       <div className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6">
         {/* 히어로 */}
         <section className="rounded-3xl bg-(--card) px-6 py-10 shadow-[0_4px_20px_rgba(17,24,39,0.06)] sm:px-10 sm:py-14">
-          {/* 이벤트 배너 — 메인 랜딩과 메시지 일치 (Pro 평생 무료). 기간 변경 시 메인 배너·MVP_CUTOFF와 함께 수정 */}
+          {/* 신규 가입 혜택 배너 — 메인 랜딩과 메시지 일치 (첫 달 Pro 무료). 문구 변경 시 메인 배너·lib/trial.ts와 함께 수정 */}
           <div className="mb-4 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-amber-400 to-orange-400 px-4 py-2 shadow-[0_2px_12px_rgba(251,191,36,0.4)]">
             <span className="text-base">🔥</span>
-            <span className="text-sm font-bold text-white">7월 31일까지 가입하면 Pro 평생 무료</span>
+            <span className="text-sm font-bold text-white">지금 가입하면 첫 달 Pro 무료</span>
           </div>
           <p className="text-xs font-semibold uppercase tracking-widest text-(--muted)">
             {meta.label} 전용

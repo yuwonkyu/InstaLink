@@ -3,9 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getSupabaseServerClient } from "@/lib/supabase";
-import { isMvpPeriod } from "@/lib/mvp";
-import { getExampleLinks } from "@/lib/example-links";
-import { getSiteUrl } from "@/lib/site-url";
+import { getTrialProFields } from "@/lib/trial";
 import type { Service, CustomLink } from "@/lib/types";
 
 // ── Step 1: 기본 정보 ──────────────────────────────────────────
@@ -23,17 +21,13 @@ export async function saveOnboardingStep1(payload: Step1Payload) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/auth/login");
 
-  // 첫 페이지가 비어 보이지 않도록 — custom_links 가 비어 있을 때만 예시 링크 2개 시드
+  // 첫 게시 혜택 — 현재 free 플랜일 때만 Pro 1개월 무료 체험 부여 (유료·MVP 유저 보호)
   const { data: current } = await supabase
     .from("profiles")
-    .select("custom_links")
+    .select("plan")
     .eq("owner_id", user.id)
     .maybeSingle();
-  const existingLinks = (current?.custom_links as CustomLink[] | null) ?? [];
-  const seedLinks =
-    existingLinks.length === 0
-      ? getExampleLinks(getSiteUrl(), payload.instagram_id)
-      : null;
+  const grantTrial = !current?.plan || current.plan === "free";
 
   const { error } = await supabase
     .from("profiles")
@@ -45,8 +39,7 @@ export async function saveOnboardingStep1(payload: Step1Payload) {
       instagram_id:    payload.instagram_id.trim(),
       image_url:       payload.image_url.trim(),
       is_active:       true,
-      ...(seedLinks ? { custom_links: seedLinks } : {}),
-      ...(isMvpPeriod() && { plan: "pro", is_mvp: true, plan_expires_at: null }),
+      ...(grantTrial ? getTrialProFields() : {}),
     })
     .eq("owner_id", user.id);
 

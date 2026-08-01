@@ -121,10 +121,10 @@ export default function Page() {
           <div className="flex flex-col items-center gap-10 md:flex-row md:items-center md:gap-12">
             {/* 좌: 텍스트 영역 */}
             <div className="flex-1 min-w-0">
-              {/* 7월 한정 이벤트 배너 */}
+              {/* 신규 가입 혜택 배너 — 문구 변경 시 lib/trial.ts·layout.tsx·for/[category]와 동기화 */}
               <div className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-amber-400 to-orange-400 px-4 py-2 shadow-[0_2px_12px_rgba(251,191,36,0.4)]">
                 <span className="text-base">🔥</span>
-                <span className="text-sm font-bold text-white">7월 31일까지 가입하면 Pro 평생 무료</span>
+                <span className="text-sm font-bold text-white">지금 가입하면 첫 달 Pro 무료</span>
               </div>
               <div className="mt-3 flex flex-wrap items-center gap-2">
                 <p className="inline-block rounded-full border border-black/10 bg-white px-3 py-1 text-xs font-semibold text-(--muted)">
@@ -150,7 +150,7 @@ export default function Page() {
                   href="/auth/signup"
                   className="rounded-xl bg-foreground px-6 py-3 text-sm font-semibold text-white transition hover:opacity-85"
                 >
-                  지금 무료로 시작하기 — Pro 평생 무료 →
+                  지금 무료로 시작하기 — 첫 달 Pro 무료 →
                 </Link>
                 <Link
                   href="/demo"
@@ -362,11 +362,11 @@ export default function Page() {
           처음엔 무료로, 성장하면 그때 올리세요.
         </p>
 
-        {/* 이벤트 안내 — 히어로 배너와 메시지 일치 (Pro 평생 무료) */}
+        {/* 신규 가입 혜택 안내 — 히어로 배너와 메시지 일치 (첫 달 Pro 무료) */}
         <div className="mt-4 flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-400 to-orange-400 px-4 py-3 shadow-[0_2px_12px_rgba(251,191,36,0.4)]">
           <span className="text-base">🔥</span>
           <span className="text-sm font-bold text-white">
-            지금 가입하면 아래 Pro 플랜을 평생 무료로 드려요
+            지금 가입하면 아래 Pro 플랜 첫 달을 무료로 드려요
           </span>
         </div>
 
