@@ -176,6 +176,53 @@ export function newSignupNotificationEmail(
   };
 }
 
+function escapeHtml(text: string) {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+export function refundRequestEmail(
+  name: string,
+  email: string,
+  plan: string,
+  reason: string,
+  siteUrl: string,
+  orderId?: string | null,
+  amount?: number | null,
+) {
+  return {
+    subject: `[InstaLink] 환불 신청이 접수되었습니다 — ${name}`,
+    html: `
+<div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;color:#111827">
+  <h1 style="font-size:20px;font-weight:700;margin:0 0 12px">환불 신청이 접수되었습니다 💳</h1>
+  <div style="background:#f9fafb;border-radius:12px;padding:16px 20px;margin-bottom:24px">
+    <p style="margin:0 0 6px;font-size:13px;color:#9ca3af">이름</p>
+    <p style="margin:0 0 12px;font-size:15px;font-weight:600;color:#111827">${name}</p>
+    <p style="margin:0 0 6px;font-size:13px;color:#9ca3af">이메일</p>
+    <p style="margin:0 0 12px;font-size:15px;font-weight:600;color:#111827">${email}</p>
+    <p style="margin:0 0 6px;font-size:13px;color:#9ca3af">플랜</p>
+    <p style="margin:0 0 12px;font-size:15px;font-weight:600;color:#111827">${plan}</p>
+    ${orderId
+      ? `<p style="margin:0 0 6px;font-size:13px;color:#9ca3af">주문번호 (토스 콘솔 검색용)</p>
+         <p style="margin:0 0 12px;font-size:15px;font-weight:600;color:#111827">${orderId}</p>`
+      : ""}
+    ${amount
+      ? `<p style="margin:0 0 6px;font-size:13px;color:#9ca3af">결제 금액</p>
+         <p style="margin:0 0 12px;font-size:15px;font-weight:600;color:#111827">${amount.toLocaleString()}원</p>`
+      : ""}
+    <p style="margin:0 0 6px;font-size:13px;color:#9ca3af">사유</p>
+    <p style="margin:0;font-size:14px;color:#111827;white-space:pre-wrap">${reason ? escapeHtml(reason) : "(작성 안 함)"}</p>
+  </div>
+  <a href="${siteUrl}/admin"
+     style="display:inline-block;background:#111827;color:#fff;text-decoration:none;padding:12px 24px;border-radius:12px;font-size:14px;font-weight:600">
+    관리자 대시보드에서 확인 →
+  </a>
+</div>`,
+  };
+}
+
 export function renewalReminderEmail(name: string, plan: string, amount: number, billingDate: string) {
   return {
     subject: "[InstaLink] 3일 후 구독이 갱신됩니다",
