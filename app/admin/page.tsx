@@ -7,6 +7,7 @@ import { getSiteUrl } from "@/lib/site-url";
 import PlanSelect from "./PlanSelect";
 import SuspendButton from "./SuspendButton";
 import AdminDeleteButton from "./AdminDeleteButton";
+import RefundStatusButton from "./RefundStatusButton";
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "";
 const SITE_URL = getSiteUrl();
@@ -77,6 +78,7 @@ export default async function AdminPage({
     { data: subs },
     { data: allProfiles },
     { data: deletedStats },
+    { data: refundRequests },
   ] = await Promise.all([
     query,
     adminClient.from("subscriptions").select("plan, amount, status"),
@@ -85,6 +87,11 @@ export default async function AdminPage({
       .from("deleted_accounts")
       .select("plan, days_active, had_paid, had_reviews, deleted_at")
       .order("deleted_at", { ascending: false }),
+    adminClient
+      .from("refund_requests")
+      .select("id, email, plan, order_id, amount, reason, status, created_at")
+      .order("created_at", { ascending: false })
+      .limit(50),
   ]);
 
   // 이메일 맵: owner_id → email (rawProfiles 필요하므로 이후 실행)
@@ -147,6 +154,8 @@ export default async function AdminPage({
   const avgDaysActive   = totalDeleted > 0
     ? Math.round((deletedStats ?? []).reduce((sum, d) => sum + (d.days_active ?? 0), 0) / totalDeleted)
     : 0;
+
+  const pendingRefundCount = (refundRequests ?? []).filter((r) => r.status === "pending").length;
 
   // 만료 임박 카운트 (7일 이내)
   const expiresSoonCount = (allProfiles ?? []).filter((p) => {
@@ -234,6 +243,64 @@ export default async function AdminPage({
               </div>
             </div>
           </div>
+        </div>
+
+        {/* ── 환불 신청 ── */}
+        <div className="rounded-2xl bg-white p-5 shadow-[0_2px_12px_rgba(17,24,39,0.06)]">
+          <div className="mb-3 flex items-center gap-2">
+            <h2 className="text-sm font-semibold text-foreground">환불 신청</h2>
+            {pendingRefundCount > 0 && (
+              <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-bold text-amber-700">
+                대기 {pendingRefundCount}건
+              </span>
+            )}
+          </div>
+          {refundRequests && refundRequests.length > 0 ? (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-gray-100 text-left text-xs text-(--muted)">
+                    <th className="px-3 py-2 font-medium">이메일</th>
+                    <th className="px-3 py-2 font-medium">플랜</th>
+                    <th className="px-3 py-2 font-medium">주문번호 <span className="opacity-50 font-normal">(토스 콘솔 검색용)</span></th>
+                    <th className="px-3 py-2 font-medium">금액</th>
+                    <th className="px-3 py-2 font-medium">사유</th>
+                    <th className="px-3 py-2 font-medium">신청일</th>
+                    <th className="px-3 py-2 font-medium">상태</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {refundRequests.map((r) => (
+                    <tr key={r.id} className="border-b border-gray-50">
+                      <td className="px-3 py-2.5 text-xs text-foreground">{r.email}</td>
+                      <td className="px-3 py-2.5 text-xs capitalize text-foreground">{r.plan}</td>
+                      <td className="px-3 py-2.5 font-mono text-[11px] text-foreground select-all">{r.order_id || "—"}</td>
+                      <td className="px-3 py-2.5 text-xs text-foreground">{r.amount ? `${r.amount.toLocaleString()}원` : "—"}</td>
+                      <td className="max-w-[180px] truncate px-3 py-2.5 text-xs text-(--muted)" title={r.reason ?? ""}>
+                        {r.reason || "—"}
+                      </td>
+                      <td className="px-3 py-2.5 text-xs text-(--muted)">{fmtDate(r.created_at)}</td>
+                      <td className="px-3 py-2.5">
+                        <RefundStatusButton
+                          requestId={r.id}
+                          initialStatus={r.status === "completed" ? "completed" : "pending"}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="text-sm text-(--muted)">환불 신청이 없습니다.</p>
+          )}
+          <p className="mt-3 text-xs text-(--muted)">
+            처리 순서: ①{" "}
+            <a href="https://app.tosspayments.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
+              토스페이먼츠 콘솔
+            </a>
+            에서 주문번호로 결제 건 검색 → 결제취소(환불) 진행 → ② 여기서 &ldquo;처리 완료&rdquo; 클릭 (플랜 Free 전환·구독 해지·다음 결제 차단이 자동으로 처리됩니다)
+          </p>
         </div>
 
         {/* ── 필터 바 ── */}
