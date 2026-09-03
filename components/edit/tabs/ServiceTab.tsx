@@ -52,7 +52,7 @@ export default function ServiceTab({
 
       {/* ── 영업일 & 운영시간 ── */}
       {isPaidPlan ? (
-        <Section title="영업일 & 운영시간 (Basic+)">
+        <Section title="영업일 & 운영시간 (Pro)">
           <div className="mb-3 rounded-xl bg-blue-50 border border-blue-100 px-3.5 py-3">
             <p className="text-xs font-semibold text-blue-800">💡 TIP</p>
             <p className="mt-0.5 text-xs text-blue-700 leading-relaxed">
@@ -65,7 +65,7 @@ export default function ServiceTab({
       ) : (
         <Section title="영업일 & 운영시간">
           <div className="rounded-xl border border-dashed border-gray-200 px-4 py-3 text-center text-xs text-(--muted)">
-            🔒 요일별 영업시간 설정은 Basic 이상 플랜에서 사용 가능합니다.{" "}
+            🔒 요일별 영업시간 설정은 Pro 플랜에서 사용 가능합니다.{" "}
             <Link href="/billing" className="font-medium underline underline-offset-2 hover:text-foreground">
               업그레이드
             </Link>

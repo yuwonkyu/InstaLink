@@ -82,7 +82,7 @@ export default function EditForm({ profile, plan }: Props) {
   const [accentColor, setAccentColor] = useState(profile.accent_color ?? "");
   const [fontKey,     setFontKey]     = useState(profile.font_key ?? "");
 
-  // ── Basic+ 상태 ──
+  // ── Pro 상태 ──
   const [businessHours, setBusinessHours] = useState<BusinessHours>(profile.business_hours ?? {});
 
   // ── UI 상태 ──

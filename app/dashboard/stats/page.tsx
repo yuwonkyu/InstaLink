@@ -91,7 +91,7 @@ export default async function StatsPage() {
         <span className="text-4xl mb-4">📊</span>
         <h1 className="text-base font-bold text-foreground">방문자 통계</h1>
         <p className="mt-2 text-sm text-(--muted)">
-          베이직 이상 플랜에서 이용할 수 있어요.
+          Pro 플랜에서 이용할 수 있어요.
         </p>
         <Link
           href="/billing"

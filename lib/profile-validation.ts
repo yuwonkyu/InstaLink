@@ -207,7 +207,7 @@ export const profileFormSchema = z.object({
   button_text_color: hexColorSchema.optional(),
   gallery_layout: z.enum(["grid2", "grid3"]).optional(),
 
-  // Basic+ 전용
+  // Pro 전용
   business_hours: businessHoursSchema.optional(),
 });
 

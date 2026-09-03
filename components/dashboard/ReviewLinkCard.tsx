@@ -44,7 +44,7 @@ export default function ReviewLinkCard({ slug, siteUrl, reviewCount, isPaid }: P
             무료 플랜 후기 한도 ({FREE_LIMIT}개)에 도달했어요.
           </p>
           <p className="mt-0.5 text-xs text-amber-700">
-            베이직 이상으로 업그레이드하면 무제한으로 수집·표시됩니다.
+            Pro로 업그레이드하면 무제한으로 수집·표시됩니다.
           </p>
           <Link
             href="/billing"

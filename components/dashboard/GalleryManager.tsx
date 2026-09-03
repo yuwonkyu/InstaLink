@@ -197,7 +197,7 @@ export default function GalleryManager({ images, onChange, limit }: Props) {
         </CldUploadWidget>
       ) : limit === 0 ? (
         <p className="rounded-xl border border-dashed border-gray-200 px-4 py-3 text-center text-xs text-(--muted)">
-          🔒 갤러리는 Basic 이상 플랜에서 사용 가능합니다.{" "}
+          🔒 갤러리는 Pro 플랜에서 사용 가능합니다.{" "}
           <Link href="/billing" className="font-medium underline underline-offset-2 hover:text-foreground">업그레이드</Link>
         </p>
       ) : (
