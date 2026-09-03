@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 };
 
 
-const PLANS: Plan[] = ["free", "basic", "pro"];
+const PLANS: Plan[] = ["free", "pro"];
 
 // 실고객 후기 확보 전까지 후기 섹션 숨김 — 복구하려면 true로 변경
 const SHOW_TESTIMONIALS = false;
@@ -67,13 +67,6 @@ const landingJsonLd = {
       name: "Free",
       price: "0",
       priceCurrency: "KRW",
-    },
-    {
-      "@type": "Offer",
-      name: "Basic",
-      price: String(PLAN_META.basic.price),
-      priceCurrency: "KRW",
-      billingIncrement: "P1M",
     },
     {
       "@type": "Offer",
@@ -132,18 +125,18 @@ export default function Page() {
                 </p>
               </div>
               <h1 className="mt-4 text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl">
-                나만의 링크 페이지를
+                인스타 바이오에 넣는
                 <br />
-                <span className="text-(--muted)">1분 만에 만드세요</span>
+                <span className="text-(--muted)">나만의 미니 홈페이지</span>
               </h1>
               <p className="mt-5 max-w-xl text-sm leading-7 text-(--muted) sm:text-base">
                 링크트리는 그냥 링크 목록이에요.
                 <br />
                 InstaLink는{" "}
                 <strong className="font-semibold text-foreground">
-                  포트폴리오 + 예약 + 후기 + 카카오 상담
+                  슬로건 + 서비스·가격 + 사진 + 후기 + 카카오 상담
                 </strong>
-                까지 한 페이지에 담아 고객을 직접 문의로 이끕니다.
+                까지 담아, 고객이 나를 제대로 알아가고 바로 문의하게 만드는 한 페이지입니다.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
                 <Link
@@ -182,6 +175,22 @@ export default function Page() {
               <HeroCarousel />
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* 바이오링크 설명 — 처음 듣는 방문자를 위한 안내 */}
+      <section className="mx-auto w-full max-w-6xl px-4 pb-12 pt-10 sm:px-6">
+        <div className="rounded-3xl bg-(--card) px-6 py-8 shadow-[0_4px_20px_rgba(17,24,39,0.06)] sm:px-10">
+          <p className="text-xs font-bold uppercase tracking-widest text-(--muted)">
+            바이오링크가 뭔가요?
+          </p>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-(--muted) sm:text-base">
+            인스타그램은 게시물마다 링크를 걸 수 없어요. 프로필 소개글(bio) 한 줄에만 링크
+            하나를 넣을 수 있죠. 그 한 줄에 연결하는 나만의 소개 페이지를{" "}
+            <strong className="font-semibold text-foreground">바이오링크(링크인바이오)</strong>
+            라고 불러요. InstaLink는 그 페이지를 단순 링크 목록이 아니라, 슬로건·서비스·가격·
+            후기·사진까지 담은 미니 홈페이지로 만들어드립니다.
+          </p>
         </div>
       </section>
 
@@ -339,8 +348,11 @@ export default function Page() {
       {/* 기능 소개 */}
       <section className="mx-auto w-full max-w-6xl px-4 pb-14 sm:px-6">
         <h2 className="text-xl font-bold sm:text-2xl">
-          꼭 필요한 것만 담았어요
+          미니멀하지만, 필요한 건 다 있어요
         </h2>
+        <p className="mt-1 text-sm text-(--muted)">
+          화려한 기능보다 내 서비스를 제대로 보여주는 것에 집중했어요.
+        </p>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           {FEATURES.map((f) => (
             <article
@@ -371,10 +383,10 @@ export default function Page() {
         </div>
 
         {/* 플랜 카드 */}
-        <div className="mt-6 grid gap-3 sm:grid-cols-3">
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 sm:max-w-xl">
           {PLANS.map((plan) => {
             const meta = PLAN_META[plan];
-            const isHighlight = plan === "basic";
+            const isHighlight = plan === "pro";
             const isFree = plan === "free";
             return (
               <div
@@ -412,7 +424,7 @@ export default function Page() {
                 >
                   {meta.price === 0
                     ? "영원히 무료 · 카드 등록 없음"
-                    : "언제든 해지 가능"}
+                    : "저가 브랜드 커피 한 잔 값 · 언제든 해지 가능"}
                 </p>
                 {/* CTA */}
                 <Link
@@ -425,16 +437,16 @@ export default function Page() {
                         : "border border-black/10 hover:bg-black/5"
                   }`}
                 >
-                  {isFree
-                    ? "무료로 시작하기"
-                    : isHighlight
-                      ? "이 플랜으로 시작하기"
-                      : "Pro 시작하기"}
+                  {isFree ? "무료로 시작하기" : "Pro 시작하기"}
                 </Link>
               </div>
             );
           })}
         </div>
+        <p className="mt-3 text-xs text-(--muted)">
+          ☕ 커피 한 잔 값(₩{PLAN_META.pro.price.toLocaleString()}/월)으로 내 서비스를 제대로
+          소개해보세요.
+        </p>
 
         {/* 기능 비교 테이블 */}
         <div className="mt-3 overflow-hidden rounded-2xl border border-black/5 bg-(--card) shadow-[0_4px_20px_rgba(17,24,39,0.06)]">
@@ -447,7 +459,7 @@ export default function Page() {
                 {PLANS.map((plan) => (
                   <th
                     key={plan}
-                    className={`px-4 py-3 text-center font-semibold ${plan === "basic" ? "text-foreground" : "text-(--muted)"}`}
+                    className={`px-4 py-3 text-center font-semibold ${plan === "pro" ? "text-foreground" : "text-(--muted)"}`}
                   >
                     {PLAN_META[plan].label}
                   </th>
@@ -462,9 +474,6 @@ export default function Page() {
                   </td>
                   <td className="px-4 py-2.5 text-center">
                     <CellValue v={row.free} />
-                  </td>
-                  <td className="px-4 py-2.5 text-center">
-                    <CellValue v={row.basic} />
                   </td>
                   <td className="px-4 py-2.5 text-center">
                     <CellValue v={row.pro} />

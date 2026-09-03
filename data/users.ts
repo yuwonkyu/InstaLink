@@ -207,7 +207,7 @@ export const users: User[] = [
       },
     ],
     instagramHandle: "@move.pilates",
-    plan: "basic",
+    plan: "pro",
     sectionOrder: ["services", "gallery", "reviews"],
     options: {
       showReviews: true,
@@ -323,14 +323,9 @@ export const users: User[] = [
         note: "기본 프로필 · 서비스·후기 3개 · 카카오 버튼",
       },
       {
-        name: "Basic 플랜",
-        price: "₩4,900 / 월",
-        note: "테마 3종 · 갤러리 6장 · 서비스·후기 6개",
-      },
-      {
         name: "Pro 플랜",
-        price: "₩7,900 / 월",
-        note: "테마 7종 · 방문자 통계 · AI 문구 추천 · 모든 기능",
+        price: "₩3,000 / 월",
+        note: "커피 한 잔 값 · 테마 7종 · 방문자 통계 · AI 문구 추천 · 모든 기능",
       },
     ],
     reviews: [

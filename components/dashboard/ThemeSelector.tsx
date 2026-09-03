@@ -83,9 +83,7 @@ export default function ThemeSelector({ selected, onChange, plan }: Props) {
                 if (!locked) onChange(t.id);
               }}
               disabled={locked}
-              title={
-                locked ? "Pro 또는 Basic 플랜에서 사용 가능합니다" : t.label
-              }
+              title={locked ? "Pro 플랜에서 사용 가능합니다" : t.label}
               className={`relative flex flex-col items-center gap-1.5 rounded-xl border-2 p-3 transition-all ${
                 selected === t.id
                   ? "border-foreground"
@@ -124,7 +122,7 @@ export default function ThemeSelector({ selected, onChange, plan }: Props) {
       </div>
       {planKey === "free" && (
         <p className="text-xs text-(--muted)">
-          🔒 다크·UCC 테마는 Basic 이상, 나머지 3종은 Pro 전용입니다.{" "}
+          🔒 라이트 외 나머지 테마는 모두 Pro 전용입니다.{" "}
           <Link
             href="/billing"
             className="font-medium underline underline-offset-2 hover:text-foreground"

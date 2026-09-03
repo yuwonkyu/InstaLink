@@ -7,9 +7,9 @@ type Props = {
   searchParams: Promise<{ authKey?: string; customerKey?: string; plan?: string; period?: string }>;
 };
 
+// Basic 요금제 폐지(Free/Pro 2단계) — Pro만 결제 대상. lib/types.ts PLAN_META.pro와 동일하게 유지.
 const PLAN_AMOUNTS: Record<string, { monthly: number; annual: number }> = {
-  basic: { monthly: 4900, annual: 49000 },
-  pro:   { monthly: 7900, annual: 79000 },
+  pro: { monthly: 3000, annual: 30000 },
 };
 
 function tossAuth() {
@@ -66,7 +66,7 @@ export default async function BillingSuccessPage({ searchParams }: Props) {
       customerKey,
       amount,
       orderId,
-      orderName: `InstaLink ${plan === "basic" ? "Basic" : "Pro"} 구독`,
+      orderName: "InstaLink Pro 구독",
       customerEmail: user.email,
       customerName: profile.name || user.email,
     }),

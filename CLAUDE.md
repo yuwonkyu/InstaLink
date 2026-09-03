@@ -22,7 +22,7 @@ Phase A~C 로드맵 완료. 현재 Phase D (첫 20명 유료 고객 확보) — 
 - Supabase Auth 회원가입·로그인·온보딩 (3필드 단순화)
 - 대시보드 편집 (탭 4개: 내 페이지·서비스·메뉴·사진·후기·설정)
 - 편집 미리보기 패널 (데스크탑 iframe / 모바일 버튼)
-- 토스페이먼츠 구독 결제 (Free/Basic/Pro) + 자동 재시도 cron
+- 토스페이먼츠 구독 결제 (Free/Pro 2단계, 2026-09-03부터 — Basic 폐지) + 자동 재시도 cron
 - 방문자 통계 + 7일 링크 클릭 차트
 - 바이럴 배지 (공개 페이지 푸터, Pro만 숨기기 가능)
 - Free 플랜 갤러리 3장 허용
@@ -34,6 +34,8 @@ Phase A~C 로드맵 완료. 현재 Phase D (첫 20명 유료 고객 확보) — 
 - Pro 풀 디자인 커스텀 (배경·카드·글자·포인트 색상 + 폰트 4종, 프리셋 우선 UX — `components/dashboard/AppearanceCustomizer.tsx`, 공개 페이지는 `app/[slug]/page.tsx`에서 CSS 변수 주입)
 - 신규 가입 게시 유도 (비공개 시 대시보드 `QuickStartCard` 인라인 공개) — 예시 링크 자동 시드는 방문 고객에게 로그인 전용 대시보드·범용 인스타그램 링크가 노출되는 문제로 제거함 (2026-07-26)
 - 신규 가입 첫 달 Pro 무료 체험 (`lib/trial.ts`) — 첫 게시 시 free 플랜에만 부여, 만료는 `billing/remind` cron(매일)이 자동으로 free 전환. 'Pro 평생 무료(is_mvp)' 이벤트는 2026-07-31 종료, 기존 is_mvp 유저는 영구 무료 유지
+- Basic 요금제 폐지 (2026-09-03) — Free/Pro 2단계로 단순화, Pro 월 ₩7,900 → ₩3,000로 대폭 인하("커피 한 잔 값" 포지셔닝). 기존 Basic 유료 가입자는 `supabase/migrations/migrate_basic_to_pro.sql` 실행으로 Pro 전환(구독 청구액도 함께 갱신). `lib/types.ts`의 `basic` 타입·`PLAN_META.basic`은 과거 데이터 호환을 위해 남겨뒀지만 판매 UI(랜딩·`/pricing`·`/billing`)에서는 완전히 제거함
+- 랜딩페이지 포지셔닝: "링크 목록"이 아닌 "인스타 바이오에 넣는 미니 홈페이지"(슬로건·서비스·가격·후기·사진) — 바이오링크 개념을 모르는 방문자를 위한 설명 섹션 추가 (`app/page.tsx`)
 
 ## 기술 스택
 - **Framework**: Next.js App Router (TypeScript)

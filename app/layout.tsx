@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     siteName: "InstaLink",
     title: "지금 가입하면 첫 달 Pro 무료 — InstaLink",
     description:
-      "가입 후 첫 달은 Pro 플랜(월 7,900원)을 무료로. 서비스·가격·후기·카카오 상담을 한 페이지에. 소상공인 인스타 링크 페이지.",
+      "가입 후 첫 달은 Pro 플랜(월 3,000원)을 무료로. 서비스·가격·후기·카카오 상담을 한 페이지에. 소상공인 인스타 링크 페이지.",
     images: [
       {
         url: "/instalink_OG.png",

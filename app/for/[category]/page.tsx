@@ -252,8 +252,8 @@ export default async function CategoryLandingPage({ params }: PageProps) {
         {/* 요금제 */}
         <section className="mt-6 rounded-2xl bg-(--card) px-6 py-6 shadow-[0_4px_20px_rgba(17,24,39,0.06)]">
           <h2 className="text-base font-bold text-foreground">간단한 요금제</h2>
-          <div className="mt-4 grid gap-3 sm:grid-cols-3">
-            {(["free", "basic", "pro"] as const).map((plan) => {
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            {(["free", "pro"] as const).map((plan) => {
               const m = PLAN_META[plan];
               return (
                 <div key={plan} className="rounded-xl bg-(--secondary) p-4">

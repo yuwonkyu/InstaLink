@@ -79,7 +79,7 @@ function buildProfile(name: string, kakaoUrl: string, categoryId: string): Profi
     hours: "",
     image_url: "/user_img.svg",
     theme: cat.theme,
-    plan: "basic",
+    plan: "pro",
     services: tmpl.services,
     reviews: [
       { text: "정말 만족스러웠어요! 꼼꼼하게 알려주셔서 감사합니다 😊", author: "김**" },

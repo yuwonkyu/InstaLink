@@ -59,7 +59,7 @@ function PlanCard({ plan, period, currentPlan, loading, onSelect, compact = fals
         isCurrent ? "border-foreground" : plan === "pro" ? "border-amber-300" : "border-gray-100"
       }`}
     >
-      {compact && plan === "basic" && !isCurrent && (
+      {compact && plan === "pro" && !isCurrent && (
         <span className="absolute -top-3 left-4 rounded-full bg-foreground px-3 py-0.5 text-xs font-semibold text-white">
           추천
         </span>
@@ -126,10 +126,11 @@ export default function BillingClient({
   const [period, setPeriod] = useState<BillingPeriod>("monthly");
   // 모바일 탭 선택 (데스크톱에서는 무시)
   const [mobilePlan, setMobilePlan] = useState<Plan>(
-    currentPlan !== "free" ? currentPlan : "basic",
+    currentPlan !== "free" ? currentPlan : "pro",
   );
 
-  // 플랜 티어 순서 (숫자가 높을수록 상위 플랜)
+  // 플랜 티어 순서 (숫자가 높을수록 상위 플랜). basic은 더 이상 판매하지 않지만
+  // 과거 가입자의 레거시 값이 남아있을 수 있어 타입 안전을 위해 유지.
   const PLAN_TIER: Record<Plan, number> = { free: 0, basic: 1, pro: 2 };
 
   async function handleSelectPlan(plan: Plan) {
@@ -141,7 +142,7 @@ export default function BillingClient({
       return;
     }
 
-    // 유료 플랜 간 다운그레이드 (예: Pro → Basic)
+    // 레거시 basic 유저가 남아있는 경우 대비 (Pro보다 낮은 유료 플랜에서 갱신 시)
     if (PLAN_TIER[currentPlan] > PLAN_TIER[plan]) {
       const confirmed = confirm(
         `${PLAN_META[currentPlan].label} → ${PLAN_META[plan].label} 다운그레이드\n\n` +
@@ -175,7 +176,7 @@ export default function BillingClient({
     }
   }
 
-  const plans: Plan[] = ["free", "basic", "pro"];
+  const plans: Plan[] = ["free", "pro"];
 
   return (
     <>
@@ -219,7 +220,7 @@ export default function BillingClient({
       {/* ── 모바일: 플랜 탭 + 단일 카드 ── */}
       <div className="sm:hidden flex flex-col gap-4">
         {/* 탭 — mt-4로 추천 뱃지(-top-2)가 위 토글을 가리지 않도록 여백 확보 */}
-        <div className="mt-4 grid grid-cols-3 rounded-xl border border-gray-200 bg-white overflow-visible pt-3">
+        <div className="mt-4 grid grid-cols-2 rounded-xl border border-gray-200 bg-white overflow-visible pt-3">
           {plans.map((plan) => {
             const meta = PLAN_META[plan];
             const isSel = mobilePlan === plan;
@@ -235,7 +236,7 @@ export default function BillingClient({
                 }`}
               >
                 {meta.label}
-                {plan === "basic" && (
+                {plan === "pro" && (
                   <span className="absolute -top-2 left-1/2 -translate-x-1/2 rounded-full bg-amber-400 px-1.5 py-0.5 text-[9px] font-bold text-white leading-none">
                     추천
                   </span>
@@ -265,8 +266,8 @@ export default function BillingClient({
         )}
       </div>
 
-      {/* ── 데스크톱: 3열 카드 ── */}
-      <div className="hidden sm:grid grid-cols-3 gap-4">
+      {/* ── 데스크톱: 2열 카드 ── */}
+      <div className="hidden sm:grid grid-cols-2 gap-4 max-w-xl mx-auto">
         {plans.map((plan) => (
           <PlanCard
             key={plan}
@@ -292,7 +293,7 @@ export default function BillingClient({
               {plans.map((plan) => (
                 <th
                   key={plan}
-                  className={`px-2 py-2.5 text-center text-xs font-semibold w-[16.66%] ${
+                  className={`px-2 py-2.5 text-center text-xs font-semibold w-1/4 ${
                     currentPlan === plan ? "text-foreground" : "text-(--muted)"
                   }`}
                 >
@@ -312,7 +313,6 @@ export default function BillingClient({
               >
                 <td className="px-4 py-2.5 text-xs text-foreground">{row.label}</td>
                 <td className="px-2 py-2.5 text-center"><CellValue v={row.free} /></td>
-                <td className="px-2 py-2.5 text-center"><CellValue v={row.basic} /></td>
                 <td className="px-2 py-2.5 text-center"><CellValue v={row.pro} /></td>
               </tr>
             ))}

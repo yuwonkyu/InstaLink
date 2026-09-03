@@ -28,36 +28,22 @@ const PLANS = [
     highlight: false,
   },
   {
-    key: "basic",
-    label: "Basic",
-    monthly: 4900,
-    annual: 49000,
-    desc: "본격적으로 고객을 모으고 싶은 사장님을 위한 플랜",
-    features: [
-      "테마 3종 (라이트·다크·UCC)",
-      "서비스·후기 6개",
-      "갤러리 사진 6장",
-      "카카오 문의 버튼",
-      "Free 모든 기능 포함",
-    ],
-    limits: [],
-    highlight: true,
-  },
-  {
     key: "pro",
     label: "Pro",
-    monthly: 7900,
-    annual: 79000,
-    desc: "데이터로 성장을 확인하고 싶은 사장님을 위한 플랜",
+    monthly: 3000,
+    annual: 30000,
+    desc: "저가 브랜드 커피 한 잔 값으로 내 서비스를 제대로 소개하는 플랜",
     features: [
-      "Basic 모든 기능 + 테마 7종",
+      "테마 7종 + 색상·폰트 자유 커스텀",
+      "서비스·후기·갤러리 여유 있게",
       "방문자 통계 + 주간 리포트",
       "AI 문구 추천",
       "섹션 순서·버튼 색상 커스텀",
       "InstaLink 배지 숨기기 가능",
+      "Free 모든 기능 포함",
     ],
     limits: [],
-    highlight: false,
+    highlight: true,
   },
 ] as const;
 
@@ -74,8 +60,8 @@ export default function PricingPage() {
           </p>
         </div>
 
-        {/* 플랜 카드 3열 */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        {/* 플랜 카드 */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:max-w-xl sm:mx-auto">
           {PLANS.map((plan) => (
             <div
               key={plan.key}

@@ -5,22 +5,21 @@
 export type PlanFeatureRow = {
   label: string;
   free: string | boolean;
-  basic: string | boolean;
   pro: string | boolean;
 };
 
 export const PLAN_FEATURE_ROWS: PlanFeatureRow[] = [
-  { label: "프로필 페이지", free: true, basic: true, pro: true },
-  { label: "카카오 문의 버튼", free: true, basic: true, pro: true },
-  { label: "테마", free: "1종", basic: "3종", pro: "7종" },
-  { label: "서비스 등록", free: "3개", basic: "6개", pro: "무제한" },
-  { label: "후기 등록", free: "3개", basic: "6개", pro: "무제한" },
-  { label: "갤러리", free: "3장", basic: "6장", pro: "15장" },
-  { label: "방문자 통계", free: false, basic: false, pro: true },
-  { label: "주간 리포트 이메일", free: false, basic: false, pro: true },
-  { label: "AI 문구 추천", free: false, basic: false, pro: true },
-  { label: "섹션 순서 변경", free: false, basic: false, pro: true },
-  { label: "배경·글자·포인트 색상 커스텀", free: false, basic: false, pro: true },
-  { label: "폰트 선택", free: false, basic: false, pro: true },
-  { label: "버튼 컬러 커스텀", free: false, basic: false, pro: true },
+  { label: "프로필 페이지", free: true, pro: true },
+  { label: "카카오 문의 버튼", free: true, pro: true },
+  { label: "테마", free: "1종", pro: "7종" },
+  { label: "서비스 등록", free: "3개", pro: "무제한" },
+  { label: "후기 등록", free: "3개", pro: "무제한" },
+  { label: "갤러리", free: "3장", pro: "15장" },
+  { label: "방문자 통계", free: false, pro: true },
+  { label: "주간 리포트 이메일", free: false, pro: true },
+  { label: "AI 문구 추천", free: false, pro: true },
+  { label: "섹션 순서 변경", free: false, pro: true },
+  { label: "배경·글자·포인트 색상 커스텀", free: false, pro: true },
+  { label: "폰트 선택", free: false, pro: true },
+  { label: "버튼 컬러 커스텀", free: false, pro: true },
 ];
