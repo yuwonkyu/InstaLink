@@ -15,7 +15,6 @@ export default function PlanSelect({ profileId, current }: { profileId: string; 
       className="rounded-lg border border-gray-200 bg-white px-2 py-1 text-xs text-foreground disabled:opacity-50"
     >
       <option value="free">free</option>
-      <option value="basic">basic</option>
       <option value="pro">pro</option>
     </select>
   );
