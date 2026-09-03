@@ -65,7 +65,7 @@ components/
 lib/
   supabase.ts      ← Supabase 클라이언트
   types.ts         ← Profile 타입 정의
-  plan-limits.ts   ← 플랜별 수량 제한 (Free·Basic·Pro)
+  plan-limits.ts   ← 플랜별 수량 제한 (Free·Pro, basic은 레거시 데이터 호환용)
 ```
 
 ## Supabase 테이블 구조 (profiles)

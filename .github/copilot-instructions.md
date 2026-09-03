@@ -55,16 +55,17 @@ Next.js 16 App Router + Supabase + Tailwind CSS v4 + 토스페이먼츠 + Vercel
 
 ## 플랜 제한 (lib/plan-limits.ts 단일 소스)
 
-| 기능 | Free | Basic | Pro |
-|------|------|-------|-----|
-| 갤러리 | 3장 | 6장 | 15장 |
-| 서비스 | 3개 | 무제한 | 무제한 |
-| 후기 | 3개 | 무제한 | 무제한 |
-| 테마 | light만 | 7종 전체 | 7종 + 커스텀 |
-| 통계 | 기본 | 14일 | 무제한 |
-| 바이럴 배지 | 표시됨 | 표시됨 | 숨김 가능 |
+| 기능 | Free | Pro |
+|------|------|-----|
+| 갤러리 | 3장 | 15장 |
+| 서비스 | 3개 | 무제한 |
+| 후기 | 3개 | 무제한 |
+| 테마 | light만 | 7종 + 커스텀 |
+| 통계 | 없음 | 무제한 |
+| 바이럴 배지 | 표시됨 | 숨김 가능 |
 
-`lib/plan-limits.ts` 수정 시 Free·Basic·Pro 세 플랜 전부 테스트 필요.
+Basic 요금제는 2026-09-03 폐지됨(Free/Pro 2단계로 단순화). `lib/types.ts`의 `basic` 타입·`PLAN_LIMITS.basic`은 과거 데이터 호환용으로만 남아있고 판매 UI에는 없음.
+`lib/plan-limits.ts` 수정 시 Free·Pro 두 플랜 전부 테스트 필요.
 
 ---
 

@@ -369,119 +369,123 @@ export default function Page() {
 
       {/* 요금제 */}
       <section className="mx-auto w-full max-w-6xl px-4 pb-14 sm:px-6">
-        <h2 className="text-xl font-bold sm:text-2xl">요금제</h2>
-        <p className="mt-1 text-sm text-(--muted)">
-          처음엔 무료로, 성장하면 그때 올리세요.
-        </p>
+        <div className="text-center">
+          <h2 className="text-xl font-bold sm:text-2xl">요금제</h2>
+          <p className="mt-1 text-sm text-(--muted)">
+            처음엔 무료로, 성장하면 그때 올리세요.
+          </p>
+        </div>
 
         {/* 신규 가입 혜택 안내 — 히어로 배너와 메시지 일치 (첫 달 Pro 무료) */}
-        <div className="mt-4 flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-400 to-orange-400 px-4 py-3 shadow-[0_2px_12px_rgba(251,191,36,0.4)]">
+        <div className="mx-auto mt-4 flex max-w-2xl items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-400 to-orange-400 px-4 py-3 shadow-[0_2px_12px_rgba(251,191,36,0.4)]">
           <span className="text-base">🔥</span>
           <span className="text-sm font-bold text-white">
             지금 가입하면 아래 Pro 플랜 첫 달을 무료로 드려요
           </span>
         </div>
 
-        {/* 플랜 카드 */}
-        <div className="mt-6 grid gap-3 sm:grid-cols-2 sm:max-w-xl">
-          {PLANS.map((plan) => {
-            const meta = PLAN_META[plan];
-            const isHighlight = plan === "pro";
-            const isFree = plan === "free";
-            return (
-              <div
-                key={plan}
-                className={`relative rounded-2xl p-5 shadow-[0_4px_20px_rgba(17,24,39,0.06)] ${
-                  isHighlight
-                    ? "border-2 border-foreground bg-foreground text-white shadow-[0_8px_30px_rgba(17,24,39,0.18)]"
-                    : "border border-black/5 bg-(--card)"
-                }`}
-              >
-                {isHighlight && (
-                  <span className="absolute -top-3 left-4 rounded-full bg-amber-400 px-2.5 py-0.5 text-[11px] font-bold text-white">
-                    가장 인기
-                  </span>
-                )}
-                {/* 플랜명 */}
-                <p
-                  className={`text-xs font-bold uppercase tracking-widest ${isHighlight ? "opacity-60" : "text-(--muted)"}`}
-                >
-                  {meta.label}
-                </p>
-                {/* 가격 */}
-                <p className="mt-1.5 text-2xl font-extrabold">
-                  {meta.price === 0 ? "₩0" : `₩${meta.price.toLocaleString()}`}
-                  {meta.price > 0 && (
-                    <span
-                      className={`ml-1 text-sm font-normal ${isHighlight ? "opacity-60" : "text-(--muted)"}`}
-                    >
-                      /월
-                    </span>
-                  )}
-                </p>
-                <p
-                  className={`mt-0.5 text-xs ${isHighlight ? "opacity-60" : "text-(--muted)"}`}
-                >
-                  {meta.price === 0
-                    ? "영원히 무료 · 카드 등록 없음"
-                    : "저가 브랜드 커피 한 잔 값 · 언제든 해지 가능"}
-                </p>
-                {/* CTA */}
-                <Link
-                  href="/auth/signup"
-                  className={`mt-4 block rounded-xl py-2.5 text-center text-sm font-bold transition ${
+        {/* 플랜 카드 — Free·Pro 1:1 좌우 배치, 아래 비교표와 폭을 맞춰 하나의 블록으로 정렬 */}
+        <div className="mx-auto mt-6 max-w-2xl">
+          <div className="grid grid-cols-2 gap-3">
+            {PLANS.map((plan) => {
+              const meta = PLAN_META[plan];
+              const isHighlight = plan === "pro";
+              const isFree = plan === "free";
+              return (
+                <div
+                  key={plan}
+                  className={`relative rounded-2xl p-5 shadow-[0_4px_20px_rgba(17,24,39,0.06)] ${
                     isHighlight
-                      ? "bg-white text-foreground hover:opacity-90"
-                      : isFree
-                        ? "border-2 border-foreground bg-foreground text-white hover:opacity-85"
-                        : "border border-black/10 hover:bg-black/5"
+                      ? "border-2 border-foreground bg-foreground text-white shadow-[0_8px_30px_rgba(17,24,39,0.18)]"
+                      : "border border-black/5 bg-(--card)"
                   }`}
                 >
-                  {isFree ? "무료로 시작하기" : "Pro 시작하기"}
-                </Link>
-              </div>
-            );
-          })}
-        </div>
-        <p className="mt-3 text-xs text-(--muted)">
-          ☕ 커피 한 잔 값(₩{PLAN_META.pro.price.toLocaleString()}/월)으로 내 서비스를 제대로
-          소개해보세요.
-        </p>
-
-        {/* 기능 비교 테이블 */}
-        <div className="mt-3 overflow-hidden rounded-2xl border border-black/5 bg-(--card) shadow-[0_4px_20px_rgba(17,24,39,0.06)]">
-          <table className="w-full border-collapse text-sm">
-            <thead>
-              <tr className="border-b border-black/5">
-                <th className="px-4 py-3 text-left font-semibold text-(--muted)">
-                  기능
-                </th>
-                {PLANS.map((plan) => (
-                  <th
-                    key={plan}
-                    className={`px-4 py-3 text-center font-semibold ${plan === "pro" ? "text-foreground" : "text-(--muted)"}`}
+                  {isHighlight && (
+                    <span className="absolute -top-3 left-4 rounded-full bg-amber-400 px-2.5 py-0.5 text-[11px] font-bold text-white">
+                      가장 인기
+                    </span>
+                  )}
+                  {/* 플랜명 */}
+                  <p
+                    className={`text-xs font-bold uppercase tracking-widest ${isHighlight ? "opacity-60" : "text-(--muted)"}`}
                   >
-                    {PLAN_META[plan].label}
+                    {meta.label}
+                  </p>
+                  {/* 가격 */}
+                  <p className="mt-1.5 text-2xl font-extrabold">
+                    {meta.price === 0 ? "₩0" : `₩${meta.price.toLocaleString()}`}
+                    {meta.price > 0 && (
+                      <span
+                        className={`ml-1 text-sm font-normal ${isHighlight ? "opacity-60" : "text-(--muted)"}`}
+                      >
+                        /월
+                      </span>
+                    )}
+                  </p>
+                  <p
+                    className={`mt-0.5 text-xs ${isHighlight ? "opacity-60" : "text-(--muted)"}`}
+                  >
+                    {meta.price === 0
+                      ? "영원히 무료 · 카드 등록 없음"
+                      : "저가 브랜드 커피 한 잔 값 · 언제든 해지 가능"}
+                  </p>
+                  {/* CTA */}
+                  <Link
+                    href="/auth/signup"
+                    className={`mt-4 block rounded-xl py-2.5 text-center text-sm font-bold transition ${
+                      isHighlight
+                        ? "bg-white text-foreground hover:opacity-90"
+                        : isFree
+                          ? "border-2 border-foreground bg-foreground text-white hover:opacity-85"
+                          : "border border-black/10 hover:bg-black/5"
+                    }`}
+                  >
+                    {isFree ? "무료로 시작하기" : "Pro 시작하기"}
+                  </Link>
+                </div>
+              );
+            })}
+          </div>
+          <p className="mt-3 text-center text-xs text-(--muted)">
+            ☕ 커피 한 잔 값(₩{PLAN_META.pro.price.toLocaleString()}/월)으로 내 서비스를 제대로
+            소개해보세요.
+          </p>
+  
+          {/* 기능 비교 테이블 */}
+          <div className="mt-3 overflow-hidden rounded-2xl border border-black/5 bg-(--card) shadow-[0_4px_20px_rgba(17,24,39,0.06)]">
+            <table className="w-full border-collapse text-sm">
+              <thead>
+                <tr className="border-b border-black/5">
+                  <th className="px-4 py-3 text-left font-semibold text-(--muted)">
+                    기능
                   </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {PLAN_FEATURE_ROWS.map((row) => (
-                <tr key={row.label} className="border-t border-black/5">
-                  <td className="px-4 py-2.5 text-left text-(--muted)">
-                    {row.label}
-                  </td>
-                  <td className="px-4 py-2.5 text-center">
-                    <CellValue v={row.free} />
-                  </td>
-                  <td className="px-4 py-2.5 text-center">
-                    <CellValue v={row.pro} />
-                  </td>
+                  {PLANS.map((plan) => (
+                    <th
+                      key={plan}
+                      className={`px-4 py-3 text-center font-semibold ${plan === "pro" ? "text-foreground" : "text-(--muted)"}`}
+                    >
+                      {PLAN_META[plan].label}
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {PLAN_FEATURE_ROWS.map((row) => (
+                  <tr key={row.label} className="border-t border-black/5">
+                    <td className="px-4 py-2.5 text-left text-(--muted)">
+                      {row.label}
+                    </td>
+                    <td className="px-4 py-2.5 text-center">
+                      <CellValue v={row.free} />
+                    </td>
+                    <td className="px-4 py-2.5 text-center">
+                      <CellValue v={row.pro} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 

@@ -53,7 +53,7 @@ export default function QRCodeCard({ url, isPaid }: Props) {
         {!isPaid && ready && (
           <div className="absolute inset-0 flex flex-col items-center justify-center rounded-xl bg-white/60 backdrop-blur-[1px]">
             <span className="text-lg mb-1">🔒</span>
-            <p className="text-xs font-semibold text-foreground">베이직 이상</p>
+            <p className="text-xs font-semibold text-foreground">Pro 전용</p>
             <Link
               href="/billing"
               className="mt-1.5 rounded-lg bg-foreground px-3 py-1 text-xs font-semibold text-white hover:opacity-80 transition-opacity"

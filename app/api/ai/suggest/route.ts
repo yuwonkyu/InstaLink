@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  // AI 기능은 유료 플랜(basic/pro)만 사용 가능
+  // AI 기능은 유료 플랜(Pro, 레거시 basic 포함)만 사용 가능
   const { data: profile } = await supabase
     .from("profiles")
     .select("plan")

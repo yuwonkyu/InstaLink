@@ -172,7 +172,7 @@ export default async function CategoryLandingPage({ params }: PageProps) {
       "@type": "Offer",
       price: "0",
       priceCurrency: "KRW",
-      description: `무료로 시작, Basic ${PLAN_META.basic.price.toLocaleString()}원/월, Pro ${PLAN_META.pro.price.toLocaleString()}원/월`,
+      description: `무료로 시작, Pro ${PLAN_META.pro.price.toLocaleString()}원/월`,
     },
   };
 

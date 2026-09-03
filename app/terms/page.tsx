@@ -36,7 +36,7 @@ export default function TermsPage() {
               <li><b className="text-foreground">서비스</b>: 회사가 운영하는 {COMPANY} 플랫폼 및 관련 제반 서비스 일체</li>
               <li><b className="text-foreground">이용자</b>: 이 약관에 동의하고 서비스를 이용하는 모든 회원</li>
               <li><b className="text-foreground">콘텐츠</b>: 이용자가 서비스에 등록·게시한 텍스트, 이미지, 링크, 후기 등 일체의 정보</li>
-              <li><b className="text-foreground">유료 플랜</b>: 월 구독료를 납부하고 이용하는 Basic·Pro 플랜</li>
+              <li><b className="text-foreground">유료 플랜</b>: 월 구독료를 납부하고 이용하는 Pro 플랜</li>
               <li><b className="text-foreground">후원</b>: 이용자 또는 방문자가 서비스 운영자에게 자발적으로 제공하는 금전적 지원</li>
             </ul>
           </Section>

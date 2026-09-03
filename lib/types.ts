@@ -105,7 +105,7 @@ export type Profile = {
   button_color?: string | null; // Pro: 커스텀 버튼 배경 컬러 (hex, 예: "#7c3aed")
   button_text_color?: string | null; // Pro: 커스텀 버튼 텍스트 컬러 (hex)
   gallery_layout?: GalleryLayout | null; // Pro: 갤러리 레이아웃 (grid2 | grid3)
-  business_hours?: BusinessHours | null; // Basic+: 요일별 영업시간
+  business_hours?: BusinessHours | null; // Pro: 요일별 영업시간
   social_links?: SocialLink[] | null; // 소셜 채널 아이콘 줄 (유튜브·틱톡·블로그 등)
   is_mvp?: boolean | null; // 얼리어답터 무료 Pro 혜택 대상
   // ── Pro: 풀 디자인 커스텀 (테마 위에 인라인 CSS 변수로 덮어씀) ──
