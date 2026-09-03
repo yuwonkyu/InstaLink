@@ -427,7 +427,7 @@ export default function Page() {
                   >
                     {meta.price === 0
                       ? "영원히 무료 · 카드 등록 없음"
-                      : "저가 브랜드 커피 한 잔 값 · 언제든 해지 가능"}
+                      : "아메리카노 한 잔 값 · 언제든 해지 가능"}
                   </p>
                   {/* CTA */}
                   <Link
