@@ -1,7 +1,17 @@
 import { redirect } from "next/navigation";
+import { createClient } from "@supabase/supabase-js";
 import { getSupabaseServerClient } from "@/lib/supabase";
 import type { Plan, BillingPeriod } from "@/lib/types";
 import { sendEmail, paymentSuccessEmail } from "@/lib/resend";
+
+// plan/billing_key는 authenticated 권한에서 제외돼 있어 (결제 없는 셀프 승급 방지)
+// 실제 결제 반영은 service role로만 가능. subscriptions 테이블도 authenticated GRANT가 없음.
+function adminClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  );
+}
 
 type Props = {
   searchParams: Promise<{ authKey?: string; customerKey?: string; plan?: string; period?: string }>;
@@ -86,21 +96,23 @@ export default async function BillingSuccessPage({ searchParams }: Props) {
     expiresAt.setMonth(expiresAt.getMonth() + 1);
   }
 
+  const admin = adminClient();
+
   // 기존 활성 구독이 있으면 먼저 취소 처리 (중복 INSERT 방지)
-  await supabase
+  await admin
     .from("subscriptions")
     .update({ status: "cancelled", cancelled_at: now.toISOString() })
     .eq("profile_id", profile.id)
     .eq("status", "active");
 
   await Promise.all([
-    supabase.from("profiles").update({
+    admin.from("profiles").update({
       billing_key: billingKey,
       plan: plan as Plan,
       plan_expires_at: expiresAt.toISOString(),
     }).eq("owner_id", user.id),
 
-    supabase.from("subscriptions").insert({
+    admin.from("subscriptions").insert({
       profile_id: profile.id,
       plan,
       billing_period: billingPeriod,

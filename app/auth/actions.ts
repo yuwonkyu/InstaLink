@@ -6,6 +6,7 @@ import { getSupabaseServerClient } from "@/lib/supabase";
 import { sendEmail, welcomeEmail, newSignupNotificationEmail } from "@/lib/resend";
 import { applyReferral } from "@/lib/referral";
 import { getSiteUrl } from "@/lib/site-url";
+import { isSignupBlocked } from "@/lib/blocklist";
 
 const SITE_URL = getSiteUrl();
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -37,8 +38,14 @@ export async function signUp(formData: FormData) {
     redirect("/auth/signup?error=비밀번호는 8자 이상이어야 합니다.");
   }
 
-  // ── 서버사이드 이메일 중복 확인 (클라이언트 검사 우회 방어) ──
   const admin = adminClient();
+
+  // ── 차단 목록 확인 (어뷰징 계정 재가입 방지) ──
+  if (await isSignupBlocked(admin, email)) {
+    redirect("/auth/signup?error=가입이 제한된 이메일입니다.");
+  }
+
+  // ── 서버사이드 이메일 중복 확인 (클라이언트 검사 우회 방어) ──
   const { error: linkError } = await admin.auth.admin.generateLink({
     type: "recovery",
     email,

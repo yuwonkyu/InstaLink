@@ -2,10 +2,20 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { createClient } from "@supabase/supabase-js";
 import { getSupabaseServerClient } from "@/lib/supabase";
 import { getTrialProFields } from "@/lib/trial";
 import { normalizeExternalHref } from "@/lib/profile-utils";
 import type { CustomLink } from "@/lib/types";
+
+// plan/plan_expires_at은 authenticated 권한에서 제외돼 있어 (결제 없는 셀프 승급 방지)
+// 트라이얼 지급은 service role로만 가능
+function adminClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  );
+}
 
 export type QuickStartPayload = {
   name: string;
@@ -52,11 +62,17 @@ export async function publishQuickStart(payload: QuickStartPayload) {
       custom_links: seededLinks,
       ...(isKakao && primary ? { kakao_url: primary } : {}),
       is_active: true,
-      ...(grantTrial ? getTrialProFields() : {}),
     })
     .eq("owner_id", user.id);
 
   if (error) throw new Error(error.message);
+
+  if (grantTrial) {
+    await adminClient()
+      .from("profiles")
+      .update(getTrialProFields())
+      .eq("owner_id", user.id);
+  }
 
   revalidatePath("/dashboard");
   revalidatePath("/[slug]", "page");
