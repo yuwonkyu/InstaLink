@@ -49,8 +49,16 @@ GRANT UPDATE (
 -- 같은 계정으로 프로필을 여러 개 만들어 가입 혜택(Pro 체험)·추천 보상을
 -- 중복으로 받을 수 있었음.
 --
--- 주의: 이미 중복 owner_id가 있으면 아래 ALTER가 실패함. 실패 시 먼저
+-- 주의: 이미 중복 owner_id가 있으면 아래 제약 추가가 실패함. 실패 시 먼저
 -- 아래 쿼리로 중복을 찾아 정리한 뒤 다시 실행할 것:
 --   SELECT owner_id, count(*) FROM public.profiles GROUP BY owner_id HAVING count(*) > 1;
-ALTER TABLE public.profiles
-  ADD CONSTRAINT profiles_owner_id_unique UNIQUE (owner_id);
+-- (재실행 대비) 제약이 이미 있으면 건너뜀
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'profiles_owner_id_unique'
+  ) THEN
+    ALTER TABLE public.profiles
+      ADD CONSTRAINT profiles_owner_id_unique UNIQUE (owner_id);
+  END IF;
+END $$;
