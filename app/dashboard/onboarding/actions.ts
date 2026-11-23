@@ -2,9 +2,19 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { createClient } from "@supabase/supabase-js";
 import { getSupabaseServerClient } from "@/lib/supabase";
 import { getTrialProFields } from "@/lib/trial";
 import type { Service, CustomLink } from "@/lib/types";
+
+// plan/plan_expires_at은 authenticated 권한에서 제외돼 있어 (결제 없는 셀프 승급 방지)
+// 트라이얼 지급은 service role로만 가능
+function adminClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  );
+}
 
 // ── Step 1: 기본 정보 ──────────────────────────────────────────
 export type Step1Payload = {
@@ -39,11 +49,17 @@ export async function saveOnboardingStep1(payload: Step1Payload) {
       instagram_id:    payload.instagram_id.trim(),
       image_url:       payload.image_url.trim(),
       is_active:       true,
-      ...(grantTrial ? getTrialProFields() : {}),
     })
     .eq("owner_id", user.id);
 
   if (error) throw new Error(error.message);
+
+  if (grantTrial) {
+    await adminClient()
+      .from("profiles")
+      .update(getTrialProFields())
+      .eq("owner_id", user.id);
+  }
 
   // 운영자 알림 이메일은 signUp 시점(app/auth/actions.ts)에서 발송됨 — 여기서 중복 발송 안 함.
 

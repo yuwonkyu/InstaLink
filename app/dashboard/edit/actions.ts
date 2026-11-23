@@ -2,10 +2,19 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { createClient } from "@supabase/supabase-js";
 import { getSupabaseServerClient } from "@/lib/supabase";
 import type { Service, Review, Theme, CustomLink, GalleryImage, GalleryLayout, BusinessHours, SocialLink } from "@/lib/types";
 import { validateServicesOrThrow } from "@/lib/service-validation";
 import { isValidFontKey } from "@/lib/fonts";
+
+// slug는 authenticated 권한에서 제외돼 있어 (direct REST로 임의 슬러그 설정 방지) service role로만 변경
+function adminClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  );
+}
 
 function isSafeUrl(url: string): boolean {
   if (!url) return true;
@@ -59,7 +68,7 @@ export async function updateSlug(newSlug: string) {
 
   if (existing) throw new Error("이미 사용 중인 주소입니다.");
 
-  const { error } = await supabase
+  const { error } = await adminClient()
     .from("profiles")
     .update({ slug })
     .eq("id", profile.id);
