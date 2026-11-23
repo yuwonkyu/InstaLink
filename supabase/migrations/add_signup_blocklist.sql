@@ -11,6 +11,16 @@ CREATE TABLE IF NOT EXISTS signup_blocklist (
   UNIQUE (type, value)
 );
 
+-- (재실행 대비) 테이블이 UNIQUE 제약 없이 이미 존재했을 수 있어 별도로 추가
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'signup_blocklist_type_value_key'
+  ) THEN
+    ALTER TABLE signup_blocklist ADD CONSTRAINT signup_blocklist_type_value_key UNIQUE (type, value);
+  END IF;
+END $$;
+
 -- service role(서버 액션)만 접근 — 일반 유저/anon 직접 접근 차단
 ALTER TABLE signup_blocklist ENABLE ROW LEVEL SECURITY;
 
